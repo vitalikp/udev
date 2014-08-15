@@ -27,7 +27,10 @@
 #include "utf8.h"
 #include "ctype.h"
 
-int write_string_to_file(FILE *f, const char *line) {
+int write_string_stream(FILE *f, const char *line) {
+        assert(f);
+        assert(line);
+
         errno = 0;
         fputs(line, f);
         if (!endswith(line, "\n"))
@@ -51,7 +54,29 @@ int write_string_file(const char *fn, const char *line) {
         if (!f)
                 return -errno;
 
-        return write_string_to_file(f, line);
+        return write_string_stream(f, line);
+}
+
+int write_string_file_no_create(const char *fn, const char *line) {
+        _cleanup_fclose_ FILE *f = NULL;
+        int fd;
+
+        assert(fn);
+        assert(line);
+
+        /* We manually build our own version of fopen(..., "we") that
+         * without O_CREAT */
+        fd = open(fn, O_WRONLY|O_CLOEXEC|O_NOCTTY);
+        if (fd < 0)
+                return -errno;
+
+        f = fdopen(fd, "we");
+        if (!f) {
+                safe_close(fd);
+                return -errno;
+        }
+
+        return write_string_stream(f, line);
 }
 
 int write_string_file_atomic(const char *fn, const char *line) {
