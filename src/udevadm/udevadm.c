@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
                         }
                 }
 
-        fprintf(stderr, "%s: missing or unknown command", program_invocation_short_name);
+        fprintf(stderr, "%s: missing or unknown command\n", program_invocation_short_name);
         rc = 2;
 out:
         label_finish();
