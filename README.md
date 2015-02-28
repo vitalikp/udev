@@ -10,6 +10,7 @@ fork udev from [systemd 214](https://github.com/vitalikp/systemd)
 	# cd build
 	# cmake ..
 	# make
+	# sudo make install
 ```
 
 # License
