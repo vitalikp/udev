@@ -40,3 +40,6 @@ set_target_properties(udev PROPERTIES
 )
 target_link_libraries(udev libudev_int_obj libudev_shared_obj ${LIBUDEV_C_FLAGS})
 target_link_libraries(udev rt pthread)
+
+# install
+install(TARGETS udev DESTINATION ${libdir})

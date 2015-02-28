@@ -24,7 +24,10 @@ set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -Wl,--gc-secti
 include(check.cmake)
 
 
+# directories
 set(_GNU_SOURCE 1)
+set(bindir ${CMAKE_INSTALL_PREFIX}/bin)
+set(libdir ${CMAKE_INSTALL_PREFIX}/lib64)
 set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
 set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
 add_definitions(-DUDEVLIBEXECDIR="${udevlibexecdir}")

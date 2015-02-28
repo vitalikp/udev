@@ -63,3 +63,6 @@ add_executable(udevadm
 )
 target_link_libraries(udevadm libudev_int_obj libudev_shared_obj libudev_core_obj libudev_label_obj)
 target_link_libraries(udevadm rt dl gcc_s ${CAP_LIBRARIES} pthread)
+
+# install
+install(TARGETS udevadm DESTINATION ${bindir})
