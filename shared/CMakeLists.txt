@@ -2,6 +2,7 @@
 
 # udev shared objects
 add_library(libudev_shared_obj STATIC
+	special.h
 	device-nodes.c
 	device-nodes.h
 	util.c
@@ -40,6 +41,10 @@ add_library(libudev_shared_obj STATIC
 	gunicode.h
 	conf-files.c
 	conf-files.h
+	cgroup-util.c
+	cgroup-util.h
+	unit-name.c
+	unit-name.h
 	fileio.c
 	fileio.h
 	MurmurHash2.c
@@ -54,6 +59,8 @@ add_library(libudev_shared_obj STATIC
 	ima-util.h
 	condition-util.c
 	condition-util.h
+	bus-label.c
+	bus-label.h
 	# libsystemd-core
 	condition.c
 	# libsystemd-internal
@@ -70,6 +77,10 @@ add_library(libudev_shared_obj STATIC
 
 add_library(libudev_label_obj STATIC
 	label.c
+	label.h
 	selinux-util.c
+	selinux-util.h
 	mkdir-label.c
+	dev-setup.c
+	dev-setup.h
 )

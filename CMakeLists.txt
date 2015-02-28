@@ -27,6 +27,7 @@ include(check.cmake)
 # directories
 set(_GNU_SOURCE 1)
 set(bindir ${CMAKE_INSTALL_PREFIX}/bin)
+set(sbindir ${CMAKE_INSTALL_PREFIX}/sbin)
 set(libdir ${CMAKE_INSTALL_PREFIX}/lib64)
 set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
 set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
