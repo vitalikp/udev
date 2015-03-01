@@ -3,6 +3,14 @@
 include(CheckTypeSize)
 include(CheckFunctionExists)
 
+# check xsltproc
+find_program(XSLTPROC xsltproc)
+if (NOT XSLTPROC)
+	message(FATAL_ERROR "*** xsltproc not found! ***")
+else()
+	message("-- Found xsltproc")
+endif()
+
 # check awk
 find_program(AWK awk)
 if (NOT AWK)

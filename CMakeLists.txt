@@ -37,6 +37,12 @@ add_definitions(-DUDEVLIBEXECDIR="${udevlibexecdir}")
 configure_file(config.h.cmake config.h)
 add_definitions(-include ${PROJECT_BINARY_DIR}/config.h)
 
+# udev man
+include(man/udev-man.cmake)
+add_man(udev 7)
+add_man(udevd 8)
+add_man(udevadm 8)
+
 # source code
 include_directories(include)
 include_directories(shared)
