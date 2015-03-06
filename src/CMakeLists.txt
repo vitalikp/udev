@@ -7,6 +7,9 @@ include_directories(core)
 include_directories(core/net)
 
 
+# udev
+configure_file(udev.pc.cmake udev.pc)
+
 # udev core objects
 add_library(libudev_core_obj STATIC
 	core/udev.h
@@ -74,5 +77,6 @@ target_link_libraries(udevd libudev_int_obj libudev_shared_obj libudev_core_obj 
 target_link_libraries(udevd rt pthread)
 
 # install
+install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
 install(TARGETS udevd DESTINATION ${sbindir})
