@@ -1,5 +1,8 @@
 # udev data cmake file
 
+# etc
+install(FILES udev.conf DESTINATION /etc/udev)
+
 # rpm
 configure_file(rpm/macros-udev.cmake macros.udev)
 
