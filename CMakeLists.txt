@@ -51,3 +51,6 @@ include_directories(src/core)
 add_subdirectory(shared)
 add_subdirectory(lib)
 add_subdirectory(src)
+
+# data
+add_subdirectory(data)
