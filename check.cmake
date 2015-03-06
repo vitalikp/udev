@@ -3,6 +3,14 @@
 include(CheckTypeSize)
 include(CheckFunctionExists)
 
+# check ln
+find_program(LN ln)
+if (NOT LN)
+	message(FATAL_ERROR "*** ln not found! ***")
+else()
+	message("-- Found ln")
+endif()
+
 # check xsltproc
 find_program(XSLTPROC xsltproc)
 if (NOT XSLTPROC)
