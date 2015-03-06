@@ -13,6 +13,10 @@ fork udev from [systemd 214](https://github.com/vitalikp/systemd)
 	# sudo make install
 ```
 
+# Update
+After update perform the following steps:
+ - run `<bindir>/udevadm hwdb --update` for update hwdb;
+
 # License
 Original forked code is LGPLv2.1+.<br/>
 New code is MIT License. See LICENSE file.
