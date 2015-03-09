@@ -29,9 +29,9 @@ set(_GNU_SOURCE 1)
 set(bindir ${CMAKE_INSTALL_PREFIX}/bin)
 set(sbindir ${CMAKE_INSTALL_PREFIX}/sbin)
 set(libdir ${CMAKE_INSTALL_PREFIX}/lib64)
-set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
-set(udevlibexecdir ${CMAKE_INSTALL_PREFIX})
+set(udevlibexecdir ${CMAKE_INSTALL_PREFIX}/lib/udev)
 add_definitions(-DUDEVLIBEXECDIR="${udevlibexecdir}")
+set(udevhwdbdir ${udevlibexecdir}/hwdb.d)
 
 # config
 configure_file(config.h.cmake config.h)

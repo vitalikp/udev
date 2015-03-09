@@ -1,5 +1,7 @@
 # RPM macros for packages installing udev files
 
+%_udevhwdbdir @udevhwdbdir@
+
 %udev_hwdb_update() \
 @CMAKE_INSTALL_PREFIX@/bin/udevadm hwdb --update >/dev/null 2>&1 || : \
 %{nil}
