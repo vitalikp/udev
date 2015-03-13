@@ -15,6 +15,7 @@ fork udev from [systemd 214](https://github.com/vitalikp/systemd)
 Use `cmake -D(OPTION) ..` instead of `cmake ..` for add config option.
 ##### Optional Features:
  - Use **SELINUX_ENABLE=OFF** option to disable SELINUX support(default=ON);
+ - Use **SMACK_ENABLE=ON** option to enable SMACK support(default=OFF);
 
 # Update
 After update perform the following steps:
