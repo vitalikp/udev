@@ -58,4 +58,12 @@ check_function_exists(setns HAVE_DECL_SETNS)
 # dependencies
 find_package(PkgConfig REQUIRED)
 
+# check libcap
 pkg_check_modules(CAP libcap)
+
+# check SELinux library
+option(SELINUX_ENABLE "Disable optional SELINUX support" ON)
+if (${SELINUX_ENABLE})
+	pkg_check_modules(SELINUX REQUIRED libselinux)
+	add_definitions(-DHAVE_SELINUX=1)
+endif()
