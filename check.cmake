@@ -67,3 +67,11 @@ if (${SELINUX_ENABLE})
 	pkg_check_modules(SELINUX REQUIRED libselinux)
 	add_definitions(-DHAVE_SELINUX=1)
 endif()
+
+# check SMACK library
+option(SMACK_ENABLE "Disable optional SMACK support")
+if (${SMACK_ENABLE})
+	pkg_check_modules(SMACK REQUIRED libsmack)
+	add_definitions(-DHAVE_SMACK=1)
+endif()
+
