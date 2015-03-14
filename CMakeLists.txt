@@ -14,10 +14,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-result")
 # code generation flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-common -fno-strict-aliasing -ffunction-sections -fdata-sections -fstack-protector -fstack-protector-strong")
 # debugging and optimizations flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --param=ssp-buffer-size=4 -flto -ffat-lto-objects -g -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pie --param=ssp-buffer-size=4 -flto -ffat-lto-objects -g -O2")
 set(CMAKE_SHARED_LIBRARY_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -fPIC")
 set(CMAKE_EXE_C_FLAGS "${CMAKE_C_FLAGS} -fPIE")
-set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -Wl,--gc-sections -Wl,-z,relro -Wl,-z,now -pie -Wl,-fuse-ld=gold")
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -Wl,--gc-sections -Wl,-z,relro -Wl,-z,now -Wl,-fuse-ld=gold")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 
 # check program and library
