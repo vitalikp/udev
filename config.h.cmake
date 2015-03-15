@@ -16,6 +16,12 @@
 /* Define to 1 if you have the `__secure_getenv' function. */
 #cmakedefine HAVE___SECURE_GETENV @HAVE___SECURE_GETENV@
 
+/* Define if SELinux is available */
+#cmakedefine HAVE_SELINUX @HAVE_SELINUX@
+
+/* Define if SMACK is available */
+#cmakedefine HAVE_SMACK @HAVE_SMACK@
+
 /* The size of `pid_t', as computed by sizeof. */
 #cmakedefine SIZEOF_PID_T @SIZEOF_PID_T@
 
