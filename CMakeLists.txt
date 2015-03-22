@@ -56,6 +56,9 @@ add_subdirectory(src)
 # data
 add_subdirectory(data)
 
+# tests
+add_subdirectory(test)
+
 # show current config
 message("   ${CMAKE_PROJECT_NAME} ${VERSION}")
 message("      prefix:      ${CMAKE_INSTALL_PREFIX}")
