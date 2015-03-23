@@ -4,6 +4,9 @@
 #cmakedefine _GNU_SOURCE @_GNU_SOURCE@ 
 #endif
 
+/* Define if kmod is available */
+#cmakedefine HAVE_KMOD @HAVE_KMOD@
+
 /* Define if blkid is available */
 #cmakedefine HAVE_BLKID @HAVE_BLKID@
 

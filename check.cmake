@@ -61,6 +61,13 @@ find_package(PkgConfig REQUIRED)
 # check libcap
 pkg_check_modules(CAP libcap)
 
+# check kmod library
+option(KMOD_ENABLE "Disable loadable modules support" ON)
+if (${KMOD_ENABLE})
+	pkg_check_modules(KMOD REQUIRED libkmod>=15)
+	set(HAVE_KMOD 1)
+endif()
+
 # check blkid library
 option(BLKID_ENABLE "Disable blkid support" ON)
 if (${BLKID_ENABLE})

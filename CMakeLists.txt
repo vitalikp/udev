@@ -62,6 +62,7 @@ add_subdirectory(test)
 # show current config
 message("   ${CMAKE_PROJECT_NAME} ${VERSION}")
 message("      prefix:      ${CMAKE_INSTALL_PREFIX}")
+message("      kmod:        ${KMOD_ENABLE}")
 message("      blkid:       ${BLKID_ENABLE}")
 message("      SELinux:     ${SELINUX_ENABLE}")
 message("      SMACK:       ${SMACK_ENABLE}")
