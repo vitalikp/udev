@@ -61,6 +61,13 @@ find_package(PkgConfig REQUIRED)
 # check libcap
 pkg_check_modules(CAP libcap)
 
+# check blkid library
+option(BLKID_ENABLE "Disable blkid support" ON)
+if (${BLKID_ENABLE})
+	pkg_check_modules(BLKID REQUIRED blkid>=2.20)
+	set(HAVE_BLKID 1)
+endif()
+
 # check SELinux library
 option(SELINUX_ENABLE "Disable optional SELINUX support" ON)
 if (${SELINUX_ENABLE})

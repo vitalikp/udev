@@ -4,6 +4,9 @@
 #cmakedefine _GNU_SOURCE @_GNU_SOURCE@ 
 #endif
 
+/* Define if blkid is available */
+#cmakedefine HAVE_BLKID @HAVE_BLKID@
+
 /* Define to 1  if you have the `name_to_handle_at' function. */
 #cmakedefine HAVE_DECL_NAME_TO_HANDLE_AT @HAVE_DECL_NAME_TO_HANDLE_AT@
 
