@@ -11,6 +11,8 @@ add_library(libudev_shared_obj STATIC
 	virt.h
 	architecture.c
 	architecture.h
+	efivars.c
+	efivars.h
 	path-util.c
 	path-util.h
 	time-util.c
@@ -49,6 +51,8 @@ add_library(libudev_shared_obj STATIC
 	fileio.h
 	MurmurHash2.c
 	MurmurHash2.h
+	acpi-fpdt.h
+	acpi-fpdt.c
 	mkdir.c
 	mkdir.h
 	smack-util.c
@@ -61,6 +65,7 @@ add_library(libudev_shared_obj STATIC
 	condition-util.h
 	bus-label.c
 	bus-label.h
+	gpt.h
 	# libsystemd-core
 	condition.c
 	# libsystemd-internal
