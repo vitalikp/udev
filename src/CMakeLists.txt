@@ -32,6 +32,9 @@ set(libudev_core_src
 	core/net/ethtool-util.h
 	core/net/ethtool-util.c
 )
+if (${KMOD_ENABLE})
+	list(APPEND libudev_core_src core/builtin/udev-builtin-kmod.c)
+endif()
 if (${BLKID_ENABLE})
 	list(APPEND libudev_core_src core/builtin/udev-builtin-blkid.c)
 endif()
@@ -39,7 +42,7 @@ add_library(libudev_core_obj STATIC
 	${libudev_core_src}
 	${PROJECT_BINARY_DIR}/src/link-config-gperf.c
 )
-target_link_libraries(libudev_core_obj ${BLKID_LIBRARIES})
+target_link_libraries(libudev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
 
 add_custom_command(
 	OUTPUT link-config-gperf.c
