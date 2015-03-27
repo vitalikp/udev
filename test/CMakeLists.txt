@@ -1,6 +1,13 @@
 # udev tests cmake file
 enable_testing()
 
+# test-libudev
+add_executable(test-libudev
+	test-libudev.c
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(test-libudev libudev_int_obj libudev_shared_obj libudev_label_obj)
+
 # root sys
 add_custom_target(sys.tar.xz
 	COMMAND tar -xJf ${CMAKE_CURRENT_SOURCE_DIR}/sys.tar.xz
