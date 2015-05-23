@@ -26,6 +26,8 @@ install(FILES ${PROJECT_BINARY_DIR}/data/macros.udev DESTINATION lib/rpm/macros.
 install(FILES rules/60-cdrom_id.rules DESTINATION ${udevrulesdir})
 # v4l_id
 install(FILES rules/60-persistent-v4l.rules DESTINATION ${udevrulesdir})
+# accelerometer
+install(FILES rules/61-accelerometer.rules DESTINATION ${udevrulesdir})
 
 # systemd
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/sysinit.target.wants/)
