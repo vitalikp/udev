@@ -95,6 +95,14 @@ add_executable(udevrule
 	udevrule/udevrule.c
 )
 
+# ata_id
+add_executable(ata_id
+	ata_id/ata_id.c
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(ata_id libudev_int_obj libudev_shared_obj)
+target_link_libraries(ata_id dl)
+
 # cdrom_id
 add_executable(cdrom_id
 	cdrom_id/cdrom_id.c
