@@ -103,6 +103,13 @@ add_executable(cdrom_id
 target_link_libraries(cdrom_id libudev_int_obj libudev_shared_obj)
 target_link_libraries(cdrom_id dl)
 
+# v4l_id
+add_executable(v4l_id
+	v4l_id/v4l_id.c
+)
+target_link_libraries(v4l_id libudev_int_obj)
+target_link_libraries(v4l_id dl)
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
