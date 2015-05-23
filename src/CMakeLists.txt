@@ -110,6 +110,14 @@ add_executable(v4l_id
 target_link_libraries(v4l_id libudev_int_obj)
 target_link_libraries(v4l_id dl)
 
+# accelerometer
+add_executable(accelerometer
+	accelerometer/accelerometer.c
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(accelerometer libudev_int_obj libudev_shared_obj)
+target_link_libraries(accelerometer m dl)
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
