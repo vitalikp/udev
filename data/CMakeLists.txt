@@ -24,6 +24,8 @@ install(FILES ${PROJECT_BINARY_DIR}/data/macros.udev DESTINATION lib/rpm/macros.
 # udev rules
 # cdrom_id rules
 install(FILES rules/60-cdrom_id.rules DESTINATION ${udevrulesdir})
+# v4l_id
+install(FILES rules/60-persistent-v4l.rules DESTINATION ${udevrulesdir})
 
 # systemd
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/sysinit.target.wants/)
