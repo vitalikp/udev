@@ -28,6 +28,8 @@ install(FILES rules/60-cdrom_id.rules DESTINATION ${udevrulesdir})
 install(FILES rules/60-persistent-v4l.rules DESTINATION ${udevrulesdir})
 # accelerometer
 install(FILES rules/61-accelerometer.rules DESTINATION ${udevrulesdir})
+# mtd_probe
+install(FILES rules/75-probe_mtd.rules DESTINATION ${udevrulesdir})
 
 # systemd
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/sysinit.target.wants/)
