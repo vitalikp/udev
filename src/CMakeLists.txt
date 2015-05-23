@@ -86,6 +86,14 @@ add_executable(udevd
 target_link_libraries(udevd libudev_int_obj libudev_shared_obj libudev_core_obj libudev_label_obj)
 target_link_libraries(udevd rt pthread)
 
+# udevrule
+add_executable(udevrule
+	udevrule/udevrule.h
+	udevrule/udevrule-parse.c
+	udevrule/udevrule-check.c
+	udevrule/udevrule.c
+)
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
