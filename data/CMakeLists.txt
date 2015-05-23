@@ -21,6 +21,10 @@ configure_file(rpm/macros-udev.cmake macros.udev)
 
 install(FILES ${PROJECT_BINARY_DIR}/data/macros.udev DESTINATION lib/rpm/macros.d)
 
+# udev rules
+# cdrom_id rules
+install(FILES rules/60-cdrom_id.rules DESTINATION ${udevrulesdir})
+
 # systemd
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/sysinit.target.wants/)
 execute_process(COMMAND ${LN} -fs ../udevd-kernel.socket ${PROJECT_BINARY_DIR}/data/sysinit.target.wants/)
