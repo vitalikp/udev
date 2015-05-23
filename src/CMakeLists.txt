@@ -118,6 +118,14 @@ add_executable(accelerometer
 target_link_libraries(accelerometer libudev_int_obj libudev_shared_obj)
 target_link_libraries(accelerometer m dl)
 
+# mtd_probe
+add_executable(mtd_probe
+	mtd_probe/mtd_probe.c
+	mtd_probe/mtd_probe.h
+	mtd_probe/probe_smartmedia.c
+)
+target_link_libraries(mtd_probe dl)
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
