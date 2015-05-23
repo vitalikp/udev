@@ -94,6 +94,14 @@ add_executable(udevrule
 	udevrule/udevrule.c
 )
 
+# cdrom_id
+add_executable(cdrom_id
+	cdrom_id/cdrom_id.c
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(cdrom_id libudev_int_obj libudev_shared_obj)
+target_link_libraries(cdrom_id dl)
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
