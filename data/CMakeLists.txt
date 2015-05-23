@@ -22,6 +22,10 @@ configure_file(rpm/macros-udev.cmake macros.udev)
 install(FILES ${PROJECT_BINARY_DIR}/data/macros.udev DESTINATION lib/rpm/macros.d)
 
 # udev rules
+# kmod
+if (${KMOD_ENABLE})
+	install(FILES rules/80-drivers.rules DESTINATION ${udevrulesdir})
+endif()
 # cdrom_id rules
 install(FILES rules/60-cdrom_id.rules DESTINATION ${udevrulesdir})
 # v4l_id
