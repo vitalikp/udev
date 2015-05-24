@@ -119,6 +119,17 @@ add_executable(collect
 target_link_libraries(collect libudev_int_obj libudev_shared_obj)
 target_link_libraries(collect dl)
 
+# scsi_id
+add_executable(scsi_id
+	scsi_id/scsi_id.c
+	scsi_id/scsi_serial.c
+	scsi_id/scsi.h
+	scsi_id/scsi_id.h
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(scsi_id libudev_int_obj libudev_shared_obj)
+target_link_libraries(scsi_id dl)
+
 # v4l_id
 add_executable(v4l_id
 	v4l_id/v4l_id.c
