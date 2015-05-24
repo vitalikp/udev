@@ -11,6 +11,8 @@ set(LIBUDEV_C_FLAGS "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libudev.sy
 set(LIBUDEV_SOVERSION 1)
 set(LIBUDEV_VERSION ${LIBUDEV_SOVERSION}.4.1)
 
+configure_file(libudev.pc.cmake libudev.pc @ONLY)
+
 add_library(libudev_obj OBJECT
 	#libudev.sym
 	libudev-private.h
@@ -42,4 +44,5 @@ target_link_libraries(udev libudev_int_obj libudev_shared_obj ${LIBUDEV_C_FLAGS}
 target_link_libraries(udev rt pthread)
 
 # install
+install(FILES ${PROJECT_BINARY_DIR}/lib/libudev.pc DESTINATION ${libdir}/pkgconfig)
 install(TARGETS udev DESTINATION ${libdir})
