@@ -111,6 +111,14 @@ add_executable(cdrom_id
 target_link_libraries(cdrom_id libudev_int_obj libudev_shared_obj)
 target_link_libraries(cdrom_id dl)
 
+# collect
+add_executable(collect
+	collect/collect.c
+	$<TARGET_OBJECTS:libudev_obj>
+)
+target_link_libraries(collect libudev_int_obj libudev_shared_obj)
+target_link_libraries(collect dl)
+
 # v4l_id
 add_executable(v4l_id
 	v4l_id/v4l_id.c
