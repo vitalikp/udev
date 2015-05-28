@@ -43,7 +43,7 @@ add_library(libudev_core_obj STATIC
 	${PROJECT_BINARY_DIR}/src/link-config-gperf.c
 )
 target_link_libraries(libudev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
-target_link_libraries(libudev_core_obj libudev_int_obj udev_shared_obj)
+target_link_libraries(libudev_core_obj udev_int_obj udev_shared_obj)
 
 add_custom_command(
 	OUTPUT link-config-gperf.c
@@ -100,7 +100,7 @@ add_executable(ata_id
 	ata_id/ata_id.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(ata_id libudev_int_obj udev_shared_obj)
+target_link_libraries(ata_id udev_int_obj udev_shared_obj)
 target_link_libraries(ata_id dl)
 
 # cdrom_id
@@ -108,7 +108,7 @@ add_executable(cdrom_id
 	cdrom_id/cdrom_id.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(cdrom_id libudev_int_obj udev_shared_obj)
+target_link_libraries(cdrom_id udev_int_obj udev_shared_obj)
 target_link_libraries(cdrom_id dl)
 
 # collect
@@ -116,7 +116,7 @@ add_executable(collect
 	collect/collect.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(collect libudev_int_obj udev_shared_obj)
+target_link_libraries(collect udev_int_obj udev_shared_obj)
 target_link_libraries(collect dl)
 
 # scsi_id
@@ -127,14 +127,14 @@ add_executable(scsi_id
 	scsi_id/scsi_id.h
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(scsi_id libudev_int_obj udev_shared_obj)
+target_link_libraries(scsi_id udev_int_obj udev_shared_obj)
 target_link_libraries(scsi_id dl)
 
 # v4l_id
 add_executable(v4l_id
 	v4l_id/v4l_id.c
 )
-target_link_libraries(v4l_id libudev_int_obj)
+target_link_libraries(v4l_id udev_int_obj)
 target_link_libraries(v4l_id dl)
 
 # accelerometer
@@ -142,7 +142,7 @@ add_executable(accelerometer
 	accelerometer/accelerometer.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(accelerometer libudev_int_obj udev_shared_obj)
+target_link_libraries(accelerometer udev_int_obj udev_shared_obj)
 target_link_libraries(accelerometer m dl)
 
 # mtd_probe

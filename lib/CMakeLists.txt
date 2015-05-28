@@ -28,7 +28,7 @@ add_library(libudev_obj OBJECT
 )
 
 # internal
-add_library(libudev_int_obj STATIC
+add_library(udev_int_obj STATIC
 	libudev-device-private.c
 )
 
@@ -40,7 +40,7 @@ set_target_properties(udev PROPERTIES
 	VERSION ${LIBUDEV_VERSION}
 	SOVERSION ${LIBUDEV_SOVERSION}
 )
-target_link_libraries(udev libudev_int_obj udev_shared_obj ${LIBUDEV_C_FLAGS})
+target_link_libraries(udev udev_int_obj udev_shared_obj ${LIBUDEV_C_FLAGS})
 target_link_libraries(udev rt pthread)
 
 # libudev header files
