@@ -3,6 +3,12 @@
 # etc
 install(FILES udev.conf DESTINATION /etc/udev)
 
+# completions
+# bash
+if (BASH_COMPL_FOUND)
+	install(FILES completions/bash/udevadm DESTINATION ${datadir}/bash-completion/completions)
+endif(BASH_COMPL_FOUND)
+
 # hwdb
 install(FILES hwdb/20-pci-vendor-model.hwdb DESTINATION ${udevhwdbdir})
 install(FILES hwdb/20-pci-classes.hwdb DESTINATION ${udevhwdbdir})
