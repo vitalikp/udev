@@ -102,6 +102,7 @@ add_executable(ata_id
 )
 target_link_libraries(ata_id udev_int_obj udev_shared_obj)
 target_link_libraries(ata_id dl)
+install(TARGETS ata_id DESTINATION ${udevlibexecdir})
 
 # cdrom_id
 add_executable(cdrom_id
@@ -110,6 +111,7 @@ add_executable(cdrom_id
 )
 target_link_libraries(cdrom_id udev_int_obj udev_shared_obj)
 target_link_libraries(cdrom_id dl)
+install(TARGETS cdrom_id DESTINATION ${udevlibexecdir})
 
 # collect
 add_executable(collect
@@ -118,6 +120,7 @@ add_executable(collect
 )
 target_link_libraries(collect udev_int_obj udev_shared_obj)
 target_link_libraries(collect dl)
+install(TARGETS collect DESTINATION ${udevlibexecdir})
 
 # scsi_id
 add_executable(scsi_id
@@ -129,6 +132,7 @@ add_executable(scsi_id
 )
 target_link_libraries(scsi_id udev_int_obj udev_shared_obj)
 target_link_libraries(scsi_id dl)
+install(TARGETS scsi_id DESTINATION ${udevlibexecdir})
 
 # v4l_id
 add_executable(v4l_id
@@ -136,6 +140,7 @@ add_executable(v4l_id
 )
 target_link_libraries(v4l_id udev_int_obj)
 target_link_libraries(v4l_id dl)
+install(TARGETS v4l_id DESTINATION ${udevlibexecdir})
 
 # accelerometer
 add_executable(accelerometer
@@ -144,6 +149,7 @@ add_executable(accelerometer
 )
 target_link_libraries(accelerometer udev_int_obj udev_shared_obj)
 target_link_libraries(accelerometer m dl)
+install(TARGETS accelerometer DESTINATION ${udevlibexecdir})
 
 # mtd_probe
 add_executable(mtd_probe
@@ -152,6 +158,7 @@ add_executable(mtd_probe
 	mtd_probe/probe_smartmedia.c
 )
 target_link_libraries(mtd_probe dl)
+install(TARGETS mtd_probe DESTINATION ${udevlibexecdir})
 
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
