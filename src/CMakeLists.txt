@@ -163,4 +163,5 @@ install(TARGETS mtd_probe DESTINATION ${udevlibexecdir})
 # install
 install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
+install(TARGETS udevrule DESTINATION ${bindir})
 install(TARGETS udevd DESTINATION ${sbindir})
