@@ -18,7 +18,7 @@ add_executable(test-udev
 	test-udev.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(test-udev libudev_core_obj udev_label_obj)
+target_link_libraries(test-udev udev_core_obj udev_label_obj)
 target_link_libraries(test-udev rt pthread)
 
 # udev-test

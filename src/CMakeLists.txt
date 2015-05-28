@@ -38,12 +38,12 @@ endif()
 if (${BLKID_ENABLE})
 	list(APPEND libudev_core_src core/builtin/udev-builtin-blkid.c)
 endif()
-add_library(libudev_core_obj STATIC
+add_library(udev_core_obj STATIC
 	${libudev_core_src}
 	${PROJECT_BINARY_DIR}/src/link-config-gperf.c
 )
-target_link_libraries(libudev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
-target_link_libraries(libudev_core_obj udev_int_obj udev_shared_obj)
+target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
+target_link_libraries(udev_core_obj udev_int_obj udev_shared_obj)
 
 add_custom_command(
 	OUTPUT link-config-gperf.c
@@ -57,7 +57,7 @@ add_custom_command(
 #	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/core/net/link-config-gperf.gperf
 #	#WORKING_DIRECTORY ...
 #)
-#add_dependencies(libudev_core_obj link-config-gperf.c)
+#add_dependencies(udev_core_obj link-config-gperf.c)
 
 # udebadm
 add_library(udevadm_obj OBJECT
@@ -76,7 +76,7 @@ add_executable(udevadm
 	$<TARGET_OBJECTS:udevadm_obj>
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevadm libudev_core_obj udev_label_obj)
+target_link_libraries(udevadm udev_core_obj udev_label_obj)
 target_link_libraries(udevadm rt dl gcc_s ${CAP_LIBRARIES} pthread)
 
 # udevd
@@ -84,7 +84,7 @@ add_executable(udevd
 	udevd/udevd.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevd libudev_core_obj udev_label_obj)
+target_link_libraries(udevd udev_core_obj udev_label_obj)
 target_link_libraries(udevd rt pthread)
 
 # udevrule
