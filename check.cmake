@@ -58,6 +58,9 @@ check_function_exists(setns HAVE_DECL_SETNS)
 # dependencies
 find_package(PkgConfig REQUIRED)
 
+# check bash-completion
+pkg_check_modules(BASH_COMPL bash-completion)
+
 # check libcap
 pkg_check_modules(CAP libcap)
 
