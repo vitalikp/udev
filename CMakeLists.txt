@@ -36,6 +36,7 @@ set(udevlibexecdir ${CMAKE_INSTALL_PREFIX}/lib/udev)
 add_definitions(-DUDEVLIBEXECDIR="${udevlibexecdir}")
 set(udevhwdbdir ${udevlibexecdir}/hwdb.d)
 set(udevrulesdir ${udevlibexecdir}/rules.d)
+set(datadir ${CMAKE_INSTALL_PREFIX}/share)
 
 # config
 configure_file(config.h.cmake config.h)
