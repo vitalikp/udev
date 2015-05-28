@@ -43,6 +43,9 @@ set_target_properties(udev PROPERTIES
 target_link_libraries(udev libudev_int_obj libudev_shared_obj ${LIBUDEV_C_FLAGS})
 target_link_libraries(udev rt pthread)
 
+# libudev header files
+install(FILES libudev.h DESTINATION ${includedir})
+
 # install
 install(FILES ${PROJECT_BINARY_DIR}/lib/libudev.pc DESTINATION ${libdir}/pkgconfig)
 install(TARGETS udev DESTINATION ${libdir})
