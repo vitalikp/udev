@@ -8,6 +8,10 @@ install(FILES udev.conf DESTINATION /etc/udev)
 if (BASH_COMPL_FOUND)
 	install(FILES completions/bash/udevadm DESTINATION ${datadir}/bash-completion/completions)
 endif(BASH_COMPL_FOUND)
+# zsh
+if (ZSH)
+	install(FILES completions/zsh/_udevadm DESTINATION ${datadir}/zsh/site-functions)
+endif(ZSH)
 
 # hwdb
 install(FILES hwdb/20-pci-vendor-model.hwdb DESTINATION ${udevhwdbdir})
