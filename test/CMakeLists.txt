@@ -6,7 +6,7 @@ add_executable(test-libudev
 	test-libudev.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(test-libudev libudev_int_obj libudev_shared_obj udev_label_obj)
+target_link_libraries(test-libudev libudev_int_obj udev_shared_obj udev_label_obj)
 
 # root sys
 add_custom_target(sys.tar.xz

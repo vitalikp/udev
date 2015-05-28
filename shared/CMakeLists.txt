@@ -1,7 +1,7 @@
 # udev shared cmake file 
 
 # udev shared objects
-add_library(libudev_shared_obj STATIC
+add_library(udev_shared_obj STATIC
 	special.h
 	device-nodes.c
 	device-nodes.h
