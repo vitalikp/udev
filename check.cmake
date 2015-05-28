@@ -11,6 +11,12 @@ else()
 	message("-- Found ln")
 endif()
 
+# check zsh
+find_program(ZSH zsh)
+if (ZSH)
+	message("-- Found zsh")
+endif()
+
 # check xsltproc
 find_program(XSLTPROC xsltproc)
 if (NOT XSLTPROC)
