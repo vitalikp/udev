@@ -76,7 +76,7 @@ add_executable(udevadm
 	$<TARGET_OBJECTS:udevadm_obj>
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevadm libudev_core_obj libudev_label_obj)
+target_link_libraries(udevadm libudev_core_obj udev_label_obj)
 target_link_libraries(udevadm rt dl gcc_s ${CAP_LIBRARIES} pthread)
 
 # udevd
@@ -84,7 +84,7 @@ add_executable(udevd
 	udevd/udevd.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevd libudev_core_obj libudev_label_obj)
+target_link_libraries(udevd libudev_core_obj udev_label_obj)
 target_link_libraries(udevd rt pthread)
 
 # udevrule

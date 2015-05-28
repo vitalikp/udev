@@ -80,7 +80,7 @@ add_library(libudev_shared_obj STATIC
 	network-internal.c
 )
 
-add_library(libudev_label_obj STATIC
+add_library(udev_label_obj STATIC
 	label.c
 	label.h
 	selinux-util.c
@@ -89,4 +89,4 @@ add_library(libudev_label_obj STATIC
 	dev-setup.c
 	dev-setup.h
 )
-target_link_libraries(libudev_label_obj ${SELINUX_LIBRARIES} ${SMACK_LIBRARIES})
+target_link_libraries(udev_label_obj ${SELINUX_LIBRARIES} ${SMACK_LIBRARIES})
