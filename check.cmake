@@ -68,6 +68,12 @@ if (NOT DL_FOUND)
 	message(FATAL_ERROR "*** Dynamic linking loader library not found ***")
 endif()
 
+# check rt
+CHECK_LIBRARY_EXISTS(rt mq_open "" RT_FOUND)
+if (NOT RT_FOUND)
+	message(FATAL_ERROR "*** POSIX RT library not found ***")
+endif()
+
 # dependencies
 find_package(PkgConfig REQUIRED)
 
