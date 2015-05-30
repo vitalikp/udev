@@ -10,11 +10,11 @@ set(XSLTPROC_OPT ${XSLTPROC_OPT} --path '${PROJECT_BINARY_DIR}/man:${CMAKE_SOURC
 add_custom_target(man ALL)
 
 
-macro(add_man)
+macro(add_man name section)
 	add_custom_command(
 		TARGET man
 		COMMAND ${XSLTPROC}
-		ARGS -o ${ARGV0}.${ARGV1} ${XSLTPROC_OPT} ${CMAKE_SOURCE_DIR}/man/custom-man.xsl ${CMAKE_SOURCE_DIR}/man/${ARGV0}.xml
-		COMMENT "  XSLT\t${ARGV0}.${ARGV1}" VERBATIM)
-	install(FILES ${PROJECT_BINARY_DIR}/${ARGV0}.${ARGV1} DESTINATION share/man/man${ARGV1})
+		ARGS -o ${name}.${section} ${XSLTPROC_OPT} ${CMAKE_SOURCE_DIR}/man/custom-man.xsl ${CMAKE_SOURCE_DIR}/man/${name}.xml
+		COMMENT "  XSLT\t${name}.${section}" VERBATIM)
+	install(FILES ${PROJECT_BINARY_DIR}/${name}.${section} DESTINATION share/man/man${section})
 endmacro(add_man)
