@@ -43,7 +43,7 @@ add_library(udev_core_obj STATIC
 	${PROJECT_BINARY_DIR}/src/link-config-gperf.c
 )
 target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
-target_link_libraries(udev_core_obj udev_int_obj udev_shared_obj)
+target_link_libraries(udev_core_obj udev_int_obj udev_label_obj udev_shared_obj)
 
 add_custom_command(
 	OUTPUT link-config-gperf.c
@@ -76,7 +76,7 @@ add_executable(udevadm
 	$<TARGET_OBJECTS:udevadm_obj>
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevadm udev_core_obj udev_label_obj)
+target_link_libraries(udevadm udev_core_obj)
 target_link_libraries(udevadm rt dl gcc_s pthread)
 
 # udevd
@@ -84,7 +84,7 @@ add_executable(udevd
 	udevd/udevd.c
 	$<TARGET_OBJECTS:libudev_obj>
 )
-target_link_libraries(udevd udev_core_obj udev_label_obj)
+target_link_libraries(udevd udev_core_obj)
 target_link_libraries(udevd rt pthread)
 
 # udevrule
