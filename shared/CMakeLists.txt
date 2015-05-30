@@ -79,7 +79,7 @@ add_library(udev_shared_obj STATIC
 	# libsystemd-network
 	network-internal.c
 )
-target_link_libraries(udev_shared_obj rt)
+target_link_libraries(udev_shared_obj -pthread rt)
 
 add_library(udev_label_obj STATIC
 	label.c
