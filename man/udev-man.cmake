@@ -7,7 +7,7 @@ set(XSLTPROC_OPT ${XSLTPROC_OPT} --stringparam funcsynopsis.style ansi)
 set(XSLTPROC_OPT ${XSLTPROC_OPT} --stringparam udev.version ${VERSION})
 set(XSLTPROC_OPT ${XSLTPROC_OPT} --path '${PROJECT_BINARY_DIR}/man:${CMAKE_SOURCE_DIR}/man')
 
-add_custom_target(man)
+add_custom_target(man ALL)
 
 
 macro(add_man)
