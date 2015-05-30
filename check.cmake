@@ -2,6 +2,7 @@
 
 include(CheckTypeSize)
 include(CheckFunctionExists)
+include(CheckLibraryExists)
 
 # check ln
 find_program(LN ln)
@@ -60,6 +61,12 @@ set(CMAKE_EXTRA_INCLUDE_FILES fcntl.h)
 CHECK_FUNCTION_EXISTS(name_to_handle_at HAVE_DECL_NAME_TO_HANDLE_AT)
 set(CMAKE_EXTRA_INCLUDE_FILES sched.h)
 check_function_exists(setns HAVE_DECL_SETNS)
+
+# check dl
+CHECK_LIBRARY_EXISTS(dl dlsym "" DL_FOUND)
+if (NOT DL_FOUND)
+	message(FATAL_ERROR "*** Dynamic linking loader library not found ***")
+endif()
 
 # dependencies
 find_package(PkgConfig REQUIRED)
