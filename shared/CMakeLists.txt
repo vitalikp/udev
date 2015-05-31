@@ -66,8 +66,6 @@ add_library(udev_shared_obj STATIC
 	bus-label.c
 	bus-label.h
 	gpt.h
-	# libsystemd-core
-	condition.c
 	# libsystemd-internal
 	sd-event.c
 	sd-rtnl.c
