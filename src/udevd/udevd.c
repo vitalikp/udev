@@ -1120,24 +1120,6 @@ int main(int argc, char *argv[])
 
         dev_setup(NULL);
 
-        /* before opening new files, make sure std{in,out,err} fds are in a sane state */
-        if (daemonize) {
-                int fd;
-
-                fd = open("/dev/null", O_RDWR);
-                if (fd >= 0) {
-                        if (write(STDOUT_FILENO, 0, 0) < 0)
-                                dup2(fd, STDOUT_FILENO);
-                        if (write(STDERR_FILENO, 0, 0) < 0)
-                                dup2(fd, STDERR_FILENO);
-                        if (fd > STDERR_FILENO)
-                                close(fd);
-                } else {
-                        fprintf(stderr, "cannot open /dev/null\n");
-                        log_error("cannot open /dev/null");
-                }
-        }
-
         if (systemd_fds(udev, &fd_ctrl, &fd_netlink) >= 0) {
                 /* get control and netlink socket from systemd */
                 udev_ctrl = udev_ctrl_new_from_fd(udev, fd_ctrl);
