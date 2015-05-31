@@ -54,6 +54,9 @@ check_type_size(time_t SIZEOF_TIME_T)
 set(CMAKE_EXTRA_INCLUDE_FILES sys/time.h sys/resource.h)
 check_type_size(rlim_t SIZEOF_RLIM_T)
 
+# check headers
+check_include_file(sys/auxv.h HAVE_SYS_AUXV_H)
+
 # check functions
 CHECK_FUNCTION_EXISTS(__secure_getenv HAVE___SECURE_GETENV)
 CHECK_FUNCTION_EXISTS(secure_getenv HAVE_SECURE_GETENV)
