@@ -40,7 +40,7 @@ set_target_properties(udev PROPERTIES
 	VERSION ${LIBUDEV_VERSION}
 	SOVERSION ${LIBUDEV_SOVERSION}
 )
-target_link_libraries(udev udev_int_obj udev_shared_obj ${LIBUDEV_C_FLAGS})
+target_link_libraries(udev udev_shared_obj ${LIBUDEV_C_FLAGS})
 
 # libudev header files
 install(FILES libudev.h DESTINATION ${includedir})
