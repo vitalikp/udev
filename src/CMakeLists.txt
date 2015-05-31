@@ -74,7 +74,6 @@ add_library(udevadm_obj OBJECT
 
 add_executable(udevadm
 	$<TARGET_OBJECTS:udevadm_obj>
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(udevadm udev_core_obj)
 target_link_libraries(udevadm dl)
@@ -82,7 +81,6 @@ target_link_libraries(udevadm dl)
 # udevd
 add_executable(udevd
 	udevd/udevd.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(udevd udev_core_obj)
 
@@ -97,7 +95,6 @@ add_executable(udevrule
 # ata_id
 add_executable(ata_id
 	ata_id/ata_id.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(ata_id udev_int_obj udev_shared_obj)
 target_link_libraries(ata_id dl)
@@ -106,7 +103,6 @@ install(TARGETS ata_id DESTINATION ${udevlibexecdir})
 # cdrom_id
 add_executable(cdrom_id
 	cdrom_id/cdrom_id.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(cdrom_id udev_int_obj udev_shared_obj)
 target_link_libraries(cdrom_id dl)
@@ -115,7 +111,6 @@ install(TARGETS cdrom_id DESTINATION ${udevlibexecdir})
 # collect
 add_executable(collect
 	collect/collect.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(collect udev_int_obj udev_shared_obj)
 target_link_libraries(collect dl)
@@ -127,7 +122,6 @@ add_executable(scsi_id
 	scsi_id/scsi_serial.c
 	scsi_id/scsi.h
 	scsi_id/scsi_id.h
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(scsi_id udev_int_obj udev_shared_obj)
 target_link_libraries(scsi_id dl)
@@ -144,7 +138,6 @@ install(TARGETS v4l_id DESTINATION ${udevlibexecdir})
 # accelerometer
 add_executable(accelerometer
 	accelerometer/accelerometer.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(accelerometer udev_int_obj udev_shared_obj)
 target_link_libraries(accelerometer m dl)

@@ -4,7 +4,6 @@ enable_testing()
 # test-libudev
 add_executable(test-libudev
 	test-libudev.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(test-libudev udev_int_obj udev_shared_obj udev_label_obj)
 
@@ -16,7 +15,6 @@ add_custom_target(sys.tar.xz
 # test-udev
 add_executable(test-udev
 	test-udev.c
-	$<TARGET_OBJECTS:libudev_obj>
 )
 target_link_libraries(test-udev udev_core_obj)
 

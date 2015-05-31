@@ -29,6 +29,7 @@ add_library(libudev_obj OBJECT
 
 # internal
 add_library(udev_int_obj STATIC
+	$<TARGET_OBJECTS:libudev_obj>
 	libudev-device-private.c
 )
 
