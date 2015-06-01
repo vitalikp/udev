@@ -4,6 +4,9 @@
 #cmakedefine _GNU_SOURCE @_GNU_SOURCE@ 
 #endif
 
+/* Define if EFI support is to be enabled */
+#cmakedefine ENABLE_EFI @ENABLE_EFI@
+
 /* Define if kmod is available */
 #cmakedefine HAVE_KMOD @HAVE_KMOD@
 
