@@ -14,6 +14,7 @@ fork udev from [systemd 214](https://github.com/vitalikp/systemd)
 ```
 Use `cmake -D(OPTION) ..` instead of `cmake ..` for add config option.
 ##### Optional Features:
+ - Use **SYSTEMD_ENABLE=OFF** option to disbale systemd support(default=ON);
  - Use **KMOD_ENABLE=OFF** option to disable loadable modules support(default=ON);
  - Use **BLKID_ENABLE=OFF** option to disbale blkid support(default=ON);
  - Use **SELINUX_ENABLE=OFF** option to disable SELINUX support(default=ON);
