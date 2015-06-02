@@ -66,10 +66,6 @@ add_library(udev_shared_obj STATIC
 	bus-label.c
 	bus-label.h
 	gpt.h
-	# libsystemd-internal
-	sd-event.c
-	sd-daemon.c
-	sd-id128.c
 	# libsystemd-network
 	network-internal.c
 )
