@@ -68,10 +68,6 @@ add_library(udev_shared_obj STATIC
 	gpt.h
 	# libsystemd-internal
 	sd-event.c
-	sd-rtnl.c
-	rtnl-util.c
-	rtnl-types.c
-	rtnl-message.c
 	sd-daemon.c
 	sd-id128.c
 	# libsystemd-network

@@ -27,7 +27,9 @@
 #include <netinet/ether.h>
 #include <linux/rtnetlink.h>
 
+#ifdef HAVE_SD_EVENT_H
 #include "sd-event.h"
+#endif
 #include "_sd-common.h"
 
 _SD_BEGIN_DECLARATIONS;
@@ -63,8 +65,10 @@ int sd_rtnl_flush(sd_rtnl *nl);
 int sd_rtnl_add_match(sd_rtnl *nl, uint16_t match, sd_rtnl_message_handler_t c, void *userdata);
 int sd_rtnl_remove_match(sd_rtnl *nl, uint16_t match, sd_rtnl_message_handler_t c, void *userdata);
 
+#ifdef HAVE_SD_EVENT_H
 int sd_rtnl_attach_event(sd_rtnl *nl, sd_event *e, int priority);
 int sd_rtnl_detach_event(sd_rtnl *nl);
+#endif
 
 /* messages */
 int sd_rtnl_message_new_link(sd_rtnl *rtnl, sd_rtnl_message **ret, uint16_t msg_type, int index);

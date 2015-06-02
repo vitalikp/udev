@@ -177,10 +177,12 @@ sd_rtnl *sd_rtnl_unref(sd_rtnl *rtnl) {
                 hashmap_free_free(rtnl->reply_callbacks);
                 prioq_free(rtnl->reply_callbacks_prioq);
 
+#ifdef HAVE_SD_EVENT_H
                 sd_event_source_unref(rtnl->io_event_source);
                 sd_event_source_unref(rtnl->time_event_source);
                 sd_event_source_unref(rtnl->exit_event_source);
                 sd_event_unref(rtnl->event);
+#endif
 
                 while ((f = rtnl->match_callbacks)) {
                         LIST_REMOVE(match_callbacks, rtnl->match_callbacks, f);
@@ -764,6 +766,7 @@ int sd_rtnl_get_timeout(sd_rtnl *rtnl, uint64_t *timeout_usec) {
         return 1;
 }
 
+#ifdef HAVE_SD_EVENT_H
 static int io_callback(sd_event_source *s, int fd, uint32_t revents, void *userdata) {
         sd_rtnl *rtnl = userdata;
         int r;
@@ -900,6 +903,7 @@ int sd_rtnl_detach_event(sd_rtnl *rtnl) {
 
         return 0;
 }
+#endif
 
 int sd_rtnl_add_match(sd_rtnl *rtnl,
                       uint16_t type,
