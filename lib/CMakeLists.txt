@@ -32,6 +32,7 @@ add_library(udev_int_obj STATIC
 	$<TARGET_OBJECTS:libudev_obj>
 	libudev-device-private.c
 )
+target_link_libraries(udev_int_obj ${LIBUDEV_C_FLAGS})
 
 add_library(udev SHARED
 	$<TARGET_OBJECTS:libudev_obj>
