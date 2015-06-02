@@ -122,4 +122,6 @@ endif()
 option(EFI_ENABLE "Disable optional EFI support" ON)
 if (${EFI_ENABLE})
 	set(ENABLE_EFI 1)
+	# check uuid library
+	pkg_check_modules(UUID REQUIRED uuid>=2.25.0)
 endif()
