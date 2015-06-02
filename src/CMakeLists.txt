@@ -51,14 +51,6 @@ add_custom_command(
 	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/core/net/link-config-gperf.gperf
 )
 
-#add_custom_target(
-#	link-config-gperf.c ALL
-#	COMMAND ${GPERF} < ${CMAKE_CURRENT_SOURCE_DIR}/core/net/link-config-gperf.gperf > link-config-gperf.c
-#	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/core/net/link-config-gperf.gperf
-#	#WORKING_DIRECTORY ...
-#)
-#add_dependencies(udev_core_obj link-config-gperf.c)
-
 # udebadm
 add_library(udevadm_obj OBJECT
 	udevadm/udevadm.c
