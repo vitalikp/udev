@@ -104,10 +104,9 @@ if (${SELINUX_ENABLE})
 	set(HAVE_SELINUX 1)
 endif()
 
-# check SMACK library
+# check SMACK option
 option(SMACK_ENABLE "Disable optional SMACK support")
 if (${SMACK_ENABLE})
-	pkg_check_modules(SMACK REQUIRED libsmack)
 	set(HAVE_SMACK 1)
 endif()
 
