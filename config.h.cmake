@@ -7,6 +7,9 @@
 /* Define if EFI support is to be enabled */
 #cmakedefine ENABLE_EFI @ENABLE_EFI@
 
+/* Define if systemd is available */
+#cmakedefine HAVE_SYSTEMD @HAVE_SYSTEMD@
+
 /* Define if kmod is available */
 #cmakedefine HAVE_KMOD @HAVE_KMOD@
 

@@ -83,6 +83,13 @@ find_package(PkgConfig REQUIRED)
 # check bash-completion
 pkg_check_modules(BASH_COMPL bash-completion)
 
+# check systemd library
+option(SYSTEMD_ENABLE "Disable optional systemd support" ON)
+if (${SYSTEMD_ENABLE})
+	pkg_check_modules(SYSTEMD REQUIRED libsystemd>=214)
+	set(HAVE_SYSTEMD 1)
+endif()
+
 # check kmod library
 option(KMOD_ENABLE "Disable loadable modules support" ON)
 if (${KMOD_ENABLE})
