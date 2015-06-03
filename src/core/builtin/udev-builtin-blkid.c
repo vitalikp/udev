@@ -28,8 +28,8 @@
 #include <getopt.h>
 #include <sys/stat.h>
 #include <blkid/blkid.h>
+#include <systemd/sd-id128.h>
 
-#include "sd-id128.h"
 #include "gpt.h"
 #include "efivars.h"
 #include "udev.h"

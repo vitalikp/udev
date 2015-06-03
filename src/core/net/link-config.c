@@ -21,8 +21,7 @@
 
 #include <netinet/ether.h>
 #include <net/if.h>
-
-#include "sd-id128.h"
+#include <systemd/sd-id128.h>
 
 #include "link-config.h"
 #include "ethtool-util.h"
