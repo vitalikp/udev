@@ -26,9 +26,9 @@
 #include <syslog.h>
 #include <sys/signalfd.h>
 #include <errno.h>
+#include <systemd/sd-id128.h>
 
 #include "macro.h"
-#include "sd-id128.h"
 
 typedef enum LogTarget{
         LOG_TARGET_CONSOLE,

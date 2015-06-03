@@ -19,7 +19,7 @@
   along with systemd; If not, see <http://www.gnu.org/licenses/>.
 ***/
 
-#include "sd-id128.h"
+#include <systemd/sd-id128.h>
 
 /* We only support root disk discovery for x86, x86-64 and ARM for
  * now, since EFI for anything else doesn't really exist, and we only
