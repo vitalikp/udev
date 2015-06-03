@@ -57,8 +57,8 @@ add_library(udev_core_obj STATIC
 	${libudev_core_src}
 	${PROJECT_BINARY_DIR}/${LINK_CONFIG_C}
 )
-target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
 target_link_libraries(udev_core_obj udev_int_obj udev_label_obj udev_shared_obj)
+target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES})
 
 # udebadm
 add_library(udevadm_obj OBJECT
