@@ -45,10 +45,10 @@
 #include <sys/ioctl.h>
 #include <sys/inotify.h>
 #include <sys/utsname.h>
+#include <systemd/sd-daemon.h>
 
 #include "udev.h"
 #include "udev-util.h"
-#include "sd-daemon.h"
 #include "cgroup-util.h"
 #include "dev-setup.h"
 #include "fileio.h"
