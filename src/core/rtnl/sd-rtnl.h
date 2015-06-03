@@ -27,10 +27,10 @@
 #include <netinet/ether.h>
 #include <linux/rtnetlink.h>
 
-#ifdef HAVE_SD_EVENT_H
-#include "sd-event.h"
-#endif
 #include <systemd/_sd-common.h>
+#ifdef HAVE_SD_EVENT_H
+#include <systemd/sd-event.h>
+#endif
 
 _SD_BEGIN_DECLARATIONS;
 
