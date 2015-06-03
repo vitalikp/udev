@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <netinet/ether.h>
+#include <systemd/sd-messages.h>
 
 #include "conf-parser.h"
 #include "util.h"
@@ -35,7 +36,6 @@
 #include "path-util.h"
 #include "set.h"
 #include "exit-status.h"
-#include "sd-messages.h"
 
 int log_syntax_internal(const char *unit, int level,
                         const char *file, unsigned line, const char *func,
