@@ -66,8 +66,6 @@ add_library(udev_shared_obj STATIC
 	bus-label.c
 	bus-label.h
 	gpt.h
-	# libsystemd-network
-	network-internal.c
 )
 target_link_libraries(udev_shared_obj -pthread rt)
 
