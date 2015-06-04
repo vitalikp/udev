@@ -47,7 +47,6 @@ install(FILES rules/64-btrfs.rules DESTINATION ${udevrulesdir})
 install(FILES rules/75-net-description.rules DESTINATION ${udevrulesdir})
 install(FILES rules/75-tty-description.rules DESTINATION ${udevrulesdir})
 install(FILES rules/78-sound-card.rules DESTINATION ${udevrulesdir})
-install(FILES rules/80-net-setup-link.rules DESTINATION ${udevrulesdir})
 install(FILES rules/95-udev-late.rules DESTINATION ${udevrulesdir})
 # kmod
 if (${KMOD_ENABLE})
