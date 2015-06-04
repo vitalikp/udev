@@ -34,8 +34,6 @@ set(libudev_core_src
 	core/rtnl/rtnl-types.h
 	core/rtnl/rtnl-types.c
 	core/rtnl/rtnl-message.c
-	core/net/ethtool-util.h
-	core/net/ethtool-util.c
 )
 if (${KMOD_ENABLE})
 	list(APPEND libudev_core_src core/builtin/udev-builtin-kmod.c)
