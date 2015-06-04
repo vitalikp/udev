@@ -34,8 +34,6 @@ set(libudev_core_src
 	core/rtnl/rtnl-types.h
 	core/rtnl/rtnl-types.c
 	core/rtnl/rtnl-message.c
-	core/net/link-config.h
-	core/net/link-config.c
 	core/net/ethtool-util.h
 	core/net/ethtool-util.c
 )
@@ -45,16 +43,8 @@ endif()
 if (${BLKID_ENABLE})
 	list(APPEND libudev_core_src core/builtin/udev-builtin-blkid.c)
 endif()
-set(LINK_CONFIG_C src/link-config-gperf.c)
-message("-- generate ${LINK_CONFIG_C}")
-execute_process(
-	COMMAND ${GPERF}
-	INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/core/net/link-config-gperf.gperf
-	OUTPUT_FILE ${LINK_CONFIG_C}
-)
 add_library(udev_core_obj STATIC
 	${libudev_core_src}
-	${PROJECT_BINARY_DIR}/${LINK_CONFIG_C}
 )
 target_link_libraries(udev_core_obj udev_int_obj udev_label_obj udev_shared_obj)
 target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES} ${SYSTEMD_LIBRARIES})
