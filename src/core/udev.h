@@ -148,7 +148,6 @@ enum udev_builtin_cmd {
         UDEV_BUILTIN_KMOD,
 #endif
         UDEV_BUILTIN_NET_ID,
-        UDEV_BUILTIN_NET_LINK,
         UDEV_BUILTIN_PATH_ID,
         UDEV_BUILTIN_USB_ID,
         UDEV_BUILTIN_MAX
@@ -173,7 +172,6 @@ extern const struct udev_builtin udev_builtin_keyboard;
 extern const struct udev_builtin udev_builtin_kmod;
 #endif
 extern const struct udev_builtin udev_builtin_net_id;
-extern const struct udev_builtin udev_builtin_net_setup_link;
 extern const struct udev_builtin udev_builtin_path_id;
 extern const struct udev_builtin udev_builtin_usb_id;
 extern const struct udev_builtin udev_builtin_uaccess;

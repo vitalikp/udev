@@ -25,7 +25,6 @@ set(libudev_core_src
 	core/builtin/udev-builtin-input_id.c
 	core/builtin/udev-builtin-keyboard.c
 	core/builtin/udev-builtin-net_id.c
-	core/builtin/udev-builtin-net_setup_link.c
 	core/builtin/udev-builtin-path_id.c
 	core/builtin/udev-builtin-usb_id.c
 	core/rtnl/sd-rtnl.h
