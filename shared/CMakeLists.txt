@@ -61,8 +61,6 @@ add_library(udev_shared_obj STATIC
 	apparmor-util.h
 	ima-util.c
 	ima-util.h
-	condition-util.c
-	condition-util.h
 	bus-label.c
 	bus-label.h
 	gpt.h
