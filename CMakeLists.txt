@@ -44,9 +44,10 @@ add_definitions(-include ${PROJECT_BINARY_DIR}/config.h)
 
 # udev man
 include(man/udev-man.cmake)
-add_man(udev 7)
-add_man(udevd 8)
-add_man(udevadm 8)
+add_man(docs udev 7)
+add_man(docs udevd 8)
+add_man(docs udevadm 8)
+add_custom_target(man ALL DEPENDS ${docs})
 
 # source code
 include_directories(include)
