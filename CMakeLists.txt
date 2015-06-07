@@ -20,6 +20,7 @@ set(CMAKE_EXE_C_FLAGS "${CMAKE_C_FLAGS} -fPIE")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -Wl,--gc-sections -Wl,-z,relro -Wl,-z,now -Wl,-fuse-ld=gold")
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -Wl,--no-undefined -Wl,--gc-sections -Wl,-z,relro -Wl,-z,now -Wl,-fuse-ld=gold")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
 
 
 # check program and library
