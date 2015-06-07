@@ -8,6 +8,7 @@ add_library(udev_shared_obj STATIC
 	list.h
 	macro.h
 	def.h
+	refcnt.h
 	device-nodes.c
 	device-nodes.h
 	util.c
