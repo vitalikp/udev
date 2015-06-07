@@ -8,6 +8,7 @@ add_library(udev_shared_obj STATIC
 	list.h
 	macro.h
 	def.h
+	sparse-endian.h
 	refcnt.h
 	device-nodes.c
 	device-nodes.h
