@@ -3,6 +3,7 @@
 # udev shared objects
 add_library(udev_shared_obj STATIC
 	special.h
+	macro.h
 	def.h
 	device-nodes.c
 	device-nodes.h
