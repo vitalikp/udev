@@ -46,7 +46,7 @@ add_library(udev_core_obj STATIC
 )
 target_link_libraries(udev_core_obj udev_int_obj udev_label_obj udev_shared_obj)
 target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES} ${SYSTEMD_LIBRARIES})
-target_link_libraries(udev_core_obj -pthread)
+target_link_libraries(udev_core_obj -pthread rt)
 
 # udebadm
 add_library(udevadm_obj OBJECT
