@@ -5,6 +5,7 @@ add_library(udev_shared_obj STATIC
 	ioprio.h
 	missing.h
 	special.h
+	list.h
 	macro.h
 	def.h
 	device-nodes.c
