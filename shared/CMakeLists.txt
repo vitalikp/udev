@@ -65,7 +65,6 @@ add_library(udev_shared_obj STATIC
 	bus-label.h
 	gpt.h
 )
-target_link_libraries(udev_shared_obj -pthread)
 
 add_library(udev_label_obj STATIC
 	label.c
