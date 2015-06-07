@@ -2,6 +2,7 @@
 
 # udev shared objects
 add_library(udev_shared_obj STATIC
+	missing.h
 	special.h
 	macro.h
 	def.h
