@@ -1,3 +1,7 @@
+   udev (214.1-dev)
+~~~~~~~
+ * add udevd-kernel and udevd-control units to sockets target;
+
    udev (214)
 ~~~~~~~
  * fork from systemd 214;
