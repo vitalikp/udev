@@ -1,6 +1,7 @@
    udev (214.1-dev)
 ~~~~~~~
  * add udevd-kernel and udevd-control units to sockets target;
+ * add udev-trigger unit to sysinit target;
 
    udev (214)
 ~~~~~~~
