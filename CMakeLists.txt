@@ -3,7 +3,7 @@ project(udev)
 cmake_minimum_required(VERSION 3.0)
 
 
-set(VERSION 214)
+set(VERSION 214.1-dev)
 set(CMAKE_C_COMPILER /usr/bin/gcc)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pipe")
 # preprocessor flags
