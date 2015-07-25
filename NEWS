@@ -1,4 +1,4 @@
-   udev (214.2-dev)
+   udev (214.2)
 ~~~~~~~
  * add rpm macros variable _udevlibexecdir;
 
