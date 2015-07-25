@@ -1,5 +1,7 @@
 # RPM macros for packages installing udev files
 
+%_udevlibexecdir @udevlibexecdir@
+
 %_udevhwdbdir @udevhwdbdir@
 
 %udev_hwdb_update() \

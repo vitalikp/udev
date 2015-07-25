@@ -1,3 +1,7 @@
+   udev (214.2-dev)
+~~~~~~~
+ * add rpm macros variable _udevlibexecdir;
+
    udev (214.1)
 ~~~~~~~
  * add udevd-kernel and udevd-control units to sockets target;
