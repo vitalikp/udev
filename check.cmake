@@ -88,7 +88,6 @@ option(SYSTEMD_ENABLE "Disable optional systemd support" ON)
 if (${SYSTEMD_ENABLE})
 	pkg_check_modules(SYSTEMD REQUIRED libsystemd>=214)
 	set(HAVE_SYSTEMD 1)
-	check_include_file(systemd/sd-event.h HAVE_SD_EVENT_H)
 endif()
 
 # check kmod library

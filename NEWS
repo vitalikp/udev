@@ -1,3 +1,8 @@
+   udev (214.3-dev)
+~~~~~~~
+ * rtnl:
+    - remove kdbus support;
+ 
    udev (214.2)
 ~~~~~~~
  * add rpm macros variable _udevlibexecdir;

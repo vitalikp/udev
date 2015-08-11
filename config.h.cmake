@@ -37,9 +37,6 @@
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #cmakedefine HAVE_SYS_AUXV_H @HAVE_SYS_AUXV_H@
 
-/* Define to 1 if you have the <systemd/sd-rtnl.h> header file. */
-#cmakedefine HAVE_SD_EVENT_H @HAVE_SD_EVENT_H@
-
 /* The size of `pid_t', as computed by sizeof. */
 #cmakedefine SIZEOF_PID_T @SIZEOF_PID_T@
 

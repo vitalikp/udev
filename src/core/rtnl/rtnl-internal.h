@@ -89,13 +89,6 @@ struct sd_rtnl {
         LIST_HEAD(struct match_callback, match_callbacks);
 
         pid_t original_pid;
-
-#ifdef HAVE_SD_EVENT_H
-        sd_event_source *io_event_source;
-        sd_event_source *time_event_source;
-        sd_event_source *exit_event_source;
-        sd_event *event;
-#endif
 };
 
 struct sd_rtnl_message {
