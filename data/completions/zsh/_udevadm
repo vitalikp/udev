@@ -42,14 +42,14 @@ _udevadm_settle(){
 
 _udevadm_control(){
     _arguments \
-        '--exit[Signal and wait for systemd-udevd to exit.]' \
-        '--log-priority=[Set the internal log level of systemd-udevd.]:priorities:(err info debug)' \
-        '--stop-exec-queue[Signal systemd-udevd to stop executing new events. Incoming events will be queued.]' \
-        '--start-exec-queue[Signal systemd-udevd to enable the execution of events.]' \
-        '--reload[Signal systemd-udevd to reload the rules files and other databases like the kernel module index.]' \
+        '--exit[Signal and wait for udevd to exit.]' \
+        '--log-priority=[Set the internal log level of udevd.]:priorities:(err info debug)' \
+        '--stop-exec-queue[Signal udevd to stop executing new events. Incoming events will be queued.]' \
+        '--start-exec-queue[Signal udevd to enable the execution of events.]' \
+        '--reload[Signal udevd to reload the rules files and other databases like the kernel module index.]' \
         '--property=[Set a global property for all events.]' \
         '--children-max=[Set the maximum number of events.]' \
-        '--timeout=[The maximum number of seconds to wait for a reply from systemd-udevd.]' \
+        '--timeout=[The maximum number of seconds to wait for a reply from udevd.]' \
         '--help[Print help text.]'
 }
 

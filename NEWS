@@ -2,6 +2,7 @@
 ~~~~~~~
  * rtnl:
     - remove kdbus support;
+ * rename systemd-udevd to udevd(missing);
  
    udev (214.2)
 ~~~~~~~
