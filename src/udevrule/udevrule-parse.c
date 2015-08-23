@@ -58,8 +58,11 @@ int rule_getkey(char *clause, char *key, int *op, char *value)
 		value[i++] = p[0];
 		p++;
 	}
+
 	if (p[0] != '"')
 		return -EQUOTEXP;
+
+	value[i] = '\0';
 
 	return 0;
 }
