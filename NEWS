@@ -6,6 +6,7 @@
  * udevrule:
     - add missing null character to end of value;
     - add error invalid value;
+    - check if rule does not have additional characters;
  
    udev (214.2)
 ~~~~~~~

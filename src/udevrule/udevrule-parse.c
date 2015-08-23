@@ -62,6 +62,9 @@ int rule_getkey(char *clause, char *key, int *op, char *value)
 	if (p[0] != '"')
 		return -EQUOTEXP;
 
+	if (p[1] != '\0')
+		return -EVALUE;
+
 	value[i] = '\0';
 
 	return 0;
