@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 		if (*p == '#')
 			continue;
 
-//			printf("%i: %s", lineno, line);
+//		printf("%i: %s", lineno, line);
 
 		ch = *p;
 		while (ch != '\n')
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 
 			p++;
 		}
-//			printf("\n");
+//		printf("\n");
 
 		p = line;
 	}
