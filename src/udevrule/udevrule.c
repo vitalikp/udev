@@ -24,7 +24,8 @@ const char* msgs[] =
 	"double quote expected",
 	"illegal operation",
 	"brace expected",
-	"no attribute found"
+	"no attribute found",
+	"invalid value"
 };
 
 

@@ -5,6 +5,7 @@
  * rename systemd-udevd to udevd(missing);
  * udevrule:
     - add missing null character to end of value;
+    - add error invalid value;
  
    udev (214.2)
 ~~~~~~~

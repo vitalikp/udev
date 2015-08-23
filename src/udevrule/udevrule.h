@@ -20,6 +20,7 @@
 #define EILOPER			4		/* Illegal operation */
 #define EBRACEXP		5		/* Brace expected */
 #define ENOATTR			6		/* No attribute found */
+#define EVALUE			7		/* Invalid value */
 
 #define OP_UNSET			0	/* no operator set */
 #define OP_MATCH			1	/* == */
