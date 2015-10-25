@@ -296,11 +296,6 @@ static int builtin_blkid(struct udev_device *dev, int argc, char *argv[], bool t
                 /* Is this a disk with GPT partition table? */
                 if (streq(name, "PTTYPE") && streq(data, "gpt"))
                         is_gpt = true;
-
-                /* Is this a partition that matches the root partition
-                 * property we inherited from our parent? */
-                if (root_partition && streq(name, "PART_ENTRY_UUID") && streq(data, root_partition))
-                        udev_builtin_add_property(dev, test, "ID_PART_GPT_AUTO_ROOT", "1");
         }
 
         if (is_gpt)
