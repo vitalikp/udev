@@ -7,6 +7,7 @@
     - add missing null character to end of value;
     - add error invalid value;
     - check if rule does not have additional characters;
+ * remove include sd-messages.h header file;
  
    udev (214.2)
 ~~~~~~~
