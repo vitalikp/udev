@@ -28,10 +28,7 @@
 #include <getopt.h>
 #include <sys/stat.h>
 #include <blkid/blkid.h>
-#include <systemd/sd-id128.h>
 
-#include "gpt.h"
-#include "efivars.h"
 #include "udev.h"
 
 static void print_property(struct udev_device *dev, bool test, const char *name, const char *value)
@@ -103,80 +100,6 @@ static void print_property(struct udev_device *dev, bool test, const char *name,
         }
 }
 
-static int find_gpt_root(struct udev_device *dev, blkid_probe pr, bool test) {
-
-#if defined(GPT_ROOT_NATIVE) && defined(ENABLE_EFI)
-
-        _cleanup_free_ char *root_id = NULL;
-        bool found_esp = false;
-        blkid_partlist pl;
-        int i, nvals, r;
-
-        assert(pr);
-
-        /* Iterate through the partitions on this disk, and see if the
-         * EFI ESP we booted from is on it. If so, find the first root
-         * disk, and add a property indicating its partition UUID. */
-
-        errno = 0;
-        pl = blkid_probe_get_partitions(pr);
-        if (!pl)
-                return errno ? -errno : -ENOMEM;
-
-        nvals = blkid_partlist_numof_partitions(pl);
-        for (i = 0; i < nvals; i++) {
-                blkid_partition pp;
-                const char *stype, *sid;
-                sd_id128_t type;
-
-                pp = blkid_partlist_get_partition(pl, i);
-                if (!pp)
-                        continue;
-
-                sid = blkid_partition_get_uuid(pp);
-                if (!sid)
-                        continue;
-
-                stype = blkid_partition_get_type_string(pp);
-                if (!stype)
-                        continue;
-
-                if (sd_id128_from_string(stype, &type) < 0)
-                        continue;
-
-                if (sd_id128_equal(type, GPT_ESP)) {
-                        sd_id128_t id, esp;
-
-                        /* We found an ESP, let's see if it matches
-                         * the ESP we booted from. */
-
-                        if (sd_id128_from_string(sid, &id) < 0)
-                                continue;
-
-                        r = efi_loader_get_device_part_uuid(&esp);
-                        if (r < 0)
-                                return r;
-
-                        if (sd_id128_equal(id, esp))
-                                found_esp = true;
-
-                } else if (sd_id128_equal(type, GPT_ROOT_NATIVE)) {
-
-                        /* We found a suitable root partition, let's
-                         * remember the first one. */
-
-                        if (!root_id) {
-                                root_id = strdup(sid);
-                                if (!root_id)
-                                        return -ENOMEM;
-                        }
-                }
-        }
-#endif
-
-        return 0;
-}
-
 static int probe_superblocks(blkid_probe pr)
 {
         struct stat st;
@@ -222,7 +145,6 @@ static int builtin_blkid(struct udev_device *dev, int argc, char *argv[], bool t
         int nvals;
         int i;
         int err = 0;
-        bool is_gpt = false;
 
         static const struct option options[] = {
                 { "offset", optional_argument, NULL, 'o' },
@@ -283,14 +205,7 @@ static int builtin_blkid(struct udev_device *dev, int argc, char *argv[], bool t
                         continue;
 
                 print_property(dev, test, name, data);
-
-                /* Is this a disk with GPT partition table? */
-                if (streq(name, "PTTYPE") && streq(data, "gpt"))
-                        is_gpt = true;
         }
-
-        if (is_gpt)
-                find_gpt_root(dev, pr, test);
 
         blkid_free_probe(pr);
 out:

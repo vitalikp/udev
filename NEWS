@@ -10,6 +10,7 @@
  * remove include sd-messages.h header file;
  * remove ID_PART_GPT_AUTO_ROOT udev device property;
  * remove ID_PART_GPT_AUTO_ROOT_UUID udev device property;
+ * remove efi support;
  
    udev (214.2)
 ~~~~~~~

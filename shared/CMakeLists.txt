@@ -18,8 +18,6 @@ add_library(udev_shared_obj STATIC
 	virt.h
 	architecture.c
 	architecture.h
-	efivars.c
-	efivars.h
 	path-util.c
 	path-util.h
 	time-util.c
@@ -70,7 +68,6 @@ add_library(udev_shared_obj STATIC
 	ima-util.h
 	bus-label.c
 	bus-label.h
-	gpt.h
 )
 
 add_library(udev_label_obj STATIC

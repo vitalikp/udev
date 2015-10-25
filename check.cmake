@@ -116,11 +116,3 @@ option(SMACK_ENABLE "Disable optional SMACK support")
 if (${SMACK_ENABLE})
 	set(HAVE_SMACK 1)
 endif()
-
-# check efi option
-option(EFI_ENABLE "Disable optional EFI support" ON)
-if (${EFI_ENABLE})
-	set(ENABLE_EFI 1)
-	# check uuid library
-	#pkg_check_modules(UUID REQUIRED uuid>=2.25.0)
-endif()
