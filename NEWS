@@ -9,6 +9,7 @@
     - check if rule does not have additional characters;
  * remove include sd-messages.h header file;
  * remove ID_PART_GPT_AUTO_ROOT udev device property;
+ * remove ID_PART_GPT_AUTO_ROOT_UUID udev device property;
  
    udev (214.2)
 ~~~~~~~

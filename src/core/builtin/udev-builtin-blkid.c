@@ -172,11 +172,6 @@ static int find_gpt_root(struct udev_device *dev, blkid_probe pr, bool test) {
                         }
                 }
         }
-
-        /* We found the ESP on this disk, and also found a root
-         * partition, nice! Let's export its UUID */
-        if (found_esp && root_id)
-                udev_builtin_add_property(dev, test, "ID_PART_GPT_AUTO_ROOT_UUID", root_id);
 #endif
 
         return 0;
@@ -281,10 +276,6 @@ static int builtin_blkid(struct udev_device *dev, int argc, char *argv[], bool t
         err = probe_superblocks(pr);
         if (err < 0)
                 goto out;
-
-        /* If we are a partition then our parent passed on the root
-         * partition UUID to us */
-        root_partition = udev_device_get_property_value(dev, "ID_PART_GPT_AUTO_ROOT_UUID");
 
         nvals = blkid_probe_numof_values(pr);
         for (i = 0; i < nvals; i++) {
