@@ -3,6 +3,8 @@
  * rtnl:
     - remove kdbus support;
  * rename systemd-udevd to udevd(missing);
+ * rules:
+    - assign group "input" to all input devices;
  * udevrule:
     - add missing null character to end of value;
     - add error invalid value;
