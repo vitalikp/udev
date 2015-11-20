@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include "udevrule.h"
-#include "exit-status.h"
 #include "libudev-private.h"
 
 
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 	if (argc < 2)
 	{
 		fprintf(stderr, "Usage: %s <rules file>\n", argv[0]);
-		return EXIT_INVALIDARGUMENT;
+		return EXIT_FAILURE;
 	}
 
 	const char *filename = argv[1];

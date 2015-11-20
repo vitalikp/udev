@@ -12,7 +12,6 @@
 #include <pcre.h>
 
 #include "udevrule.h"
-#include "exit-status.h"
 #include "libudev-private.h"
 
 

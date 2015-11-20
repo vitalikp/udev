@@ -9,6 +9,7 @@
     - add missing null character to end of value;
     - add error invalid value;
     - check if rule does not have additional characters;
+    - remove exit-status.h header file;
  * remove include sd-messages.h header file;
  * remove ID_PART_GPT_AUTO_ROOT udev device property;
  * remove ID_PART_GPT_AUTO_ROOT_UUID udev device property;
