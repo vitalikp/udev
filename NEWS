@@ -5,6 +5,7 @@
  * rename systemd-udevd to udevd(missing);
  * rules:
     - assign group "input" to all input devices;
+    - add loop-control and btrfs-control to "disk" group;
  * udevrule:
     - add missing null character to end of value;
     - add error invalid value;
