@@ -3,12 +3,14 @@
  * libudev:
     - fix udev_queue_get_queue_is_empty function logic;
     - queue provide file descriptor to watch busy event queue;
+    - queue watch entire directory to allow the re-use of the watch descriptor;
  * rtnl:
     - remove kdbus support;
  * rename systemd-udevd to udevd(missing);
  * rules:
     - assign group "input" to all input devices;
     - add loop-control and btrfs-control to "disk" group;
+    - don't enable usb pm for Avocent devices;
  * hwdb:
     - update bluetooth database identifiers;
  * udevrule:
