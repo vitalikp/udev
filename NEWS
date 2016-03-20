@@ -1,5 +1,7 @@
    udev (214.3-dev)
 ~~~~~~~
+ * core:
+    - use dev_port for the ID of a network device;
  * libudev:
     - fix udev_queue_get_queue_is_empty function logic;
     - queue provide file descriptor to watch busy event queue;
