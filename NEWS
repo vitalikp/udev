@@ -15,6 +15,9 @@
     - don't enable usb pm for Avocent devices;
  * hwdb:
     - update bluetooth database identifiers;
+    - update OUI identifiers;
+    - update pci identifiers;
+    - update usb identifiers;
  * udevrule:
     - add missing null character to end of value;
     - add error invalid value;
