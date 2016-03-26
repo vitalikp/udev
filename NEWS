@@ -32,6 +32,7 @@
  * remove efi support;
  * remove exit-status.h header file;
  * remove using sockaddr_union;
+ * remove socket-util.h header file;
  
    udev (214.2)
 ~~~~~~~
