@@ -34,7 +34,6 @@
 
 #include "libudev.h"
 #include "libudev-private.h"
-#include "socket-util.h"
 #include "missing.h"
 
 /**
@@ -53,9 +52,9 @@ struct udev_monitor {
         struct udev *udev;
         int refcount;
         int sock;
-        union sockaddr_union snl;
-        union sockaddr_union snl_trusted_sender;
-        union sockaddr_union snl_destination;
+        struct sockaddr_nl snl;
+        struct sockaddr_nl snl_trusted_sender;
+        struct sockaddr_nl snl_destination;
         socklen_t addrlen;
         struct udev_list filter_subsystem_list;
         struct udev_list filter_tag_list;
@@ -199,12 +198,12 @@ struct udev_monitor *udev_monitor_new_from_netlink_fd(struct udev *udev, const c
                 udev_monitor->sock = fd;
         }
 
-        udev_monitor->snl.nl.nl_family = AF_NETLINK;
-        udev_monitor->snl.nl.nl_groups = group;
+        udev_monitor->snl.nl_family = AF_NETLINK;
+        udev_monitor->snl.nl_groups = group;
 
         /* default destination for sending */
-        udev_monitor->snl_destination.nl.nl_family = AF_NETLINK;
-        udev_monitor->snl_destination.nl.nl_groups = UDEV_MONITOR_UDEV;
+        udev_monitor->snl_destination.nl_family = AF_NETLINK;
+        udev_monitor->snl_destination.nl_groups = UDEV_MONITOR_UDEV;
 
         return udev_monitor;
 }
@@ -369,7 +368,7 @@ _public_ int udev_monitor_filter_update(struct udev_monitor *udev_monitor)
 
 int udev_monitor_allow_unicast_sender(struct udev_monitor *udev_monitor, struct udev_monitor *sender)
 {
-        udev_monitor->snl_trusted_sender.nl.nl_pid = sender->snl.nl.nl_pid;
+        udev_monitor->snl_trusted_sender.nl_pid = sender->snl.nl_pid;
         return 0;
 }
 /**
@@ -389,13 +388,13 @@ _public_ int udev_monitor_enable_receiving(struct udev_monitor *udev_monitor)
 
         if (!udev_monitor->bound) {
                 err = bind(udev_monitor->sock,
-                           &udev_monitor->snl.sa, sizeof(struct sockaddr_nl));
+                           (struct sockaddr*)&udev_monitor->snl, sizeof(struct sockaddr_nl));
                 if (err == 0)
                         udev_monitor->bound = true;
         }
 
         if (err >= 0) {
-                union sockaddr_union snl;
+                struct sockaddr_nl snl;
                 socklen_t addrlen;
 
                 /*
@@ -403,9 +402,9 @@ _public_ int udev_monitor_enable_receiving(struct udev_monitor *udev_monitor)
                  * it is usually, but not necessarily the pid
                  */
                 addrlen = sizeof(struct sockaddr_nl);
-                err = getsockname(udev_monitor->sock, &snl.sa, &addrlen);
+                err = getsockname(udev_monitor->sock, (struct sockaddr*)&snl, &addrlen);
                 if (err == 0)
-                        udev_monitor->snl.nl.nl_pid = snl.nl.nl_pid;
+                        udev_monitor->snl.nl_pid = snl.nl_pid;
         } else {
                 udev_err(udev_monitor->udev, "bind failed: %m\n");
                 return -errno;
@@ -577,7 +576,7 @@ _public_ struct udev_device *udev_monitor_receive_device(struct udev_monitor *ud
         struct iovec iov;
         char cred_msg[CMSG_SPACE(sizeof(struct ucred))];
         struct cmsghdr *cmsg;
-        union sockaddr_union snl;
+        struct sockaddr_nl snl;
         struct ucred *cred;
         char buf[8192];
         ssize_t buflen;
@@ -608,17 +607,17 @@ retry:
                 return NULL;
         }
 
-        if (snl.nl.nl_groups == 0) {
+        if (snl.nl_groups == 0) {
                 /* unicast message, check if we trust the sender */
-                if (udev_monitor->snl_trusted_sender.nl.nl_pid == 0 ||
-                    snl.nl.nl_pid != udev_monitor->snl_trusted_sender.nl.nl_pid) {
+                if (udev_monitor->snl_trusted_sender.nl_pid == 0 ||
+                    snl.nl_pid != udev_monitor->snl_trusted_sender.nl_pid) {
                         udev_dbg(udev_monitor->udev, "unicast netlink message ignored\n");
                         return NULL;
                 }
-        } else if (snl.nl.nl_groups == UDEV_MONITOR_KERNEL) {
-                if (snl.nl.nl_pid > 0) {
+        } else if (snl.nl_groups == UDEV_MONITOR_KERNEL) {
+                if (snl.nl_pid > 0) {
                         udev_dbg(udev_monitor->udev, "multicast kernel netlink message from pid %d ignored\n",
-                             snl.nl.nl_pid);
+                             snl.nl_pid);
                         return NULL;
                 }
         }

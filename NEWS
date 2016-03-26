@@ -29,6 +29,7 @@
  * remove ID_PART_GPT_AUTO_ROOT_UUID udev device property;
  * remove efi support;
  * remove exit-status.h header file;
+ * remove using sockaddr_union;
  * data:
     - don't hardcode the binary paths in rpm macros, rely on $PATH;
  

@@ -33,7 +33,6 @@
 #include "util.h"
 #include "missing.h"
 #include "macro.h"
-#include "socket-util.h"
 
 #define SNDBUF_SIZE (8*1024*1024)
 
@@ -127,9 +126,9 @@ static int create_log_socket(int type) {
 
 static int log_open_syslog(void) {
         int r;
-        union sockaddr_union sa = {
-                .un.sun_family = AF_UNIX,
-                .un.sun_path = "/dev/log",
+        struct sockaddr_un sa = {
+                .sun_family = AF_UNIX,
+                .sun_path = "/dev/log",
         };
 
         if (syslog_fd >= 0)
@@ -141,7 +140,7 @@ static int log_open_syslog(void) {
                 goto fail;
         }
 
-        if (connect(syslog_fd, &sa.sa, offsetof(struct sockaddr_un, sun_path) + strlen(sa.un.sun_path)) < 0) {
+        if (connect(syslog_fd, &sa, SUN_LEN(&sa)) < 0) {
                 safe_close(syslog_fd);
 
                 /* Some legacy syslog systems still use stream
@@ -153,7 +152,7 @@ static int log_open_syslog(void) {
                         goto fail;
                 }
 
-                if (connect(syslog_fd, &sa.sa, offsetof(struct sockaddr_un, sun_path) + strlen(sa.un.sun_path)) < 0) {
+                if (connect(syslog_fd, &sa, SUN_LEN(&sa)) < 0) {
                         r = -errno;
                         goto fail;
                 }
@@ -174,9 +173,9 @@ void log_close_journal(void) {
 }
 
 static int log_open_journal(void) {
-        union sockaddr_union sa = {
-                .un.sun_family = AF_UNIX,
-                .un.sun_path = "/run/systemd/journal/socket",
+        struct sockaddr_un sa = {
+                .sun_family = AF_UNIX,
+                .sun_path = "/run/systemd/journal/socket",
         };
         int r;
 
@@ -189,7 +188,7 @@ static int log_open_journal(void) {
                 goto fail;
         }
 
-        if (connect(journal_fd, &sa.sa, offsetof(struct sockaddr_un, sun_path) + strlen(sa.un.sun_path)) < 0) {
+        if (connect(journal_fd, &sa, SUN_LEN(&sa)) < 0) {
                 r = -errno;
                 goto fail;
         }
