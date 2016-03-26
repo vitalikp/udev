@@ -51,7 +51,6 @@ add_man(docs udevadm 8)
 add_custom_target(man ALL DEPENDS ${docs})
 
 # source code
-include_directories(include)
 include_directories(shared)
 include_directories(lib)
 include_directories(src/core)
