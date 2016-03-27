@@ -1,4 +1,4 @@
-   udev (214.3-dev)
+   udev (214.3)
 ~~~~~~~
  * core:
     - use dev_port for the ID of a network device;
