@@ -1,3 +1,8 @@
+   udev (214.4-dev)
+~~~~~~~
+ * core:
+    - fix warning no break in switch statement;
+
    udev (214.3)
 ~~~~~~~
  * core:
@@ -33,7 +38,7 @@
  * remove exit-status.h header file;
  * remove using sockaddr_union;
  * remove socket-util.h header file;
- 
+
    udev (214.2)
 ~~~~~~~
  * add rpm macros variable _udevlibexecdir;

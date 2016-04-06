@@ -1783,7 +1783,7 @@ static int match_attr(struct udev_rules *rules, struct udev_device *dev, struct 
         case SB_FORMAT:
                 udev_event_apply_format(event, name, nbuf, sizeof(nbuf));
                 name = nbuf;
-                /* fall through */
+                /* fall through */ // no break
         case SB_NONE:
                 value = udev_device_get_sysattr_value(dev, name);
                 if (value == NULL)
