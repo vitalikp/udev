@@ -174,7 +174,6 @@ extern const struct udev_builtin udev_builtin_kmod;
 extern const struct udev_builtin udev_builtin_net_id;
 extern const struct udev_builtin udev_builtin_path_id;
 extern const struct udev_builtin udev_builtin_usb_id;
-extern const struct udev_builtin udev_builtin_uaccess;
 void udev_builtin_init(struct udev *udev);
 void udev_builtin_exit(struct udev *udev);
 enum udev_builtin_cmd udev_builtin_lookup(const char *command);
