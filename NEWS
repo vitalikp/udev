@@ -2,6 +2,8 @@
 ~~~~~~~
  * core:
     - fix warning no break in switch statement;
+ * shared:
+ 	- remove unused functions;
 
    udev (214.3)
 ~~~~~~~

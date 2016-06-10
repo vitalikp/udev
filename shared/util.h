@@ -381,9 +381,6 @@ bool fstype_is_network(const char *fstype);
 
 int chvt(int vt);
 
-int read_one_char(FILE *f, char *ret, usec_t timeout, bool *need_nl);
-int ask(char *ret, const char *replies, const char *text, ...) _printf_(3, 4);
-
 int reset_terminal_fd(int fd, bool switch_to_text);
 int reset_terminal(const char *name);
 
@@ -679,8 +676,6 @@ _alloc_(2, 3) static inline void *memdup_multiply(const void *p, size_t a, size_
 
 bool filename_is_safe(const char *p) _pure_;
 bool path_is_safe(const char *p) _pure_;
-bool string_is_safe(const char *p) _pure_;
-bool string_has_cc(const char *p) _pure_;
 
 /**
  * Check if a string contains any glob patterns.
