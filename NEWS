@@ -2,6 +2,8 @@
 ~~~~~~~
  * core:
     - fix warning no break in switch statement;
+ * accelerometer:
+ 	- don't wait for new data from the sensor;
  * shared:
  	- remove unused functions;
 
