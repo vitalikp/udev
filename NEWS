@@ -6,6 +6,7 @@
  	- don't wait for new data from the sensor;
  * shared:
  	- remove unused functions;
+ 	- remove conf parser util;
 
    udev (214.3)
 ~~~~~~~

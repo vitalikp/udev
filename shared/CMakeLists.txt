@@ -38,8 +38,6 @@ add_library(udev_shared_obj STATIC
 	strbuf.h
 	strxcpyx.c
 	strxcpyx.h
-	conf-parser.c
-	conf-parser.h
 	log.c
 	log.h
 	utf8.c
