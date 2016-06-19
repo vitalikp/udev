@@ -2,6 +2,7 @@
 ~~~~~~~
  * core:
     - fix warning no break in switch statement;
+    - check empty file after open;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * shared:
