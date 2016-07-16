@@ -8,6 +8,7 @@
  * shared:
  	- remove unused functions;
  	- remove conf parser util;
+ 	- add quotes to warning message in log module;
 
    udev (214.3)
 ~~~~~~~
