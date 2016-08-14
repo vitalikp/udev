@@ -5,7 +5,6 @@ include(keyboard-keys.cmake)
 
 include_directories(core)
 include_directories(core/net)
-include_directories(core/rtnl)
 
 
 # udev
@@ -27,13 +26,6 @@ set(libudev_core_src
 	core/builtin/udev-builtin-net_id.c
 	core/builtin/udev-builtin-path_id.c
 	core/builtin/udev-builtin-usb_id.c
-	core/rtnl/sd-rtnl.h
-	core/rtnl/sd-rtnl.c
-	core/rtnl/rtnl-util.h
-	core/rtnl/rtnl-util.c
-	core/rtnl/rtnl-types.h
-	core/rtnl/rtnl-types.c
-	core/rtnl/rtnl-message.c
 )
 if (${KMOD_ENABLE})
 	list(APPEND libudev_core_src core/builtin/udev-builtin-kmod.c)
