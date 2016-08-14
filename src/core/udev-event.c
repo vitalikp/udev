@@ -29,10 +29,12 @@
 #include <sys/poll.h>
 #include <sys/epoll.h>
 #include <sys/wait.h>
+#include <sys/ioctl.h>
 #include <sys/signalfd.h>
+#include <linux/netlink.h>
+#include <linux/sockios.h>
 
 #include "udev.h"
-#include "rtnl-util.h"
 
 struct udev_event *udev_event_new(struct udev_device *dev)
 {
@@ -750,7 +752,8 @@ out:
 static int rename_netif(struct udev_event *event)
 {
         struct udev_device *dev = event->dev;
-        _cleanup_rtnl_unref_ sd_rtnl *rtnl = NULL;
+        int fd;
+        struct ifreq ifr;
         char name[IFNAMSIZ];
         const char *oldname;
         int r;
@@ -762,16 +765,27 @@ static int rename_netif(struct udev_event *event)
 
         strscpy(name, IFNAMSIZ, event->name);
 
-        r = sd_rtnl_open(&rtnl, 0);
-        if (r < 0)
+        fd = socket(PF_NETLINK, SOCK_RAW|SOCK_CLOEXEC|SOCK_NONBLOCK, NETLINK_ROUTE);
+        if (fd < 0)
+        {
+                r = -errno;
+                log_error("error opening socket: %m\n");
                 return r;
+        }
 
-        r = rtnl_set_link_name(rtnl, udev_device_get_ifindex(dev), name);
+        memset(&ifr, 0x00, sizeof(struct ifreq));
+        strscpy(ifr.ifr_name, IFNAMSIZ, oldname);
+        strscpy(ifr.ifr_newname, IFNAMSIZ, name);
+        r = ioctl(fd, SIOCSIFNAME, &ifr);
         if (r < 0)
-                log_error("error changing net interface name %s to %s: %s",
-                          oldname, name, strerror(-r));
+        {
+                r = -errno;
+                log_error("error changing net interface name %s to %s: %m\n",
+                          oldname, name);
+        }
         else
                 print_kmsg("renamed network interface %s to %s\n", oldname, name);
+        close(fd);
 
         return r;
 }
