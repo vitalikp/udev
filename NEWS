@@ -7,6 +7,8 @@
     - remove rtnl module;
  * accelerometer:
  	- don't wait for new data from the sensor;
+ * udevd:
+ 	- exclude MD from block device ownership event locking;
  * shared:
  	- remove unused functions;
  	- remove conf parser util;
