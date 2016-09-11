@@ -16,6 +16,7 @@
  	- add quotes to warning message in log module;
  	- fix split function when slash char escaped;
  	- remove 'c' parameter from split function;
+ 	- change return type to int in strv_split_quoted function;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
