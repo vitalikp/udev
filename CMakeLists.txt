@@ -45,6 +45,7 @@ add_definitions(-include ${PROJECT_BINARY_DIR}/config.h)
 
 # udev man
 include(man/udev-man.cmake)
+add_man(docs udev.conf 5)
 add_man(docs udev 7)
 add_man(docs udevd 8)
 add_man(docs udevadm 8)
