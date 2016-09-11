@@ -18,6 +18,7 @@
  	- remove 'c' parameter from split function;
  	- change return type to int in strv_split_quoted function;
  	- report invalid quoted strings;
+ 	- fix error in cunescape_length_with_prefix function;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
