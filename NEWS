@@ -16,6 +16,7 @@
  	- add quotes to warning message in log module;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
+ 	- annotate all micmute workarounds;
 
    udev (214.3)
 ~~~~~~~
