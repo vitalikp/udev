@@ -15,6 +15,7 @@
  	- remove conf parser util;
  	- add quotes to warning message in log module;
  	- fix split function when slash char escaped;
+ 	- remove 'c' parameter from split function;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
