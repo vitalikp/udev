@@ -14,6 +14,8 @@
  	- remove unused functions;
  	- remove conf parser util;
  	- add quotes to warning message in log module;
+ * hwdb:
+ 	- add microphone mute keymap for Dell Latitude;
 
    udev (214.3)
 ~~~~~~~
