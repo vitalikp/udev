@@ -5,6 +5,9 @@
     - check empty file after open;
     - rename netlink interface without rtnl module;
     - remove rtnl module;
+    - move BTRFS_IOC_DEVICES_READY to missing.h;
+ * libudev:
+ 	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevd:
@@ -19,11 +22,15 @@
  	- change return type to int in strv_split_quoted function;
  	- report invalid quoted strings;
  	- fix error in cunescape_length_with_prefix function;
+ 	- include missing.h, for struct file_handle in util.h;
  * man:
  	- add udev.conf page;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
+ 	- update OUI identifiers;
+    - update pci identifiers;
+    - update usb identifiers;
 
    udev (214.3)
 ~~~~~~~
