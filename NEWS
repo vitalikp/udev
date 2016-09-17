@@ -10,6 +10,8 @@
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  * accelerometer:
  	- don't wait for new data from the sensor;
+ * udevadm:
+ 	- don't print full help on error;
  * udevd:
  	- exclude MD from block device ownership event locking;
  	- add event-timeout commandline option;
