@@ -27,6 +27,8 @@
  	- include missing.h, for struct file_handle in util.h;
  * man:
  	- add udev.conf page;
+ * test:
+ 	- ignore unknown option in test-libudev;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
