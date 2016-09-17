@@ -6,6 +6,8 @@
     - rename netlink interface without rtnl module;
     - remove rtnl module;
     - move BTRFS_IOC_DEVICES_READY to missing.h;
+    - path_id - suppress ID_PATH for devices with an unknown parent device type;
+    - allow numeric key codes;
  * libudev:
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  	- use PRIu64 in udev_hwdb_new function;
@@ -36,6 +38,8 @@
  	- update OUI identifiers;
     - update pci identifiers;
     - update usb identifiers;
+    - fix keymap in HP Pavillon DV7;
+    - update format description and document reloading;
 
    udev (214.3)
 ~~~~~~~
