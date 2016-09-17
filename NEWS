@@ -28,6 +28,7 @@
  	- report invalid quoted strings;
  	- fix error in cunescape_length_with_prefix function;
  	- include missing.h, for struct file_handle in util.h;
+ 	- remove architecture module;
  * man:
  	- add udev.conf page;
  * test:

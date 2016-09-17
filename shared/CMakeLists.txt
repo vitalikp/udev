@@ -16,8 +16,6 @@ add_library(udev_shared_obj STATIC
 	util.h
 	virt.c
 	virt.h
-	architecture.c
-	architecture.h
 	path-util.c
 	path-util.h
 	time-util.c
