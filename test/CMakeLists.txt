@@ -1,6 +1,12 @@
 # udev tests cmake file
 enable_testing()
 
+# test-device-nodes
+add_executable(test-device-nodes
+	test-device-nodes.c
+)
+target_link_libraries(test-device-nodes udev_shared_obj)
+
 # test-libudev
 add_executable(test-libudev
 	test-libudev.c
@@ -24,4 +30,5 @@ add_executable(udev-test udev-test.c)
 add_dependencies(udev-test test-udev)
 
 
+add_test(NAME device-nodes COMMAND ./test-device-nodes)
 add_test(NAME udev COMMAND ./udev-test)

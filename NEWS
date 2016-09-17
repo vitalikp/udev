@@ -31,8 +31,9 @@
  	- remove architecture module;
  * man:
  	- add udev.conf page;
- * test:
+ * tests:
  	- ignore unknown option in test-libudev;
+ 	- add test-device-nodes test;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
