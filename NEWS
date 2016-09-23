@@ -31,6 +31,8 @@
  	- include missing.h, for struct file_handle in util.h;
  	- remove architecture module;
  	- fix a couple of more lazy "return -1";
+ 	- allow strappenda to take any number of args;
+ 	- never try to create files in cgroupfs, only open them for writing;
  * man:
  	- add udev.conf page;
  * tests:
