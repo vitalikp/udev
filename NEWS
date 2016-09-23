@@ -34,6 +34,7 @@
  	- allow strappenda to take any number of args;
  	- never try to create files in cgroupfs, only open them for writing;
  	- const'ify MIN/MAX/... macros;
+ 	- don't parse kernel cmdline to set log level;
  * man:
  	- add udev.conf page;
  * tests:
