@@ -3,13 +3,13 @@
 #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libudev.sym -Wl,-z,relro")
 set(LIBUDEV_C_FLAGS "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libudev.sym -Wl,-z,relro")
 
-#set(LIBUDEV_CURRENT 6)
+#set(LIBUDEV_CURRENT 7)
 #set(LIBUDEV_REVISION 0)
-#set(LIBUDEV_AGE 5)
+#set(LIBUDEV_AGE 6)
 
 # (c-a).(a).(r)
 set(LIBUDEV_SOVERSION 1)
-set(LIBUDEV_VERSION ${LIBUDEV_SOVERSION}.5.0)
+set(LIBUDEV_VERSION ${LIBUDEV_SOVERSION}.6.0)
 
 configure_file(libudev.pc.cmake libudev.pc @ONLY)
 
