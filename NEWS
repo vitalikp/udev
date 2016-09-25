@@ -35,6 +35,7 @@
  	- never try to create files in cgroupfs, only open them for writing;
  	- const'ify MIN/MAX/... macros;
  	- don't parse kernel cmdline to set log level;
+ 	- remove unused FOREACH_WORD_SEPARATOR_QUOTED;
  * man:
  	- add udev.conf page;
  * tests:
