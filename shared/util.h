@@ -495,8 +495,6 @@ bool tty_is_console(const char *tty) _pure_;
 int vtnr_from_tty(const char *tty);
 const char *default_term_for_tty(const char *tty);
 
-void execute_directory(const char *directory, DIR *_d, usec_t timeout, char *argv[]);
-
 int kill_and_sigcont(pid_t pid, int sig);
 
 bool nulstr_contains(const char*nulstr, const char *needle);
@@ -602,8 +600,6 @@ int is_kernel_thread(pid_t pid);
 
 int fd_inc_sndbuf(int fd, size_t n);
 int fd_inc_rcvbuf(int fd, size_t n);
-
-int fork_agent(pid_t *pid, const int except[], unsigned n_except, const char *path, ...);
 
 int setrlimit_closest(int resource, const struct rlimit *rlim);
 
