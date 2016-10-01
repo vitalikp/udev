@@ -63,11 +63,14 @@ add_subdirectory(src)
 add_subdirectory(data)
 
 # tests
+if (${TESTS_ENABLE})
 add_subdirectory(test)
+endif()
 
 # show current config
 message("   ${CMAKE_PROJECT_NAME} ${VERSION}")
 message("      prefix:      ${CMAKE_INSTALL_PREFIX}")
+message("       tests:      ${TESTS_ENABLE}")
 message("     systemd:      ${SYSTEMD_ENABLE}")
 message("        kmod:      ${KMOD_ENABLE}")
 message("       blkid:      ${BLKID_ENABLE}")

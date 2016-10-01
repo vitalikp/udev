@@ -1,5 +1,4 @@
 # udev tests cmake file
-enable_testing()
 
 # test-device-nodes
 add_executable(test-device-nodes
