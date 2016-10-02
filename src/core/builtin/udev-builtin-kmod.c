@@ -30,6 +30,7 @@
 #include <libkmod.h>
 
 #include "udev.h"
+#include "macro.h"
 
 static struct kmod_ctx *ctx;
 
