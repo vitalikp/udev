@@ -10,6 +10,7 @@
     - allow numeric key codes;
     - modernize net_id builtin a bit;
     - optional set kmod log function;
+    - fix build with DEBUG=1;
  * libudev:
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  	- use PRIu64 in udev_hwdb_new function;
