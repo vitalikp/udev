@@ -24,6 +24,7 @@
 #include <getopt.h>
 
 #include "udev.h"
+#include "log.h"
 
 void udev_main_log(struct udev *udev, int priority,
                    const char *file, int line, const char *fn,
