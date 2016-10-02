@@ -64,12 +64,14 @@ static int load_module(struct udev *udev, const char *alias)
         return err;
 }
 
+#ifdef udev_main_log
 _printf_(6,0)
 static void udev_kmod_log(void *data, int priority, const char *file, int line,
                           const char *fn, const char *format, va_list args)
 {
         udev_main_log(data, priority, file, line, fn, format, args);
 }
+#endif
 
 static int builtin_kmod(struct udev_device *dev, int argc, char *argv[], bool test)
 {
@@ -103,7 +105,9 @@ static int builtin_kmod_init(struct udev *udev)
                 return -ENOMEM;
 
         log_debug("load module index");
+#ifdef udev_kmod_log
         kmod_set_log_fn(ctx, udev_kmod_log, udev);
+#endif
         kmod_load_resources(ctx);
         return 0;
 }
