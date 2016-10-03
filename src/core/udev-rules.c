@@ -52,11 +52,7 @@ const char *rules_dirs[] = {
         UDEVLIBEXECDIR "/rules.d",
         NULL};
 
-struct udev_rules {
-        struct udev *udev;
-        usec_t dirs_ts_usec;
-        int resolve_names;
-
+struct rules {
         /* every key in the rules file becomes a token */
         struct token *tokens;
         unsigned int token_cur;
@@ -64,6 +60,15 @@ struct udev_rules {
 
         /* all key strings are copied and de-duplicated in a single continuous string buffer */
         struct strbuf *strbuf;
+};
+
+struct udev_rules {
+        struct udev *udev;
+        usec_t dirs_ts_usec;
+        int resolve_names;
+
+        // current udev rules
+        struct rules* rules;
 
         /* during rule parsing, uid/gid lookup results are cached */
         struct uid_gid *uids;
@@ -74,11 +79,11 @@ struct udev_rules {
         unsigned int gids_max;
 };
 
-static char *rules_str(struct udev_rules *rules, unsigned int off) {
+static char *rules_str(struct rules *rules, unsigned int off) {
         return rules->strbuf->buf + off;
 }
 
-static unsigned int rules_add_string(struct udev_rules *rules, const char *s) {
+static unsigned int rules_add_string(struct rules *rules, const char *s) {
         return strbuf_add_string(rules->strbuf, s, strlen(s));
 }
 
@@ -209,7 +214,7 @@ struct token {
 
 #define MAX_TK                64
 struct rule_tmp {
-        struct udev_rules *rules;
+        struct rules *rules;
         struct token rule;
         struct token token[MAX_TK];
         unsigned int token_cur;
@@ -311,7 +316,7 @@ static const char *token_str(enum token_type type)
         return token_strs[type];
 }
 
-static void dump_token(struct udev_rules *rules, struct token *token)
+static void dump_token(struct rules *rules, struct token *token)
 {
         enum token_type type = token->type;
         enum operation_type op = token->key.op;
@@ -421,7 +426,7 @@ static void dump_token(struct udev_rules *rules, struct token *token)
         }
 }
 
-static void dump_rules(struct udev_rules *rules)
+static void dump_rules(struct rules *rules)
 {
         unsigned int i;
 
@@ -434,11 +439,11 @@ static void dump_rules(struct udev_rules *rules)
                 dump_token(rules, &rules->tokens[i]);
 }
 #else
-static inline void dump_token(struct udev_rules *rules, struct token *token) {}
-static inline void dump_rules(struct udev_rules *rules) {}
+static inline void dump_token(struct rules *rules, struct token *token) {}
+static inline void dump_rules(struct rules *rules) {}
 #endif /* DEBUG */
 
-static int add_token(struct udev_rules *rules, struct token *token)
+static int add_token(struct rules *rules, struct token *token)
 {
         /* grow buffer if needed */
         if (rules->token_cur+1 >= rules->token_max) {
@@ -470,7 +475,7 @@ static uid_t add_uid(struct udev_rules *rules, const char *owner)
         /* lookup, if we know it already */
         for (i = 0; i < rules->uids_cur; i++) {
                 off = rules->uids[i].name_off;
-                if (streq(rules_str(rules, off), owner)) {
+                if (streq(rules_str(rules->rules, off), owner)) {
                         uid = rules->uids[i].uid;
                         return uid;
                 }
@@ -494,7 +499,7 @@ static uid_t add_uid(struct udev_rules *rules, const char *owner)
                 rules->uids_max += add;
         }
         rules->uids[rules->uids_cur].uid = uid;
-        off = rules_add_string(rules, owner);
+        off = rules_add_string(rules->rules, owner);
         if (off <= 0)
                 return uid;
         rules->uids[rules->uids_cur].name_off = off;
@@ -511,7 +516,7 @@ static gid_t add_gid(struct udev_rules *rules, const char *group)
         /* lookup, if we know it already */
         for (i = 0; i < rules->gids_cur; i++) {
                 off = rules->gids[i].name_off;
-                if (streq(rules_str(rules, off), group)) {
+                if (streq(rules_str(rules->rules, off), group)) {
                         gid = rules->gids[i].gid;
                         return gid;
                 }
@@ -535,7 +540,7 @@ static gid_t add_gid(struct udev_rules *rules, const char *group)
                 rules->gids_max += add;
         }
         rules->gids[rules->gids_cur].gid = gid;
-        off = rules_add_string(rules, group);
+        off = rules_add_string(rules->rules, group);
         if (off <= 0)
                 return gid;
         rules->gids[rules->gids_cur].name_off = off;
@@ -1001,7 +1006,7 @@ static int rule_add_key(struct rule_tmp *rule_tmp, enum token_type type,
         return 0;
 }
 
-static int sort_token(struct udev_rules *rules, struct rule_tmp *rule_tmp)
+static int sort_token(struct rules *rules, struct rule_tmp *rule_tmp)
 {
         unsigned int i;
         unsigned int start = 0;
@@ -1044,7 +1049,7 @@ static int add_rule(struct udev_rules *rules, char *line,
         struct rule_tmp rule_tmp;
 
         memzero(&rule_tmp, sizeof(struct rule_tmp));
-        rule_tmp.rules = rules;
+        rule_tmp.rules = rules->rules;
         rule_tmp.rule.type = TK_RULE;
         /* the offset in the rule is limited to unsigned short */
         if (filename_off < USHRT_MAX)
@@ -1360,7 +1365,7 @@ static int add_rule(struct udev_rules *rules, char *line,
                 }
 
                 if (streq(key, "LABEL")) {
-                        rule_tmp.rule.rule.label_off = rules_add_string(rules, value);
+                        rule_tmp.rule.rule.label_off = rules_add_string(rules->rules, value);
                         continue;
                 }
 
@@ -1497,11 +1502,11 @@ static int add_rule(struct udev_rules *rules, char *line,
 
         /* add rule token */
         rule_tmp.rule.rule.token_count = 1 + rule_tmp.token_cur;
-        if (add_token(rules, &rule_tmp.rule) != 0)
+        if (add_token(rules->rules, &rule_tmp.rule) != 0)
                 goto invalid;
 
         /* add tokens to list, sorted by type */
-        if (sort_token(rules, &rule_tmp) != 0)
+        if (sort_token(rules->rules, &rule_tmp) != 0)
                 goto invalid;
 
         return 0;
@@ -1510,8 +1515,9 @@ invalid:
         return -1;
 }
 
-static int parse_file(struct udev_rules *rules, const char *filename)
+static int parse_file(struct udev_rules *_rules, const char *filename)
 {
+        struct rules *rules;
         FILE *f;
         unsigned int first_token;
         unsigned int filename_off;
@@ -1529,6 +1535,7 @@ static int parse_file(struct udev_rules *rules, const char *filename)
         }
         log_debug("read rules file: %s", filename);
 
+        rules = _rules->rules;
         first_token = rules->token_cur;
         filename_off = rules_add_string(rules, filename);
 
@@ -1564,7 +1571,7 @@ static int parse_file(struct udev_rules *rules, const char *filename)
                         log_error("line too long '%s':%u, ignored", filename, line_nr);
                         continue;
                 }
-                add_rule(rules, key, filename, filename_off, line_nr);
+                add_rule(_rules, key, filename, filename_off, line_nr);
         }
         fclose(f);
 
@@ -1591,6 +1598,46 @@ static int parse_file(struct udev_rules *rules, const char *filename)
         return 0;
 }
 
+static struct rules *rules_new(size_t size)
+{
+	struct rules* rules;
+
+	rules = malloc(sizeof(struct rules));
+	if (!rules)
+		return NULL;
+
+	/* init token array and string buffer */
+	rules->tokens = malloc(size * sizeof(struct token));
+	if (!rules->tokens)
+		goto err;
+
+	rules->token_cur = 0;
+	rules->token_max = size;
+
+	rules->strbuf = strbuf_new();
+	if (!rules->strbuf)
+		goto err;
+
+	return rules;
+
+err:
+	if (rules)
+		free(rules->tokens);
+	free(rules);
+
+	return NULL;
+}
+
+static void rules_free(struct rules *rules)
+{
+	if (!rules)
+		return;
+
+	free(rules->tokens);
+	strbuf_cleanup(rules->strbuf);
+	free(rules);
+}
+
 struct udev_rules *udev_rules_new(struct udev *udev, int resolve_names)
 {
         struct udev_rules *rules;
@@ -1606,14 +1653,8 @@ struct udev_rules *udev_rules_new(struct udev *udev, int resolve_names)
         rules->resolve_names = resolve_names;
         udev_list_init(udev, &file_list, true);
 
-        /* init token array and string buffer */
-        rules->tokens = malloc(PREALLOC_TOKEN * sizeof(struct token));
-        if (rules->tokens == NULL)
-                return udev_rules_unref(rules);
-        rules->token_max = PREALLOC_TOKEN;
-
-        rules->strbuf = strbuf_new();
-        if (!rules->strbuf)
+        rules->rules = rules_new(PREALLOC_TOKEN);
+        if (!rules->rules)
                 return udev_rules_unref(rules);
 
         udev_rules_check_timestamp(rules);
@@ -1628,28 +1669,29 @@ struct udev_rules *udev_rules_unref(struct udev_rules *rules)
 {
         if (rules == NULL)
                 return NULL;
-        free(rules->tokens);
-        strbuf_cleanup(rules->strbuf);
+        rules_free(rules->rules);
         free(rules->uids);
         free(rules->gids);
         free(rules);
         return NULL;
 }
 
-static int rules_load(struct udev_rules *rules, const char **dirs)
+static int rules_load(struct udev_rules *_rules, char **files)
 {
 	struct token end_token;
+	struct rules *rules;
 
-	char **files;
 	char **f;
 	int res;
 
-	res = conf_files_list_strv(&files, ".rules", NULL, dirs);
-	if (res < 0)
+	rules = rules_new(PREALLOC_TOKEN);
+	if (!rules)
 	{
-		log_error("failed to enumerate rules files: %s", strerror(-res));
+		log_error("failed to init udev rules: %m");
 		return -1;
 	}
+
+	_rules->rules = rules;
 
 	/*
 	 * The offset value in the rules strct is limited; add all
@@ -1659,9 +1701,7 @@ static int rules_load(struct udev_rules *rules, const char **dirs)
 		rules_add_string(rules, *f);
 
 	STRV_FOREACH(f, files)
-		parse_file(rules, *f);
-
-	strv_free(files);
+		parse_file(_rules, *f);
 
 	memzero(&end_token, sizeof(struct token));
 	end_token.type = TK_END;
@@ -1676,14 +1716,14 @@ static int rules_load(struct udev_rules *rules, const char **dirs)
 	strbuf_complete(rules->strbuf);
 
 	/* cleanup uid/gid cache */
-	free(rules->uids);
-	rules->uids = NULL;
-	rules->uids_cur = 0;
-	rules->uids_max = 0;
-	free(rules->gids);
-	rules->gids = NULL;
-	rules->gids_cur = 0;
-	rules->gids_max = 0;
+	free(_rules->uids);
+	_rules->uids = NULL;
+	_rules->uids_cur = 0;
+	_rules->uids_max = 0;
+	free(_rules->gids);
+	_rules->gids = NULL;
+	_rules->gids_cur = 0;
+	_rules->gids_max = 0;
 
 	dump_rules(rules);
 
@@ -1695,7 +1735,35 @@ int udev_rules_reload(struct udev_rules *rules, const char **dirs)
 	if (!rules)
 		return -1;
 
-	return rules_load(rules, dirs);
+	struct rules *bakrules;
+
+	char **files;
+	int res;
+
+	res = conf_files_list_strv(&files, ".rules", NULL, dirs);
+	if (res < 0)
+	{
+		log_error("failed to enumerate rules files: %s", strerror(-res));
+		return -1;
+	}
+
+	// backup rules before load
+	bakrules = rules->rules;
+
+	res = rules_load(rules, files);
+	if (!res)
+	{
+		rules_free(bakrules);
+		bakrules = NULL;
+	}
+
+	// restore rules if need
+	if (bakrules)
+		rules->rules = bakrules;
+
+	strv_free(files);
+
+	return res;
 }
 
 bool udev_rules_check_timestamp(struct udev_rules *rules)
@@ -1706,7 +1774,7 @@ bool udev_rules_check_timestamp(struct udev_rules *rules)
         return paths_check_timestamp(rules_dirs, &rules->dirs_ts_usec, true);
 }
 
-static int match_key(struct udev_rules *rules, struct token *token, const char *val)
+static int match_key(struct rules *rules, struct token *token, const char *val)
 {
         char *key_value = rules_str(rules, token->key.value_off);
         char *pos;
@@ -1780,7 +1848,7 @@ static int match_key(struct udev_rules *rules, struct token *token, const char *
         return -1;
 }
 
-static int match_attr(struct udev_rules *rules, struct udev_device *dev, struct udev_event *event, struct token *cur)
+static int match_attr(struct rules *rules, struct udev_device *dev, struct udev_event *event, struct token *cur)
 {
         const char *name;
         char nbuf[UTIL_NAME_SIZE];
@@ -1835,11 +1903,12 @@ enum escape_type {
         ESCAPE_REPLACE,
 };
 
-int udev_rules_apply_to_event(struct udev_rules *rules,
+int udev_rules_apply_to_event(struct udev_rules *_rules,
                               struct udev_event *event,
                               usec_t timeout_usec,
                               const sigset_t *sigmask)
 {
+        struct rules *rules;
         struct token *cur;
         struct token *rule;
         enum escape_type esc = ESCAPE_UNSET;
@@ -1852,6 +1921,7 @@ int udev_rules_apply_to_event(struct udev_rules *rules,
                         (major(udev_device_get_devnum(event->dev)) > 0 ||
                          udev_device_get_ifindex(event->dev) > 0));
 
+        rules = _rules->rules;
         /* loop through token list, match, run actions or forward to next rule */
         cur = &rules->tokens[0];
         rule = cur;
@@ -2508,8 +2578,9 @@ int udev_rules_apply_to_event(struct udev_rules *rules,
         }
 }
 
-int udev_rules_apply_static_dev_perms(struct udev_rules *rules)
+int udev_rules_apply_static_dev_perms(struct udev_rules *_rules)
 {
+        struct rules *rules;
         struct token *cur;
         struct token *rule;
         uid_t uid = 0;
@@ -2521,6 +2592,7 @@ int udev_rules_apply_static_dev_perms(struct udev_rules *rules)
         _cleanup_free_ char *path = NULL;
         int r = 0;
 
+        rules = _rules->rules;
         if (rules->tokens == NULL)
                 return 0;
 
@@ -2660,30 +2732,64 @@ finish:
 #ifdef TESTS
 #include <assert.h>
 
-static void test_load()
+static void test_reload()
 {
 	struct udev *udev = NULL;
 	struct udev_rules *rules = NULL;
+	struct rules *rules1, *rules2;
+	size_t size1, size2;
 	int res;
 
 	udev = udev_new();
 	assert(udev);
 
+	log_debug("load rules 1");
 	rules = udev_rules_new(udev, 1);
 	assert(rules);
+
+	rules1 = rules->rules;
+	rules->rules = NULL;
+
+	log_debug("load rules 2");
+	res = udev_rules_reload(rules, rules_dirs);
+	assert(!res);
+
+	rules2 = rules->rules;
+	rules->rules = NULL;
 
 	rules = udev_rules_unref(rules);
 	assert(!rules);
 
 	udev = udev_unref(udev);
 	assert(!udev);
+
+	size1 = rules1->token_cur * sizeof(struct token);
+	log_debug("size tokens 1: %zu", size1);
+	size2 = rules2->token_cur * sizeof(struct token);
+	log_debug("size tokens 2: %zu", size2);
+	assert(size1 == size2);
+
+	res = memcmp(rules1->tokens, rules2->tokens, size1);
+	assert(!res);
+
+	size1 = rules1->strbuf->len;
+	log_debug("size strbuf 1: %zu", size1);
+	size2 = rules1->strbuf->len;
+	log_debug("size strbuf 2: %zu", size2);
+	assert(size1 == size2);
+
+	res = memcmp(rules1->strbuf->buf, rules2->strbuf->buf, size1);
+	assert(!res);
+
+	rules_free(rules1);
+	rules_free(rules2);
 }
 
 int main()
 {
 	log_set_max_level(LOG_DEBUG);
 
-	test_load();
+	test_reload();
 
 	return EXIT_SUCCESS;
 }
