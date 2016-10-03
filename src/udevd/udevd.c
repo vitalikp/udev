@@ -348,6 +348,7 @@ skip:
                         /* wait for more device messages from main udevd, or term signal */
                         while (dev == NULL) {
                                 struct epoll_event ev[4];
+                                bool is_epollin;
                                 int fdcount;
                                 int i;
 
@@ -360,10 +361,11 @@ skip:
                                 }
 
                                 for (i = 0; i < fdcount; i++) {
-                                        if (ev[i].data.fd == fd_monitor && ev[i].events & EPOLLIN) {
+                                        is_epollin = ev[i].events & EPOLLIN;
+                                        if (ev[i].data.fd == fd_monitor && is_epollin) {
                                                 dev = udev_monitor_receive_device(worker_monitor);
                                                 break;
-                                        } else if (ev[i].data.fd == fd_signal && ev[i].events & EPOLLIN) {
+                                        } else if (ev[i].data.fd == fd_signal && is_epollin) {
                                                 struct signalfd_siginfo fdsi;
                                                 ssize_t size;
 
@@ -1322,7 +1324,7 @@ int main(int argc, char *argv[])
                 struct epoll_event ev[8];
                 int fdcount;
                 int timeout;
-                bool is_worker, is_signal, is_inotify, is_netlink, is_ctrl;
+                bool is_worker, is_signal, is_inotify, is_netlink, is_ctrl, is_epollin;
                 int i;
 
                 if (udev_exit) {
@@ -1419,15 +1421,16 @@ int main(int argc, char *argv[])
 
                 is_worker = is_signal = is_inotify = is_netlink = is_ctrl = false;
                 for (i = 0; i < fdcount; i++) {
-                        if (ev[i].data.fd == fd_worker && ev[i].events & EPOLLIN)
+                        is_epollin = ev[i].events & EPOLLIN;
+                        if (ev[i].data.fd == fd_worker && is_epollin)
                                 is_worker = true;
-                        else if (ev[i].data.fd == fd_netlink && ev[i].events & EPOLLIN)
+                        else if (ev[i].data.fd == fd_netlink && is_epollin)
                                 is_netlink = true;
-                        else if (ev[i].data.fd == fd_signal && ev[i].events & EPOLLIN)
+                        else if (ev[i].data.fd == fd_signal && is_epollin)
                                 is_signal = true;
-                        else if (ev[i].data.fd == fd_inotify && ev[i].events & EPOLLIN)
+                        else if (ev[i].data.fd == fd_inotify && is_epollin)
                                 is_inotify = true;
-                        else if (ev[i].data.fd == fd_ctrl && ev[i].events & EPOLLIN)
+                        else if (ev[i].data.fd == fd_ctrl && is_epollin)
                                 is_ctrl = true;
                 }
 
