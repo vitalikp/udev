@@ -2631,3 +2631,37 @@ finish:
 
         return r;
 }
+
+
+#ifdef TESTS
+#include <assert.h>
+
+static void test_load()
+{
+	struct udev *udev = NULL;
+	struct udev_rules *rules = NULL;
+	int res;
+
+	udev = udev_new();
+	assert(udev);
+
+	rules = udev_rules_new(udev, 1);
+	assert(rules);
+
+	rules = udev_rules_unref(rules);
+	assert(!rules);
+
+	udev = udev_unref(udev);
+	assert(!udev);
+}
+
+int main()
+{
+	log_set_max_level(LOG_DEBUG);
+
+	test_load();
+
+	return EXIT_SUCCESS;
+}
+
+#endif // TESTS

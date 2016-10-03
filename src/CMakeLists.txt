@@ -132,3 +132,18 @@ install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
 install(TARGETS udevrule DESTINATION ${bindir})
 install(TARGETS udevd DESTINATION ${sbindir})
+
+
+# tests
+if (${TESTS_ENABLE})
+
+# test rules
+add_executable(test-rules
+	core/udev-rules.c
+)
+target_compile_definitions(test-rules PRIVATE DEBUG TESTS)
+target_link_libraries(test-rules udev_core_obj)
+
+add_test(NAME udev-rules COMMAND ./test-rules)
+
+endif()
