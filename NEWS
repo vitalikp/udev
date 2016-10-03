@@ -45,6 +45,8 @@
  	- ignore unknown option in test-libudev;
  	- add test-device-nodes test;
  	- add test-rules test;
+ * build:
+ 	- don't use optimizations for debug build type;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;
