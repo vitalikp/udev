@@ -66,6 +66,8 @@ struct udev_watch {
         char *name;
 };
 
+extern const char *rules_dirs[];
+
 /* udev-rules.c */
 struct udev_rules;
 struct udev_rules *udev_rules_new(struct udev *udev, int resolve_names);

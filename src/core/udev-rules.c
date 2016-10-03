@@ -46,7 +46,7 @@ struct uid_gid {
         };
 };
 
-static const char* const rules_dirs[] = {
+const char *rules_dirs[] = {
         "/etc/udev/rules.d",
         "/run/udev/rules.d",
         UDEVLIBEXECDIR "/rules.d",
