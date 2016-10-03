@@ -31,7 +31,7 @@
 #define OP_ASSIGN_FINAL		6	/* := */
 
 
-inline char* strip(char *str)
+static inline char* strip(char *str)
 {
 	while (isspace(*str))
 	    ++str;
