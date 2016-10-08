@@ -266,6 +266,7 @@ static int trie_search_f(struct udev_hwdb *hwdb, const char *search) {
  **/
 _public_ struct udev_hwdb *udev_hwdb_new(struct udev *udev) {
         struct udev_hwdb *hwdb;
+        const char *hwdb_bin = HWDB_BIN;
         const char sig[] = HWDB_SIG;
 
         hwdb = new0(struct udev_hwdb, 1);
@@ -275,30 +276,30 @@ _public_ struct udev_hwdb *udev_hwdb_new(struct udev *udev) {
         hwdb->refcount = 1;
         udev_list_init(udev, &hwdb->properties_list, true);
 
-        hwdb->f = fopen("/etc/udev/hwdb.bin", "re");
+        hwdb->f = fopen(hwdb_bin, "re");
         if (!hwdb->f) {
-                udev_dbg(udev, "error reading /etc/udev/hwdb.bin: %m");
+                udev_dbg(udev, "error reading %s: %m", hwdb_bin);
                 udev_hwdb_unref(hwdb);
                 return NULL;
         }
 
         if (fstat(fileno(hwdb->f), &hwdb->st) < 0 ||
             (size_t)hwdb->st.st_size < offsetof(struct trie_header_f, strings_len) + 8) {
-                udev_dbg(udev, "error reading /etc/udev/hwdb.bin: %m");
+                udev_dbg(udev, "error reading %s: %m", hwdb_bin);
                 udev_hwdb_unref(hwdb);
                 return NULL;
         }
 
         hwdb->map = mmap(0, hwdb->st.st_size, PROT_READ, MAP_SHARED, fileno(hwdb->f), 0);
         if (hwdb->map == MAP_FAILED) {
-                udev_dbg(udev, "error mapping /etc/udev/hwdb.bin: %m");
+                udev_dbg(udev, "error mapping %s: %m", hwdb_bin);
                 udev_hwdb_unref(hwdb);
                 return NULL;
         }
 
         if (memcmp(hwdb->map, sig, sizeof(hwdb->head->signature)) != 0 ||
             (size_t)hwdb->st.st_size != le64toh(hwdb->head->file_size)) {
-                udev_dbg(udev, "error recognizing the format of /etc/udev/hwdb.bin");
+                udev_dbg(udev, "error recognizing the format of %s", hwdb_bin);
                 udev_hwdb_unref(hwdb);
                 return NULL;
         }
@@ -358,7 +359,7 @@ bool udev_hwdb_validate(struct udev_hwdb *hwdb) {
                 return false;
         if (!hwdb->f)
                 return false;
-        if (stat("/etc/udev/hwdb.bin", &st) < 0)
+        if (stat(HWDB_BIN, &st) < 0)
                 return true;
         if (timespec_load(&hwdb->st.st_mtim) != timespec_load(&st.st_mtim))
                 return true;
