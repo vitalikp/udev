@@ -41,11 +41,11 @@ static int fake_filesystems(void) {
                 const char *target;
                 const char *error;
         } fakefss[] = {
-                { "sys", "/sys",                   "failed to mount test /sys" },
-                { "dev", "/dev",                   "failed to mount test /dev" },
-                { "run", "/run",                   "failed to mount test /run" },
-                { "run", "/etc/udev/rules.d",      "failed to mount empty /etc/udev/rules.d" },
-                { "run", "/usr/lib/udev/rules.d",  "failed to mount empty /usr/lib/udev/rules.d" },
+                { "sys", "/sys",                          "test"  },
+                { "dev", "/dev",                          "test"  },
+                { "run", "/run",                          "test"  },
+                { "run", "/etc/udev/rules.d",             "empty" },
+                { "run", "/usr/lib/udev/rules.d",         "empty" },
         };
         unsigned int i;
         int err;
@@ -67,7 +67,7 @@ static int fake_filesystems(void) {
                 err = mount(fakefss[i].src, fakefss[i].target, NULL, MS_BIND, NULL);
                 if (err < 0) {
                         err = -errno;
-                        fprintf(stderr, "%s %m", fakefss[i].error);
+                        fprintf(stderr, "failed to mount %s %s %m", fakefss[i].error, fakefss[i].target);
                         return err;
                 }
         }
