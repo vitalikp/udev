@@ -983,11 +983,7 @@ static void kernel_cmdline_options(struct udev *udev)
                 if (!s)
                         break;
 
-                /* accept the same options for the initrd, prefixed with "rd." */
-                if (in_initrd() && startswith(s, "rd."))
-                        opt = s + 3;
-                else
-                        opt = s;
+                opt = s;
 
                 if (startswith(opt, "udev.log-priority=")) {
                         int prio;
