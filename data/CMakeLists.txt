@@ -62,9 +62,6 @@ install(FILES rules/61-accelerometer.rules DESTINATION ${udevrulesdir})
 install(FILES rules/75-probe_mtd.rules DESTINATION ${udevrulesdir})
 
 # systemd
-file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/initrd-switch-root.target.wants/)
-execute_process(COMMAND ${LN} -fs ../udevadm-cleanup-db.service ${PROJECT_BINARY_DIR}/data/initrd-switch-root.target.wants/)
-configure_file(systemd/udevadm-cleanup-db.service.cmake udevadm-cleanup-db.service)
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/sockets.target.wants/)
 execute_process(COMMAND ${LN} -fs ../udevd-kernel.socket ${PROJECT_BINARY_DIR}/data/sockets.target.wants/)
 execute_process(COMMAND ${LN} -fs ../udevd-control.socket ${PROJECT_BINARY_DIR}/data/sockets.target.wants/)
@@ -75,8 +72,6 @@ configure_file(systemd/udev-trigger.service.cmake udev-trigger.service)
 configure_file(systemd/udev-settle.service.cmake udev-settle.service)
 configure_file(systemd/udevd.service.cmake udevd.service)
 
-install(DIRECTORY ${PROJECT_BINARY_DIR}/data/initrd-switch-root.target.wants DESTINATION lib/systemd/system)
-install(FILES ${PROJECT_BINARY_DIR}/data/udevadm-cleanup-db.service DESTINATION lib/systemd/system)
 install(FILES systemd/udevd-kernel.socket DESTINATION lib/systemd/system)
 install(FILES systemd/udevd-control.socket DESTINATION lib/systemd/system)
 install(DIRECTORY ${PROJECT_BINARY_DIR}/data/sockets.target.wants DESTINATION lib/systemd/system)

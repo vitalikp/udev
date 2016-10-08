@@ -56,6 +56,8 @@
     - update usb identifiers;
     - fix keymap in HP Pavillon DV7;
     - update format description and document reloading;
+ * data:
+ 	- remove udevadm-cleanup-db systemd service;
  * never bypass our own logging framework and call vsyslog() directly;
 
    udev (214.3)
