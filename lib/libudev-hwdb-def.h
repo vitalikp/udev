@@ -22,7 +22,7 @@
 
 #include "sparse-endian.h"
 
-#define HWDB_BIN "/etc/udev/hwdb.bin"
+#define HWDB_BIN SYSCONFDIR "/udev/hwdb.bin"
 #define HWDB_SIG { 'K', 'S', 'L', 'P', 'H', 'H', 'R', 'H' }
 
 /* on-disk trie objects */

@@ -49,6 +49,7 @@
  	- add test-rules test;
  * build:
  	- don't use optimizations for debug build type;
+ 	- add SYSCONFCDIR path variable;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;

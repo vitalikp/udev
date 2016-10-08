@@ -47,7 +47,7 @@ struct uid_gid {
 };
 
 const char *rules_dirs[] = {
-        "/etc/udev/rules.d",
+        SYSCONFDIR "/udev/rules.d",
         "/run/udev/rules.d",
         UDEVLIBEXECDIR "/rules.d",
         NULL};
