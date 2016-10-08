@@ -3958,73 +3958,6 @@ int socket_from_display(const char *display, char **path) {
         return 0;
 }
 
-int get_user_creds(
-                const char **username,
-                uid_t *uid, gid_t *gid,
-                const char **home,
-                const char **shell) {
-
-        struct passwd *p;
-        uid_t u;
-
-        assert(username);
-        assert(*username);
-
-        /* We enforce some special rules for uid=0: in order to avoid
-         * NSS lookups for root we hardcode its data. */
-
-        if (streq(*username, "root") || streq(*username, "0")) {
-                *username = "root";
-
-                if (uid)
-                        *uid = 0;
-
-                if (gid)
-                        *gid = 0;
-
-                if (home)
-                        *home = "/root";
-
-                if (shell)
-                        *shell = "/bin/sh";
-
-                return 0;
-        }
-
-        if (parse_uid(*username, &u) >= 0) {
-                errno = 0;
-                p = getpwuid(u);
-
-                /* If there are multiple users with the same id, make
-                 * sure to leave $USER to the configured value instead
-                 * of the first occurrence in the database. However if
-                 * the uid was configured by a numeric uid, then let's
-                 * pick the real username from /etc/passwd. */
-                if (p)
-                        *username = p->pw_name;
-        } else {
-                errno = 0;
-                p = getpwnam(*username);
-        }
-
-        if (!p)
-                return errno > 0 ? -errno : -ESRCH;
-
-        if (uid)
-                *uid = p->pw_uid;
-
-        if (gid)
-                *gid = p->pw_gid;
-
-        if (home)
-                *home = p->pw_dir;
-
-        if (shell)
-                *shell = p->pw_shell;
-
-        return 0;
-}
-
 char* uid_to_name(uid_t uid) {
         struct passwd *p;
         char *r;
@@ -4811,30 +4744,6 @@ bool is_valid_documentation_url(const char *url) {
                 return true;
 
         return false;
-}
-
-bool in_initrd(void) {
-        static int saved = -1;
-        struct statfs s;
-
-        if (saved >= 0)
-                return saved;
-
-        /* We make two checks here:
-         *
-         * 1. the flag file /etc/initrd-release must exist
-         * 2. the root file system must be a memory file system
-         *
-         * The second check is extra paranoia, since misdetecting an
-         * initrd can have bad bad consequences due the initrd
-         * emptying when transititioning to the main systemd.
-         */
-
-        saved = access("/etc/initrd-release", F_OK) >= 0 &&
-                statfs("/", &s) >= 0 &&
-                is_temporary_fs(&s);
-
-        return saved;
 }
 
 void warn_melody(void) {
@@ -5643,43 +5552,6 @@ int proc_cmdline(char **ret) {
                 return r;
 
         return 1;
-}
-
-int parse_proc_cmdline(int (*parse_item)(const char *key, const char *value)) {
-        _cleanup_free_ char *line = NULL;
-        const char *w, *state;
-        size_t l;
-        int r;
-
-        assert(parse_item);
-
-        r = proc_cmdline(&line);
-        if (r < 0)
-                log_warning("Failed to read /proc/cmdline, ignoring: %s", strerror(-r));
-        if (r <= 0)
-                return 0;
-
-        FOREACH_WORD_QUOTED(w, l, line, state) {
-                char word[l+1], *value;
-
-                memcpy(word, w, l);
-                word[l] = 0;
-
-                /* Filter out arguments that are intended only for the
-                 * initrd */
-                if (!in_initrd() && startswith(word, "rd."))
-                        continue;
-
-                value = strchr(word, '=');
-                if (value)
-                        *(value++) = 0;
-
-                r = parse_item(word, value);
-                if (r < 0)
-                        return r;
-        }
-
-        return 0;
 }
 
 int container_get_leader(const char *machine, pid_t *pid) {

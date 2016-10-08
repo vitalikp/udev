@@ -518,7 +518,6 @@ int fchmod_umask(int fd, mode_t mode);
 bool display_is_local(const char *display) _pure_;
 int socket_from_display(const char *display, char **path);
 
-int get_user_creds(const char **username, uid_t *uid, gid_t *gid, const char **home, const char **shell);
 int get_group_creds(const char **groupname, gid_t *gid);
 
 int in_gid(gid_t gid);
@@ -606,8 +605,6 @@ int setrlimit_closest(int resource, const struct rlimit *rlim);
 int getenv_for_pid(pid_t pid, const char *field, char **_value);
 
 bool is_valid_documentation_url(const char *url) _pure_;
-
-bool in_initrd(void);
 
 void warn_melody(void);
 
@@ -882,7 +879,6 @@ static inline void qsort_safe(void *base, size_t nmemb, size_t size,
 }
 
 int proc_cmdline(char **ret);
-int parse_proc_cmdline(int (*parse_word)(const char *key, const char *value));
 
 int container_get_leader(const char *machine, pid_t *pid);
 
