@@ -36,7 +36,7 @@
  */
 
 static const char * const conf_file_dirs[] = {
-        SYSCONFDIR "/udev/hwdb.d",
+        UDEVSYSCONFDIR "/hwdb.d",
         UDEVLIBEXECDIR "/hwdb.d",
         NULL
 };

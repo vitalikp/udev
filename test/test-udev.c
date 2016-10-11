@@ -44,7 +44,7 @@ static int fake_filesystems(void) {
                 { "sys", "/sys",                          "test"  },
                 { "dev", "/dev",                          "test"  },
                 { "run", "/run",                          "test"  },
-                { "run", SYSCONFDIR "/udev/rules.d",      "empty" },
+                { "run", UDEVSYSCONFDIR "/rules.d",       "empty" },
                 { "run", "/usr/lib/udev/rules.d",         "empty" },
         };
         unsigned int i;

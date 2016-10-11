@@ -1,7 +1,7 @@
 # udev data cmake file
 
 # etc
-install(FILES udev.conf DESTINATION ${sysconfdir}/udev)
+install(FILES udev.conf DESTINATION ${udevsysconfdir})
 
 # completions
 # bash
@@ -33,7 +33,7 @@ install(FILES ${PROJECT_BINARY_DIR}/data/macros.udev DESTINATION lib/rpm/macros.
 
 # udev rules
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/data/rules.d)
-install(DIRECTORY ${PROJECT_BINARY_DIR}/data/rules.d DESTINATION ${sysconfdir}/udev)
+install(DIRECTORY ${PROJECT_BINARY_DIR}/data/rules.d DESTINATION ${udevsysconfdir})
 install(FILES rules/42-usb-hid-pm.rules DESTINATION ${udevrulesdir})
 install(FILES rules/50-udev-default.rules DESTINATION ${udevrulesdir})
 install(FILES rules/60-drm.rules DESTINATION ${udevrulesdir})

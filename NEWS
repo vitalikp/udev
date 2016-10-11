@@ -50,6 +50,7 @@
  * build:
  	- don't use optimizations for debug build type;
  	- add SYSCONFCDIR path variable;
+ 	- add UDEVSYSCONFDIR path variable;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;

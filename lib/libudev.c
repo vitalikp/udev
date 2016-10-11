@@ -118,7 +118,7 @@ _public_ void udev_set_userdata(struct udev *udev, void *userdata)
 _public_ struct udev *udev_new(void)
 {
         struct udev *udev;
-        const char *conf_fn = SYSCONFDIR "/udev/udev.conf";
+        const char *conf_fn = UDEVSYSCONFDIR "/udev.conf";
         const char *env;
         FILE *f;
 
