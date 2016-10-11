@@ -1277,34 +1277,6 @@ int cg_pid_get_user_unit(pid_t pid, char **unit) {
         return cg_path_get_user_unit(cgroup, unit);
 }
 
-int cg_path_get_machine_name(const char *path, char **machine) {
-        _cleanup_free_ char *u = NULL, *sl = NULL;
-        int r;
-
-        r = cg_path_get_unit(path, &u);
-        if (r < 0)
-                return r;
-
-        sl = strjoin("/run/systemd/machines/unit:", u, NULL);
-        if (!sl)
-                return -ENOMEM;
-
-        return readlink_malloc(sl, machine);
-}
-
-int cg_pid_get_machine_name(pid_t pid, char **machine) {
-        _cleanup_free_ char *cgroup = NULL;
-        int r;
-
-        assert(machine);
-
-        r = cg_pid_get_path_shifted(pid, NULL, &cgroup);
-        if (r < 0)
-                return r;
-
-        return cg_path_get_machine_name(cgroup, machine);
-}
-
 int cg_path_get_session(const char *path, char **session) {
         const char *e, *n, *x;
         char *s;

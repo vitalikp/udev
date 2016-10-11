@@ -248,11 +248,6 @@ char *strnappend(const char *s, const char *suffix, size_t length);
 char *replace_env(const char *format, char **env);
 char **replace_env_argv(char **argv, char **env);
 
-int readlinkat_malloc(int fd, const char *p, char **ret);
-int readlink_malloc(const char *p, char **r);
-int readlink_and_make_absolute(const char *p, char **r);
-int readlink_and_canonicalize(const char *p, char **r);
-
 int reset_all_signal_handlers(void);
 
 char *strstrip(char *s);
@@ -266,7 +261,6 @@ int rmdir_parents(const char *path, const char *stop);
 int get_process_state(pid_t pid);
 int get_process_comm(pid_t pid, char **name);
 int get_process_cmdline(pid_t pid, size_t max_length, bool comm_fallback, char **line);
-int get_process_exe(pid_t pid, char **name);
 int get_process_uid(pid_t pid, uid_t *uid);
 int get_process_gid(pid_t pid, gid_t *gid);
 int get_process_capeff(pid_t pid, char **capeff);
@@ -396,9 +390,6 @@ ssize_t loop_write(int fd, const void *buf, size_t nbytes, bool do_poll);
 
 bool is_device_path(const char *path);
 
-int dir_is_empty(const char *path);
-char* dirname_malloc(const char *path);
-
 void rename_process(const char name[8]);
 
 void sigset_add_many(sigset_t *ss, ...);
@@ -409,10 +400,8 @@ char* getlogname_malloc(void);
 char* getusername_malloc(void);
 
 int getttyname_malloc(int fd, char **r);
-int getttyname_harder(int fd, char **r);
 
 int get_ctty_devnr(pid_t pid, dev_t *d);
-int get_ctty(pid_t, dev_t *_devnr, char **r);
 
 int chmod_and_chown(const char *path, mode_t mode, uid_t uid, gid_t gid);
 int fchmod_and_fchown(int fd, mode_t mode, uid_t uid, gid_t gid);
@@ -423,11 +412,6 @@ int rm_rf(const char *path, bool only_dirs, bool delete_root, bool honour_sticky
 int rm_rf_dangerous(const char *path, bool only_dirs, bool delete_root, bool honour_sticky);
 
 int pipe_eof(int fd);
-
-cpu_set_t* cpu_set_malloc(unsigned *ncpus);
-
-int status_vprintf(const char *status, bool ellipse, bool ephemeral, const char *format, va_list ap) _printf_(4,0);
-int status_printf(const char *status, bool ellipse, bool ephemeral, const char *format, ...) _printf_(4,5);
 
 int fd_columns(int fd);
 unsigned columns(void);
@@ -474,11 +458,6 @@ int touch(const char *path);
 
 char *unquote(const char *s, const char *quotes);
 char *normalize_env_assignment(const char *s);
-
-int wait_for_terminate(pid_t pid, siginfo_t *status);
-int wait_for_terminate_and_warn(const char *name, pid_t pid);
-
-noreturn void freeze(void);
 
 bool null_or_empty(struct stat *st) _pure_;
 int null_or_empty_path(const char *fn);

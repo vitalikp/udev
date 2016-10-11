@@ -696,27 +696,6 @@ int get_process_capeff(pid_t pid, char **capeff) {
         return get_status_field(p, "\nCapEff:", capeff);
 }
 
-int get_process_exe(pid_t pid, char **name) {
-        const char *p;
-        char *d;
-        int r;
-
-        assert(pid >= 0);
-        assert(name);
-
-        p = procfs_file_alloca(pid, "exe");
-
-        r = readlink_malloc(p, name);
-        if (r < 0)
-                return r == -ENOENT ? -ESRCH : r;
-
-        d = endswith(*name, " (deleted)");
-        if (d)
-                *d = '\0';
-
-        return 0;
-}
-
 static int get_process_id(pid_t pid, const char *field, uid_t *uid) {
         _cleanup_fclose_ FILE *f = NULL;
         char line[LINE_MAX];
@@ -793,86 +772,6 @@ char *strnappend(const char *s, const char *suffix, size_t b) {
 
 char *strappend(const char *s, const char *suffix) {
         return strnappend(s, suffix, suffix ? strlen(suffix) : 0);
-}
-
-int readlinkat_malloc(int fd, const char *p, char **ret) {
-        size_t l = 100;
-        int r;
-
-        assert(p);
-        assert(ret);
-
-        for (;;) {
-                char *c;
-                ssize_t n;
-
-                c = new(char, l);
-                if (!c)
-                        return -ENOMEM;
-
-                n = readlinkat(fd, p, c, l-1);
-                if (n < 0) {
-                        r = -errno;
-                        free(c);
-                        return r;
-                }
-
-                if ((size_t) n < l-1) {
-                        c[n] = 0;
-                        *ret = c;
-                        return 0;
-                }
-
-                free(c);
-                l *= 2;
-        }
-}
-
-int readlink_malloc(const char *p, char **ret) {
-        return readlinkat_malloc(AT_FDCWD, p, ret);
-}
-
-int readlink_and_make_absolute(const char *p, char **r) {
-        _cleanup_free_ char *target = NULL;
-        char *k;
-        int j;
-
-        assert(p);
-        assert(r);
-
-        j = readlink_malloc(p, &target);
-        if (j < 0)
-                return j;
-
-        k = file_in_same_dir(p, target);
-        if (!k)
-                return -ENOMEM;
-
-        *r = k;
-        return 0;
-}
-
-int readlink_and_canonicalize(const char *p, char **r) {
-        char *t, *s;
-        int j;
-
-        assert(p);
-        assert(r);
-
-        j = readlink_and_make_absolute(p, &t);
-        if (j < 0)
-                return j;
-
-        s = canonicalize_file_name(t);
-        if (s) {
-                free(t);
-                *r = s;
-        } else
-                *r = t;
-
-        path_kill_slashes(*r);
-
-        return 0;
 }
 
 int reset_all_signal_handlers(void) {
@@ -2175,47 +2074,6 @@ bool is_device_path(const char *path) {
                 path_startswith(path, "/sys/");
 }
 
-int dir_is_empty(const char *path) {
-        _cleanup_closedir_ DIR *d;
-
-        d = opendir(path);
-        if (!d)
-                return -errno;
-
-        for (;;) {
-                struct dirent *de;
-
-                errno = 0;
-                de = readdir(d);
-                if (!de && errno != 0)
-                        return -errno;
-
-                if (!de)
-                        return 1;
-
-                if (!ignore_file(de->d_name))
-                        return 0;
-        }
-}
-
-char* dirname_malloc(const char *path) {
-        char *d, *dir, *dir2;
-
-        d = strdup(path);
-        if (!d)
-                return NULL;
-        dir = dirname(d);
-        assert(dir);
-
-        if (dir != d) {
-                dir2 = strdup(dir);
-                free(d);
-                return dir2;
-        }
-
-        return dir;
-}
-
 int dev_urandom(void *p, size_t n) {
         _cleanup_close_ int fd;
         ssize_t k;
@@ -2413,23 +2271,6 @@ int getttyname_malloc(int fd, char **r) {
         return 0;
 }
 
-int getttyname_harder(int fd, char **r) {
-        int k;
-        char *s;
-
-        k = getttyname_malloc(fd, &s);
-        if (k < 0)
-                return k;
-
-        if (streq(s, "tty")) {
-                free(s);
-                return get_ctty(0, NULL, r);
-        }
-
-        *r = s;
-        return 0;
-}
-
 int get_ctty_devnr(pid_t pid, dev_t *d) {
         int r;
         _cleanup_free_ char *line = NULL;
@@ -2463,61 +2304,6 @@ int get_ctty_devnr(pid_t pid, dev_t *d) {
 
         if (d)
                 *d = (dev_t) ttynr;
-
-        return 0;
-}
-
-int get_ctty(pid_t pid, dev_t *_devnr, char **r) {
-        char fn[sizeof("/dev/char/")-1 + 2*DECIMAL_STR_MAX(unsigned) + 1 + 1], *b = NULL;
-        _cleanup_free_ char *s = NULL;
-        const char *p;
-        dev_t devnr;
-        int k;
-
-        assert(r);
-
-        k = get_ctty_devnr(pid, &devnr);
-        if (k < 0)
-                return k;
-
-        snprintf(fn, sizeof(fn), "/dev/char/%u:%u", major(devnr), minor(devnr));
-
-        k = readlink_malloc(fn, &s);
-        if (k < 0) {
-
-                if (k != -ENOENT)
-                        return k;
-
-                /* This is an ugly hack */
-                if (major(devnr) == 136) {
-                        asprintf(&b, "pts/%u", minor(devnr));
-                        goto finish;
-                }
-
-                /* Probably something like the ptys which have no
-                 * symlink in /dev/char. Let's return something
-                 * vaguely useful. */
-
-                b = strdup(fn + 5);
-                goto finish;
-        }
-
-        if (startswith(s, "/dev/"))
-                p = s + 5;
-        else if (startswith(s, "../"))
-                p = s + 3;
-        else
-                p = s;
-
-        b = strdup(p);
-
-finish:
-        if (!b)
-                return -ENOMEM;
-
-        *r = b;
-        if (_devnr)
-                *_devnr = devnr;
 
         return 0;
 }
@@ -2752,112 +2538,6 @@ int fchmod_and_fchown(int fd, mode_t mode, uid_t uid, gid_t gid) {
                         return -errno;
 
         return 0;
-}
-
-cpu_set_t* cpu_set_malloc(unsigned *ncpus) {
-        cpu_set_t *r;
-        unsigned n = 1024;
-
-        /* Allocates the cpuset in the right size */
-
-        for (;;) {
-                if (!(r = CPU_ALLOC(n)))
-                        return NULL;
-
-                if (sched_getaffinity(0, CPU_ALLOC_SIZE(n), r) >= 0) {
-                        CPU_ZERO_S(CPU_ALLOC_SIZE(n), r);
-
-                        if (ncpus)
-                                *ncpus = n;
-
-                        return r;
-                }
-
-                CPU_FREE(r);
-
-                if (errno != EINVAL)
-                        return NULL;
-
-                n *= 2;
-        }
-}
-
-int status_vprintf(const char *status, bool ellipse, bool ephemeral, const char *format, va_list ap) {
-        static const char status_indent[] = "         "; /* "[" STATUS "] " */
-        _cleanup_free_ char *s = NULL;
-        _cleanup_close_ int fd = -1;
-        struct iovec iovec[6] = {};
-        int n = 0;
-        static bool prev_ephemeral;
-
-        assert(format);
-
-        /* This is independent of logging, as status messages are
-         * optional and go exclusively to the console. */
-
-        if (vasprintf(&s, format, ap) < 0)
-                return log_oom();
-
-        fd = open_terminal("/dev/console", O_WRONLY|O_NOCTTY|O_CLOEXEC);
-        if (fd < 0)
-                return fd;
-
-        if (ellipse) {
-                char *e;
-                size_t emax, sl;
-                int c;
-
-                c = fd_columns(fd);
-                if (c <= 0)
-                        c = 80;
-
-                sl = status ? sizeof(status_indent)-1 : 0;
-
-                emax = c - sl - 1;
-                if (emax < 3)
-                        emax = 3;
-
-                e = ellipsize(s, emax, 75);
-                if (e) {
-                        free(s);
-                        s = e;
-                }
-        }
-
-        if (prev_ephemeral)
-                IOVEC_SET_STRING(iovec[n++], "\r" ANSI_ERASE_TO_END_OF_LINE);
-        prev_ephemeral = ephemeral;
-
-        if (status) {
-                if (!isempty(status)) {
-                        IOVEC_SET_STRING(iovec[n++], "[");
-                        IOVEC_SET_STRING(iovec[n++], status);
-                        IOVEC_SET_STRING(iovec[n++], "] ");
-                } else
-                        IOVEC_SET_STRING(iovec[n++], status_indent);
-        }
-
-        IOVEC_SET_STRING(iovec[n++], s);
-        if (!ephemeral)
-                IOVEC_SET_STRING(iovec[n++], "\n");
-
-        if (writev(fd, iovec, n) < 0)
-                return -errno;
-
-        return 0;
-}
-
-int status_printf(const char *status, bool ellipse, bool ephemeral, const char *format, ...) {
-        va_list ap;
-        int r;
-
-        assert(format);
-
-        va_start(ap, format);
-        r = status_vprintf(status, ellipse, ephemeral, format, ap);
-        va_end(ap);
-
-        return r;
 }
 
 char *replace_env(const char *format, char **env) {
@@ -3314,73 +2994,6 @@ char *normalize_env_assignment(const char *s) {
                 r = NULL;
 
         return r;
-}
-
-int wait_for_terminate(pid_t pid, siginfo_t *status) {
-        siginfo_t dummy;
-
-        assert(pid >= 1);
-
-        if (!status)
-                status = &dummy;
-
-        for (;;) {
-                zero(*status);
-
-                if (waitid(P_PID, pid, status, WEXITED) < 0) {
-
-                        if (errno == EINTR)
-                                continue;
-
-                        return -errno;
-                }
-
-                return 0;
-        }
-}
-
-int wait_for_terminate_and_warn(const char *name, pid_t pid) {
-        int r;
-        siginfo_t status;
-
-        assert(name);
-        assert(pid > 1);
-
-        r = wait_for_terminate(pid, &status);
-        if (r < 0) {
-                log_warning("Failed to wait for %s: %s", name, strerror(-r));
-                return r;
-        }
-
-        if (status.si_code == CLD_EXITED) {
-                if (status.si_status != 0) {
-                        log_warning("%s failed with error code %i.", name, status.si_status);
-                        return status.si_status;
-                }
-
-                log_debug("%s succeeded.", name);
-                return 0;
-
-        } else if (status.si_code == CLD_KILLED ||
-                   status.si_code == CLD_DUMPED) {
-
-                log_warning("%s terminated by signal %s.", name, signal_to_string(status.si_status));
-                return -EPROTO;
-        }
-
-        log_warning("%s failed due to unknown reason.", name);
-        return -EPROTO;
-}
-
-noreturn void freeze(void) {
-
-        /* Make sure nobody waits for us on a socket anymore */
-        close_all_fds(NULL, 0);
-
-        sync();
-
-        for (;;)
-                pause();
 }
 
 bool null_or_empty(struct stat *st) {
