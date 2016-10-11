@@ -1641,7 +1641,6 @@ static void rules_free(struct rules *rules)
 struct udev_rules *udev_rules_new(struct udev *udev, int resolve_names)
 {
         struct udev_rules *rules;
-        struct udev_list file_list;
         struct token end_token;
         char **files, **f;
         int r;
@@ -1651,7 +1650,6 @@ struct udev_rules *udev_rules_new(struct udev *udev, int resolve_names)
                 return NULL;
         rules->udev = udev;
         rules->resolve_names = resolve_names;
-        udev_list_init(udev, &file_list, true);
 
         rules->rules = rules_new(PREALLOC_TOKEN);
         if (!rules->rules)
