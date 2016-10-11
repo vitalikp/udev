@@ -1116,7 +1116,7 @@ int main(int argc, char *argv[])
         chdir("/");
         umask(022);
 
-        mkdir("/run/udev", 0755);
+        mkdir(UDEVRUNDIR, 0755);
 
         dev_setup(NULL);
 

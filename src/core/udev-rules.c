@@ -48,7 +48,7 @@ struct uid_gid {
 
 const char *rules_dirs[] = {
         UDEVSYSCONFDIR "/rules.d",
-        "/run/udev/rules.d",
+        UDEVRUNDIR "/rules.d",
         UDEVLIBEXECDIR "/rules.d",
         NULL};
 
@@ -2649,7 +2649,7 @@ int udev_rules_apply_static_dev_perms(struct udev_rules *_rules)
                                 STRV_FOREACH(t, tags) {
                                         _cleanup_free_ char *unescaped_filename = NULL;
 
-                                        strscpyl(tags_dir, sizeof(tags_dir), "/run/udev/static_node-tags/", *t, "/", NULL);
+                                        strscpyl(tags_dir, sizeof(tags_dir), UDEVRUNDIR "/static_node-tags/", *t, "/", NULL);
                                         r = mkdir_p(tags_dir, 0755);
                                         if (r < 0) {
                                                 log_error("failed to create %s: %s", tags_dir, strerror(-r));
@@ -2715,9 +2715,9 @@ finish:
         if (f) {
                 fflush(f);
                 fchmod(fileno(f), 0644);
-                if (ferror(f) || rename(path, "/run/udev/static_node-tags") < 0) {
+                if (ferror(f) || rename(path, UDEVRUNDIR "/static_node-tags") < 0) {
                         r = -errno;
-                        unlink("/run/udev/static_node-tags");
+                        unlink(UDEVRUNDIR "/static_node-tags");
                         unlink(path);
                 }
                 fclose(f);

@@ -232,27 +232,27 @@ static void cleanup_db(struct udev *udev)
 {
         DIR *dir;
 
-        unlink("/run/udev/queue.bin");
+        unlink(UDEVRUNDIR "/queue.bin");
 
-        dir = opendir("/run/udev/data");
+        dir = opendir(UDEVRUNDIR "/data");
         if (dir != NULL) {
                 cleanup_dir(dir, S_ISVTX, 1);
                 closedir(dir);
         }
 
-        dir = opendir("/run/udev/links");
+        dir = opendir(UDEVRUNDIR "/links");
         if (dir != NULL) {
                 cleanup_dir(dir, 0, 2);
                 closedir(dir);
         }
 
-        dir = opendir("/run/udev/tags");
+        dir = opendir(UDEVRUNDIR "/tags");
         if (dir != NULL) {
                 cleanup_dir(dir, 0, 2);
                 closedir(dir);
         }
 
-        dir = opendir("/run/udev/static_node-tags");
+        dir = opendir(UDEVRUNDIR "/static_node-tags");
         if (dir != NULL) {
                 cleanup_dir(dir, 0, 2);
                 closedir(dir);

@@ -167,7 +167,7 @@ _public_ unsigned long long int udev_queue_get_udev_seqnum(struct udev_queue *ud
  **/
 _public_ int udev_queue_get_udev_is_active(struct udev_queue *udev_queue)
 {
-        return access("/run/udev/control", F_OK) >= 0;
+        return access(UDEVRUNDIR "/control", F_OK) >= 0;
 }
 
 /**
@@ -245,7 +245,7 @@ _public_ int udev_queue_get_fd(struct udev_queue *udev_queue) {
         if (fd < 0)
                 return -errno;
 
-        r = inotify_add_watch(fd, "/run/udev" , IN_DELETE);
+        r = inotify_add_watch(fd, UDEVRUNDIR, IN_DELETE);
         if (r < 0) {
                 r = -errno;
                 close(fd);

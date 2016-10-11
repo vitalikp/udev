@@ -14,6 +14,6 @@ ConditionPathIsReadWrite=/sys
 
 [Socket]
 Service=udevd.service
-ListenSequentialPacket=/run/udev/control
+ListenSequentialPacket=@udevrundir@/control
 SocketMode=0600
 PassCredentials=yes
