@@ -24,6 +24,7 @@
  	- exclude MD from block device ownership event locking;
  	- add event-timeout commandline option;
  	- don't parse options with rd.* prefix;
+ 	- don't sanitize fd 0,1,2;
  * shared:
  	- remove unused functions;
  	- remove conf parser util;
