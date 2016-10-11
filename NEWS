@@ -16,6 +16,7 @@
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  	- use PRIu64 in udev_hwdb_new function;
  	- add HWDB_BIN macro;
+ 	- add QUEUE_PATH macro;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:

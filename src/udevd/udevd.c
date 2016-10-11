@@ -1353,11 +1353,11 @@ int main(int argc, char *argv[])
                 if (!udev_list_node_is_empty(&event_list)) {
                         int fd;
 
-                        fd = open("/run/udev/queue", O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
+                        fd = open(QUEUE_PATH, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
                         if (fd >= 0)
                                 close(fd);
                 } else {
-                        unlink("/run/udev/queue");
+                        unlink(QUEUE_PATH);
                 }
 
                 fdcount = epoll_wait(fd_ep, ev, ELEMENTSOF(ev), timeout);
@@ -1489,7 +1489,7 @@ int main(int argc, char *argv[])
         rc = EXIT_SUCCESS;
 exit:
         udev_ctrl_cleanup(udev_ctrl);
-        unlink("/run/udev/queue");
+        unlink(QUEUE_PATH);
 exit_daemonize:
         if (fd_ep >= 0)
                 close(fd_ep);

@@ -135,6 +135,7 @@ void udev_list_entry_set_num(struct udev_list_entry *list_entry, int num);
              entry = tmp, tmp = udev_list_entry_get_next(tmp))
 
 /* libudev-queue.c */
+#define QUEUE_PATH "/run/udev/queue"
 unsigned long long int udev_get_kernel_seqnum(struct udev *udev);
 int udev_queue_read_seqnum(FILE *queue_file, unsigned long long int *seqnum);
 ssize_t udev_queue_read_devpath(FILE *queue_file, char *devpath, size_t size);
