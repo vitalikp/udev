@@ -61,6 +61,8 @@
     - update format description and document reloading;
  * data:
  	- remove udevadm-cleanup-db systemd service;
+ * bugfix:
+    - fix crash with invalid udev.log-priority;
  * never bypass our own logging framework and call vsyslog() directly;
 
    udev (214.3)

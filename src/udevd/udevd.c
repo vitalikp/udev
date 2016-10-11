@@ -987,10 +987,15 @@ static void kernel_cmdline_options(struct udev *udev)
 
                 if (startswith(opt, "udev.log-priority=")) {
                         int prio;
+                        const char* value = opt + 18;
 
-                        prio = util_log_priority(opt + 18);
-                        log_set_max_level(prio);
-                        udev_set_log_priority(udev, prio);
+                        prio = util_log_priority(value);
+                        if (prio < 0)
+                                log_warning("invalid udev.log-priority ignored: %s", value);
+                        else {
+                                log_set_max_level(prio);
+                                udev_set_log_priority(udev, prio);
+                        }
                 } else if (startswith(opt, "udev.children-max=")) {
                         children_max = strtoul(opt + 18, NULL, 0);
                 } else if (startswith(opt, "udev.exec-delay=")) {
