@@ -25,6 +25,7 @@
  	- add event-timeout commandline option;
  	- don't parse options with rd.* prefix;
  	- don't sanitize fd 0,1,2;
+ 	- reload rules without reinit udev_rules struct;
  * shared:
  	- remove unused functions;
  	- remove conf parser util;

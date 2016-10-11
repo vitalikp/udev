@@ -1430,7 +1430,7 @@ int main(int argc, char *argv[])
                 /* reload requested, HUP signal received, rules changed, builtin changed */
                 if (reload) {
                         worker_kill(udev);
-                        rules = udev_rules_unref(rules);
+                        udev_rules_reload(rules, rules_dirs);
                         udev_builtin_exit(udev);
                         reload = false;
                 }
@@ -1453,10 +1453,7 @@ int main(int argc, char *argv[])
                 /* start new events */
                 if (!udev_list_node_is_empty(&event_list) && !udev_exit && !stop_exec_queue) {
                         udev_builtin_init(udev);
-                        if (rules == NULL)
-                                rules = udev_rules_new(udev, resolve_names);
-                        if (rules != NULL)
-                                event_queue_start(udev);
+                        event_queue_start(udev);
                 }
 
                 if (is_signal) {
