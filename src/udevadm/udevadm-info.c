@@ -258,7 +258,7 @@ static void cleanup_db(struct udev *udev)
                 closedir(dir);
         }
 
-        dir = opendir("/run/udev/watch");
+        dir = opendir(WATCH_PATH);
         if (dir != NULL) {
                 cleanup_dir(dir, 0, 1);
                 closedir(dir);

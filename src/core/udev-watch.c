@@ -49,16 +49,18 @@ int udev_watch_init(struct udev *udev)
  */
 void udev_watch_restore(struct udev *udev)
 {
+         const char *watch_oldpath = WATCH_PATH ".old";
+
         if (inotify_fd < 0)
                 return;
 
-        if (rename("/run/udev/watch", "/run/udev/watch.old") == 0) {
+        if (rename(WATCH_PATH, watch_oldpath) == 0) {
                 DIR *dir;
                 struct dirent *ent;
 
-                dir = opendir("/run/udev/watch.old");
+                dir = opendir(watch_oldpath);
                 if (dir == NULL) {
-                        log_error("unable to open old watches dir /run/udev/watch.old; old watches will not be restored: %m");
+                        log_error("unable to open old watches dir %s; old watches will not be restored: %m", watch_oldpath);
                         return;
                 }
 
@@ -87,10 +89,10 @@ unlink:
                 }
 
                 closedir(dir);
-                rmdir("/run/udev/watch.old");
+                rmdir(watch_oldpath);
 
         } else if (errno != ENOENT) {
-                log_error("unable to move watches dir /run/udev/watch; old watches will not be restored: %m");
+                log_error("unable to move watches dir %s; old watches will not be restored: %m", WATCH_PATH);
         }
 }
 
@@ -111,7 +113,7 @@ void udev_watch_begin(struct udev *udev, struct udev_device *dev)
                 return;
         }
 
-        snprintf(filename, sizeof(filename), "/run/udev/watch/%d", wd);
+        snprintf(filename, sizeof(filename), WATCH_PATH "/%d", wd);
         mkdir_parents(filename, 0755);
         unlink(filename);
         r = symlink(udev_device_get_id_filename(dev), filename);
@@ -136,7 +138,7 @@ void udev_watch_end(struct udev *udev, struct udev_device *dev)
         log_debug("removing watch on '%s'", udev_device_get_devnode(dev));
         inotify_rm_watch(inotify_fd, wd);
 
-        snprintf(filename, sizeof(filename), "/run/udev/watch/%d", wd);
+        snprintf(filename, sizeof(filename), WATCH_PATH "/%d", wd);
         unlink(filename);
 
         udev_device_set_watch_handle(dev, -1);
@@ -151,7 +153,7 @@ struct udev_device *udev_watch_lookup(struct udev *udev, int wd)
         if (inotify_fd < 0 || wd < 0)
                 return NULL;
 
-        snprintf(filename, sizeof(filename), "/run/udev/watch/%d", wd);
+        snprintf(filename, sizeof(filename), WATCH_PATH "/%d", wd);
         len = readlink(filename, device, sizeof(device));
         if (len <= 0 || (size_t)len == sizeof(device))
                 return NULL;
