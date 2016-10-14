@@ -183,8 +183,6 @@ int safe_atoi(const char *s, int *ret_i);
 int safe_atollu(const char *s, unsigned long long *ret_u);
 int safe_atolli(const char *s, long long int *ret_i);
 
-int safe_atod(const char *s, double *ret_d);
-
 #if __WORDSIZE == 32
 static inline int safe_atolu(const char *s, unsigned long *ret_u) {
         assert_cc(sizeof(unsigned long) == sizeof(unsigned));
@@ -239,16 +237,11 @@ const char* split(const char **state, size_t *l, const char *separator, bool quo
 #define _FOREACH_WORD(word, length, s, separator, quoted, state)        \
         for ((state) = (s), (word) = split(&(state), &(length), (separator), (quoted)); (word); (word) = split(&(state), &(length), (separator), (quoted)))
 
-pid_t get_parent_of_pid(pid_t pid, pid_t *ppid);
-int get_starttime_of_pid(pid_t pid, unsigned long long *st);
-
 char *strappend(const char *s, const char *suffix);
 char *strnappend(const char *s, const char *suffix, size_t length);
 
 char *replace_env(const char *format, char **env);
 char **replace_env_argv(char **argv, char **env);
-
-int reset_all_signal_handlers(void);
 
 char *strstrip(char *s);
 char *delete_chars(char *s, const char *bad);
@@ -510,12 +503,6 @@ char *strjoin(const char *x, ...) _sentinel_;
 
 bool is_main_thread(void);
 
-static inline bool _pure_ in_charset(const char *s, const char* charset) {
-        assert(s);
-        assert(charset);
-        return s[strspn(s, charset)] == '\0';
-}
-
 int block_get_whole_disk(dev_t d, dev_t *ret);
 
 int file_is_priv_sticky(const char *p);
@@ -575,13 +562,6 @@ int fd_inc_rcvbuf(int fd, size_t n);
 int setrlimit_closest(int resource, const struct rlimit *rlim);
 
 int getenv_for_pid(pid_t pid, const char *field, char **_value);
-
-bool is_valid_documentation_url(const char *url) _pure_;
-
-void warn_melody(void);
-
-int get_home_dir(char **ret);
-int get_shell(char **_ret);
 
 static inline void freep(void *p) {
         free(*(void**) p);
@@ -649,27 +629,7 @@ void *xbsearch_r(const void *key, const void *base, size_t nmemb, size_t size,
                  int (*compar) (const void *, const void *, void *),
                  void *arg);
 
-bool is_locale_utf8(void);
-
-typedef enum DrawSpecialChar {
-        DRAW_TREE_VERTICAL,
-        DRAW_TREE_BRANCH,
-        DRAW_TREE_RIGHT,
-        DRAW_TREE_SPACE,
-        DRAW_TRIANGULAR_BULLET,
-        DRAW_BLACK_CIRCLE,
-        DRAW_ARROW,
-        DRAW_DASH,
-        _DRAW_SPECIAL_CHAR_MAX
-} DrawSpecialChar;
-
-const char *draw_special_char(DrawSpecialChar ch);
-
 char *strreplace(const char *text, const char *old_string, const char *new_string);
-
-char *strip_tab_ansi(char **p, size_t *l);
-
-int on_ac_power(void);
 
 int search_and_fopen(const char *path, const char *mode, const char *root, const char **search, FILE **_f);
 int search_and_fopen_nulstr(const char *path, const char *mode, const char *root, const char *search, FILE **_f);
@@ -719,55 +679,6 @@ static inline void _reset_errno_(int *saved_errno) {
 
 #define PROTECT_ERRNO _cleanup_(_reset_errno_) __attribute__((unused)) int _saved_errno_ = errno
 
-struct _umask_struct_ {
-        mode_t mask;
-        bool quit;
-};
-
-static inline void _reset_umask_(struct _umask_struct_ *s) {
-        umask(s->mask);
-};
-
-#define RUN_WITH_UMASK(mask)                                            \
-        for (_cleanup_(_reset_umask_) struct _umask_struct_ _saved_umask_ = { umask(mask), false }; \
-             !_saved_umask_.quit ;                                      \
-             _saved_umask_.quit = true)
-
-static inline unsigned u64log2(uint64_t n) {
-#if __SIZEOF_LONG_LONG__ == 8
-        return (n > 1) ? (unsigned) __builtin_clzll(n) ^ 63U : 0;
-#else
-#error "Wut?"
-#endif
-}
-
-static inline unsigned u32ctz(uint32_t n) {
-#if __SIZEOF_INT__ == 4
-        return __builtin_ctz(n);
-#else
-#error "Wut?"
-#endif
-}
-
-static inline int log2i(int x) {
-        assert(x > 0);
-
-        return __SIZEOF_INT__ * 8 - __builtin_clz(x) - 1;
-}
-
-static inline bool logind_running(void) {
-        return access("/run/systemd/seats/", F_OK) >= 0;
-}
-
-#define DECIMAL_STR_WIDTH(x)                            \
-        ({                                              \
-                typeof(x) _x_ = (x);                    \
-                unsigned ans = 1;                       \
-                while (_x_ /= 10)                       \
-                        ans++;                          \
-                ans;                                    \
-        })
-
 int unlink_noerrno(const char *path);
 
 #define alloca0(n)                                      \
@@ -806,38 +717,6 @@ int unlink_noerrno(const char *path);
                 _r_;                                                    \
         })
 
-struct _locale_struct_ {
-        locale_t saved_locale;
-        locale_t new_locale;
-        bool quit;
-};
-
-static inline void _reset_locale_(struct _locale_struct_ *s) {
-        PROTECT_ERRNO;
-        if (s->saved_locale != (locale_t) 0)
-                uselocale(s->saved_locale);
-        if (s->new_locale != (locale_t) 0)
-                freelocale(s->new_locale);
-}
-
-#define RUN_WITH_LOCALE(mask, loc) \
-        for (_cleanup_(_reset_locale_) struct _locale_struct_ _saved_locale_ = { (locale_t) 0, (locale_t) 0, false }; \
-             ({                                                         \
-                     if (!_saved_locale_.quit) {                        \
-                             PROTECT_ERRNO;                             \
-                             _saved_locale_.new_locale = newlocale((mask), (loc), (locale_t) 0); \
-                             if (_saved_locale_.new_locale != (locale_t) 0)     \
-                                     _saved_locale_.saved_locale = uselocale(_saved_locale_.new_locale); \
-                     }                                                  \
-                     !_saved_locale_.quit; }) ;                         \
-             _saved_locale_.quit = true)
-
-bool id128_is_valid(const char *s) _pure_;
-
-int split_pair(const char *s, const char *sep, char **l, char **r);
-
-int shall_restore_state(void);
-
 /**
  * Normal qsort requires base to be nonnull. Here were require
  * that only if nmemb > 0.
@@ -850,42 +729,6 @@ static inline void qsort_safe(void *base, size_t nmemb, size_t size,
         }
 }
 
-int proc_cmdline(char **ret);
-
-int container_get_leader(const char *machine, pid_t *pid);
-
-int namespace_open(pid_t pid, int *pidns_fd, int *mntns_fd, int *netns_fd, int *root_fd);
-int namespace_enter(int pidns_fd, int mntns_fd, int netns_fd, int root_fd);
-
-bool pid_is_alive(pid_t pid);
-bool pid_is_unwaited(pid_t pid);
-
 int getpeercred(int fd, struct ucred *ucred);
-int getpeersec(int fd, char **ret);
-
-int writev_safe(int fd, const struct iovec *w, int j);
 
 int mkostemp_safe(char *pattern, int flags);
-int open_tmpfile(const char *path, int flags);
-
-int fd_warn_permissions(const char *path, int fd);
-
-unsigned long personality_from_string(const char *p);
-const char *personality_to_string(unsigned long);
-
-uint64_t physical_memory(void);
-
-char* mount_test_option(const char *haystack, const char *needle);
-
-void hexdump(FILE *f, const void *p, size_t s);
-
-union file_handle_union {
-        struct file_handle handle;
-        char padding[sizeof(struct file_handle) + MAX_HANDLE_SZ];
-};
-
-int update_reboot_param_file(const char *param);
-
-int umount_recursive(const char *target, int flags);
-
-int bind_remount_recursive(const char *prefix, bool ro);
