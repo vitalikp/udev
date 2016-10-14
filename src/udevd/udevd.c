@@ -970,7 +970,7 @@ static void kernel_cmdline_options(struct udev *udev)
         size_t l;
         int r;
 
-        r = proc_cmdline(&line);
+        r = read_one_line_file("/proc/cmdline", &line);
         if (r < 0)
                 log_warning("Failed to read /proc/cmdline, ignoring: %s", strerror(-r));
         if (r <= 0)
