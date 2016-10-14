@@ -18,6 +18,7 @@
  	- use PRIu64 in udev_hwdb_new function;
  	- add HWDB_BIN macro;
  	- add QUEUE_PATH macro;
+ 	- use uint64_t type for uevent seqnum;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:

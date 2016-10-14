@@ -139,7 +139,7 @@ _public_ struct udev *udev_queue_get_udev(struct udev_queue *udev_queue)
  *
  * Returns: 0.
  **/
-_public_ unsigned long long int udev_queue_get_kernel_seqnum(struct udev_queue *udev_queue)
+_public_ uint64_t udev_queue_get_kernel_seqnum(struct udev_queue *udev_queue)
 {
         return 0;
 }
@@ -152,7 +152,7 @@ _public_ unsigned long long int udev_queue_get_kernel_seqnum(struct udev_queue *
  *
  * Returns: 0.
  **/
-_public_ unsigned long long int udev_queue_get_udev_seqnum(struct udev_queue *udev_queue)
+_public_ uint64_t udev_queue_get_udev_seqnum(struct udev_queue *udev_queue)
 {
         return 0;
 }
@@ -195,7 +195,7 @@ _public_ int udev_queue_get_queue_is_empty(struct udev_queue *udev_queue)
  * Returns: a flag indicating if udev is currently handling events.
  **/
 _public_ int udev_queue_get_seqnum_sequence_is_finished(struct udev_queue *udev_queue,
-                                               unsigned long long int start, unsigned long long int end)
+                                               uint64_t start, uint64_t end)
 {
         return udev_queue_get_queue_is_empty(udev_queue);
 }
@@ -210,7 +210,7 @@ _public_ int udev_queue_get_seqnum_sequence_is_finished(struct udev_queue *udev_
  *
  * Returns: a flag indicating if udev is currently handling events.
  **/
-_public_ int udev_queue_get_seqnum_is_finished(struct udev_queue *udev_queue, unsigned long long int seqnum)
+_public_ int udev_queue_get_seqnum_is_finished(struct udev_queue *udev_queue, uint64_t seqnum)
 {
         return udev_queue_get_queue_is_empty(udev_queue);
 }

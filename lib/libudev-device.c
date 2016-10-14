@@ -78,7 +78,7 @@ struct udev_device {
         struct udev_list sysattr_value_list;
         struct udev_list sysattr_list;
         struct udev_list tags_list;
-        unsigned long long int seqnum;
+        uint64_t seqnum;
         usec_t usec_initialized;
         int devlink_priority;
         int refcount;
@@ -110,19 +110,19 @@ struct udev_device {
  *
  * Returns: the kernel event sequence number, or 0 if there is no sequence number available.
  **/
-_public_ unsigned long long int udev_device_get_seqnum(struct udev_device *udev_device)
+_public_ uint64_t udev_device_get_seqnum(struct udev_device *udev_device)
 {
         if (udev_device == NULL)
                 return 0;
         return udev_device->seqnum;
 }
 
-static int udev_device_set_seqnum(struct udev_device *udev_device, unsigned long long int seqnum)
+static int udev_device_set_seqnum(struct udev_device *udev_device, uint64_t seqnum)
 {
         char num[32];
 
         udev_device->seqnum = seqnum;
-        snprintf(num, sizeof(num), "%llu", seqnum);
+        snprintf(num, sizeof(num), "%"PRIu64, seqnum);
         udev_device_add_property(udev_device, "SEQNUM", num);
         return 0;
 }

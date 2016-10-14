@@ -93,8 +93,8 @@ struct event {
         struct udev_device *dev;
         enum event_state state;
         int exitcode;
-        unsigned long long int delaying_seqnum;
-        unsigned long long int seqnum;
+        uint64_t delaying_seqnum;
+        uint64_t seqnum;
         const char *devpath;
         size_t devpath_len;
         const char *devpath_old;
@@ -269,7 +269,7 @@ static void worker_new(struct event *event)
                         int fd_lock = -1;
                         int err = 0;
 
-                        log_debug("seq %llu running", udev_device_get_seqnum(dev));
+                        log_debug("seq %"PRIu64" running", udev_device_get_seqnum(dev));
                         udev_event = udev_event_new(dev);
                         if (udev_event == NULL) {
                                 rc = 5;
@@ -333,7 +333,7 @@ skip:
                         msg.pid = getpid();
                         send(worker_watch[WRITE_END], &msg, sizeof(struct worker_message), 0);
 
-                        log_debug("seq %llu processed with %i", udev_device_get_seqnum(dev), err);
+                        log_debug("seq %"PRIu64" processed with %i", udev_device_get_seqnum(dev), err);
 
                         udev_device_unref(dev);
                         dev = NULL;
@@ -410,7 +410,7 @@ out:
                 event->state = EVENT_RUNNING;
                 udev_list_node_append(&worker->node, &worker_list);
                 children++;
-                log_debug("seq %llu forked new worker [%u]", udev_device_get_seqnum(event->dev), pid);
+                log_debug("seq %"PRIu64" forked new worker [%u]", udev_device_get_seqnum(event->dev), pid);
                 break;
         }
 }
@@ -469,7 +469,7 @@ static int event_queue_insert(struct udev_device *dev)
         event->is_block = streq("block", udev_device_get_subsystem(dev));
         event->ifindex = udev_device_get_ifindex(dev);
 
-        log_debug("seq %llu queued, '%s' '%s'", udev_device_get_seqnum(dev),
+        log_debug("seq %"PRIu64" queued, '%s' '%s'", udev_device_get_seqnum(dev),
              udev_device_get_action(dev), udev_device_get_subsystem(dev));
 
         event->state = EVENT_QUEUED;
@@ -1393,7 +1393,7 @@ int main(int argc, char *argv[])
 
                                         /* drop reference taken for state 'running' */
                                         worker_unref(worker);
-                                        log_error("seq %llu '%s' killed", udev_device_get_seqnum(worker->event->dev), worker->event->devpath);
+                                        log_error("seq %"PRIu64" '%s' killed", udev_device_get_seqnum(worker->event->dev), worker->event->devpath);
                                         worker->event->exitcode = -64;
                                         event_queue_delete(worker->event);
                                         worker->event = NULL;
