@@ -437,9 +437,7 @@ bool path_equal(const char *a, const char *b) {
 
 int path_is_mount_point(const char *t, bool allow_symlink) {
 
-        union file_handle_union h = {
-                .handle.handle_bytes = MAX_HANDLE_SZ
-        };
+        struct file_handle h = { .handle_bytes = MAX_HANDLE_SZ };
 
         int mount_id, mount_id_parent;
         char *parent;
@@ -453,7 +451,7 @@ int path_is_mount_point(const char *t, bool allow_symlink) {
         if (path_equal(t, "/"))
                 return 1;
 
-        r = name_to_handle_at(AT_FDCWD, t, &h.handle, &mount_id, allow_symlink ? AT_SYMLINK_FOLLOW : 0);
+        r = name_to_handle_at(AT_FDCWD, t, &h, &mount_id, allow_symlink ? AT_SYMLINK_FOLLOW : 0);
         if (r < 0) {
                 if (IN_SET(errno, ENOSYS, EOPNOTSUPP))
                         /* This kernel or file system does not support
@@ -471,8 +469,8 @@ int path_is_mount_point(const char *t, bool allow_symlink) {
         if (r < 0)
                 return r;
 
-        h.handle.handle_bytes = MAX_HANDLE_SZ;
-        r = name_to_handle_at(AT_FDCWD, parent, &h.handle, &mount_id_parent, 0);
+        h.handle_bytes = MAX_HANDLE_SZ;
+        r = name_to_handle_at(AT_FDCWD, parent, &h, &mount_id_parent, 0);
         free(parent);
         if (r < 0) {
                 /* The parent can't do name_to_handle_at() but the
