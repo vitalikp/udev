@@ -3098,15 +3098,6 @@ char *fstab_node_to_udev_node(const char *p) {
         return strdup(p);
 }
 
-bool tty_is_vc(const char *tty) {
-        assert(tty);
-
-        if (startswith(tty, "/dev/"))
-                tty += 5;
-
-        return vtnr_from_tty(tty) >= 0;
-}
-
 bool tty_is_console(const char *tty) {
         assert(tty);
 
@@ -3114,86 +3105,6 @@ bool tty_is_console(const char *tty) {
                 tty += 5;
 
         return streq(tty, "console");
-}
-
-int vtnr_from_tty(const char *tty) {
-        int i, r;
-
-        assert(tty);
-
-        if (startswith(tty, "/dev/"))
-                tty += 5;
-
-        if (!startswith(tty, "tty") )
-                return -EINVAL;
-
-        if (tty[3] < '0' || tty[3] > '9')
-                return -EINVAL;
-
-        r = safe_atoi(tty+3, &i);
-        if (r < 0)
-                return r;
-
-        if (i < 0 || i > 63)
-                return -EINVAL;
-
-        return i;
-}
-
-char *resolve_dev_console(char **active) {
-        char *tty;
-
-        /* Resolve where /dev/console is pointing to, if /sys is actually ours
-         * (i.e. not read-only-mounted which is a sign for container setups) */
-
-        if (path_is_read_only_fs("/sys") > 0)
-                return NULL;
-
-        if (read_one_line_file("/sys/class/tty/console/active", active) < 0)
-                return NULL;
-
-        /* If multiple log outputs are configured the last one is what
-         * /dev/console points to */
-        tty = strrchr(*active, ' ');
-        if (tty)
-                tty++;
-        else
-                tty = *active;
-
-        if (streq(tty, "tty0")) {
-                char *tmp;
-
-                /* Get the active VC (e.g. tty1) */
-                if (read_one_line_file("/sys/class/tty/tty0/active", &tmp) >= 0) {
-                        free(*active);
-                        tty = *active = tmp;
-                }
-        }
-
-        return tty;
-}
-
-bool tty_is_vc_resolve(const char *tty) {
-        _cleanup_free_ char *active = NULL;
-
-        assert(tty);
-
-        if (startswith(tty, "/dev/"))
-                tty += 5;
-
-        if (streq(tty, "console")) {
-                tty = resolve_dev_console(&active);
-                if (!tty)
-                        return false;
-        }
-
-        return tty_is_vc(tty);
-}
-
-const char *default_term_for_tty(const char *tty) {
-        assert(tty);
-
-        return tty_is_vc_resolve(tty) ? "TERM=linux" : "TERM=vt102";
 }
 
 bool dirent_is_file(const struct dirent *de) {
@@ -3424,75 +3335,6 @@ int terminal_vhangup(const char *name) {
                 return fd;
 
         return terminal_vhangup_fd(fd);
-}
-
-int vt_disallocate(const char *name) {
-        int fd, r;
-        unsigned u;
-
-        /* Deallocate the VT if possible. If not possible
-         * (i.e. because it is the active one), at least clear it
-         * entirely (including the scrollback buffer) */
-
-        if (!startswith(name, "/dev/"))
-                return -EINVAL;
-
-        if (!tty_is_vc(name)) {
-                /* So this is not a VT. I guess we cannot deallocate
-                 * it then. But let's at least clear the screen */
-
-                fd = open_terminal(name, O_RDWR|O_NOCTTY|O_CLOEXEC);
-                if (fd < 0)
-                        return fd;
-
-                loop_write(fd,
-                           "\033[r"    /* clear scrolling region */
-                           "\033[H"    /* move home */
-                           "\033[2J",  /* clear screen */
-                           10, false);
-                safe_close(fd);
-
-                return 0;
-        }
-
-        if (!startswith(name, "/dev/tty"))
-                return -EINVAL;
-
-        r = safe_atou(name+8, &u);
-        if (r < 0)
-                return r;
-
-        if (u <= 0)
-                return -EINVAL;
-
-        /* Try to deallocate */
-        fd = open_terminal("/dev/tty0", O_RDWR|O_NOCTTY|O_CLOEXEC);
-        if (fd < 0)
-                return fd;
-
-        r = ioctl(fd, VT_DISALLOCATE, u);
-        safe_close(fd);
-
-        if (r >= 0)
-                return 0;
-
-        if (errno != EBUSY)
-                return -errno;
-
-        /* Couldn't deallocate, so let's clear it fully with
-         * scrollback */
-        fd = open_terminal(name, O_RDWR|O_NOCTTY|O_CLOEXEC);
-        if (fd < 0)
-                return fd;
-
-        loop_write(fd,
-                   "\033[r"   /* clear scrolling region */
-                   "\033[H"   /* move home */
-                   "\033[3J", /* clear screen including scrollback, requires Linux 2.6.40 */
-                   10, false);
-        safe_close(fd);
-
-        return 0;
 }
 
 int symlink_atomic(const char *from, const char *to) {

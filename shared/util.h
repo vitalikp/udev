@@ -467,12 +467,7 @@ DIR *xopendirat(int dirfd, const char *name, int flags);
 
 char *fstab_node_to_udev_node(const char *p);
 
-char *resolve_dev_console(char **active);
-bool tty_is_vc(const char *tty);
-bool tty_is_vc_resolve(const char *tty);
 bool tty_is_console(const char *tty) _pure_;
-int vtnr_from_tty(const char *tty);
-const char *default_term_for_tty(const char *tty);
 
 int kill_and_sigcont(pid_t pid, int sig);
 
@@ -487,8 +482,6 @@ char* strshorten(char *s, size_t l);
 
 int terminal_vhangup_fd(int fd);
 int terminal_vhangup(const char *name);
-
-int vt_disallocate(const char *name);
 
 int symlink_atomic(const char *from, const char *to);
 
