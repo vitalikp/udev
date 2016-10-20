@@ -22,6 +22,7 @@
  	- use uint64_t type for uevent seqnum;
  	- drop print_kmsg;
  	- add utils module;
+ 	- remove unused functions;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:
