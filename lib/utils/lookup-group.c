@@ -28,8 +28,16 @@ int lookup_group(const char *group, gid_t *pgid)
 		return 0;
 	}
 
-	if (!parse_uint(group, pgid))
+	gid_t gid;
+
+	if (!parse_uint(group, &gid))
+	{
+		if(!getgrgid(gid))
+			return -1;
+
+		*pgid = gid;
 		return 0;
+	}
 
 	struct group *gr;
 
@@ -99,6 +107,7 @@ int main()
 	test_group("bin", 1);
 	test_group("7", 7);
 	test_group_fail("7b");
+	test_group_fail("127");
 
 	return EXIT_SUCCESS;
 }
