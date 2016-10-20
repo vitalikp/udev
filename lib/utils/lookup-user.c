@@ -28,8 +28,16 @@ int lookup_user(const char *user, uid_t *puid)
 		return 0;
 	}
 
-	if (!parse_uint(user, puid))
+	uid_t uid;
+
+	if (!parse_uint(user, &uid))
+	{
+		if (!getpwuid(uid))
+			return -1;
+
+		*puid = uid;
 		return 0;
+	}
 
 	struct passwd *pw;
 
@@ -99,6 +107,7 @@ int main()
 	test_lookup("bin", 1);
 	test_lookup("5", 5);
 	test_lookup_fail("5a");
+	test_lookup_fail("127");
 
 	return EXIT_SUCCESS;
 }
