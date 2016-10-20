@@ -19,6 +19,7 @@
  	- add HWDB_BIN macro;
  	- add QUEUE_PATH macro;
  	- use uint64_t type for uevent seqnum;
+ 	- drop print_kmsg;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:
