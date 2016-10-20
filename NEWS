@@ -20,6 +20,7 @@
  	- add QUEUE_PATH macro;
  	- use uint64_t type for uevent seqnum;
  	- drop print_kmsg;
+ 	- add utils module;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:

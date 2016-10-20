@@ -13,12 +13,17 @@ set(LIBUDEV_VERSION ${LIBUDEV_SOVERSION}.6.0)
 
 configure_file(libudev.pc.cmake libudev.pc @ONLY)
 
+
+# udev utils
+add_subdirectory(utils)
+
 add_library(libudev_obj OBJECT
 	#libudev.sym
 	libudev-private.h
 	libudev.c
 	libudev-list.c
 	libudev-util.c
+	utils.h
 	libudev-device.c
 	libudev-enumerate.c
 	libudev-monitor.c
@@ -32,6 +37,7 @@ add_library(udev_int_obj STATIC
 	$<TARGET_OBJECTS:libudev_obj>
 	libudev-device-private.c
 )
+target_link_libraries(udev_int_obj udev_utils_obj)
 
 add_library(udev SHARED
 	$<TARGET_OBJECTS:libudev_obj>
@@ -41,7 +47,7 @@ set_target_properties(udev PROPERTIES
 	VERSION ${LIBUDEV_VERSION}
 	SOVERSION ${LIBUDEV_SOVERSION}
 )
-target_link_libraries(udev udev_shared_obj ${LIBUDEV_C_FLAGS})
+target_link_libraries(udev udev_shared_obj udev_utils_obj ${LIBUDEV_C_FLAGS})
 target_link_libraries(udev -pthread rt)
 
 # libudev header files
