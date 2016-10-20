@@ -35,6 +35,7 @@
 #include "strbuf.h"
 #include "strv.h"
 #include "util.h"
+#include "utils.h"
 
 #define PREALLOC_TOKEN          2048
 
@@ -469,8 +470,9 @@ static int add_token(struct rules *rules, struct token *token)
 static uid_t add_uid(struct udev_rules *rules, const char *owner)
 {
         unsigned int i;
-        uid_t uid;
+        uid_t uid = 0;
         unsigned int off;
+        int res;
 
         /* lookup, if we know it already */
         for (i = 0; i < rules->uids_cur; i++) {
@@ -480,7 +482,14 @@ static uid_t add_uid(struct udev_rules *rules, const char *owner)
                         return uid;
                 }
         }
-        uid = util_lookup_user(rules->udev, owner);
+        res = lookup_user(owner, &uid);
+        if (res < 0)
+        {
+        	if (errno == 0 || errno == ENOENT || errno == ESRCH)
+        		udev_err(rules->udev, "specified user '%s' unknown\n", owner);
+        	else
+        		udev_err(rules->udev, "error resolving user '%s': %m\n", owner);
+        }
 
         /* grow buffer if needed */
         if (rules->uids_cur+1 >= rules->uids_max) {
@@ -510,8 +519,9 @@ static uid_t add_uid(struct udev_rules *rules, const char *owner)
 static gid_t add_gid(struct udev_rules *rules, const char *group)
 {
         unsigned int i;
-        gid_t gid;
+        gid_t gid = 0;
         unsigned int off;
+        int res;
 
         /* lookup, if we know it already */
         for (i = 0; i < rules->gids_cur; i++) {
@@ -521,7 +531,14 @@ static gid_t add_gid(struct udev_rules *rules, const char *group)
                         return gid;
                 }
         }
-        gid = util_lookup_group(rules->udev, group);
+        res = lookup_group(group, &gid);
+        if (res < 0)
+        {
+        	if (errno == 0 || errno == ENOENT || errno == ESRCH)
+        		udev_err(rules->udev, "specified group '%s' unknown\n", group);
+        	else
+        		udev_err(rules->udev, "error resolving group '%s': %m\n", group);
+        }
 
         /* grow buffer if needed */
         if (rules->gids_cur+1 >= rules->gids_max) {
@@ -2284,6 +2301,7 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                         break;
                 case TK_A_OWNER: {
                         char owner[UTIL_NAME_SIZE];
+                        int res;
 
                         if (event->owner_final)
                                 break;
@@ -2291,7 +2309,16 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                                 event->owner_final = true;
                         udev_event_apply_format(event, rules_str(rules, cur->key.value_off), owner, sizeof(owner));
                         event->owner_set = true;
-                        event->uid = util_lookup_user(event->udev, owner);
+                        res = lookup_user(owner, &event->uid);
+                        if (res < 0)
+                        {
+                        	if (errno == 0 || errno == ENOENT || errno == ESRCH)
+                        		udev_err(event->udev, "specified user '%s' unknown\n", owner);
+                        	else
+                        		udev_err(event->udev, "error resolving user '%s': %m\n", owner);
+
+                        	event->uid = 0;
+                        }
                         log_debug("OWNER %u %s:%u",
                                   event->uid,
                                   rules_str(rules, rule->rule.filename_off),
@@ -2300,6 +2327,7 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                 }
                 case TK_A_GROUP: {
                         char group[UTIL_NAME_SIZE];
+                        int res;
 
                         if (event->group_final)
                                 break;
@@ -2307,7 +2335,16 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                                 event->group_final = true;
                         udev_event_apply_format(event, rules_str(rules, cur->key.value_off), group, sizeof(group));
                         event->group_set = true;
-                        event->gid = util_lookup_group(event->udev, group);
+                        lookup_group(group, &event->gid);
+                        if (res < 0)
+                        {
+                        	if (errno == 0 || errno == ENOENT || errno == ESRCH)
+                        		udev_err(event->udev, "specified group '%s' unknown\n", group);
+                        	else
+                        		udev_err(event->udev, "error resolving group '%s': %m\n", group);
+
+                        	event->gid = 0;
+                        }
                         log_debug("GROUP %u %s:%u",
                                   event->gid,
                                   rules_str(rules, rule->rule.filename_off),
