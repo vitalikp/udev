@@ -14,6 +14,26 @@
 #include <sys/types.h>
 
 
+/**
+ * str_copy:
+ * @dst: destination string
+ * @src: source string
+ * @len: maximum size of the destination string
+ *
+ * Copy source string src to destination dst with length len-1
+ * and put zero at the end.
+ */
+static inline void str_copy(char *dst, const char *src, size_t size)
+{
+	while (*src && size > 1)
+	{
+		*dst++ = *src++;
+		size--;
+	}
+
+	*dst = '\0';
+}
+
 int parse_uint(const char *str, uint32_t *pval);
 
 int lookup_user(const char *user, uid_t *puid);
