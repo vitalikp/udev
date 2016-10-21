@@ -23,6 +23,7 @@
  	- drop print_kmsg;
  	- add utils module;
  	- remove unused functions;
+ 	- add PATH_SIZE macro;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:
