@@ -15,6 +15,17 @@
 
 
 /**
+ * str_empty:
+ * @str: input string
+ *
+ * Returns: 1 if string str is empty, or 0 otherwise
+ */
+static inline int str_empty(const char *str)
+{
+	return (!str || *str == '\0');
+}
+
+/**
  * str_copy:
  * @dst: destination string
  * @src: source string

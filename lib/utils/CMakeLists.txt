@@ -11,6 +11,11 @@ add_library(udev_utils_obj STATIC
 # tests
 if (${TESTS_ENABLE})
 
+# test test-str-empty
+add_executable(test-str-empty
+	test-str-empty.c
+)
+
 # test test-str-copy
 add_executable(test-str-copy
 	test-str-copy.c
@@ -36,6 +41,7 @@ add_executable(test-lookup-group
 target_compile_definitions(test-lookup-group PRIVATE TESTS)
 target_link_libraries(test-lookup-group udev_utils_obj)
 
+add_test(NAME utils-str-empty COMMAND ./test-str-empty)
 add_test(NAME utils-str-copy COMMAND ./test-str-copy)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
 add_test(NAME utils-lookup-user COMMAND ./test-lookup-user)
