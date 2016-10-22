@@ -21,8 +21,8 @@ static void test_copy(const char *str)
 	char copy[50];
 	size_t len;
 
-	str_copy(copy, str, sizeof(copy));
-	len = strlen(copy);
+	len = str_copy(copy, str, sizeof(copy));
+	assert(len == strlen(copy));
 
 	assert(!strncmp(str, copy, len));
 

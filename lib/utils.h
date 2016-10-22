@@ -37,9 +37,13 @@ static inline int str_empty(const char *str)
  *
  * Copy source string src to destination dst with length len-1
  * and put zero at the end.
+ *
+ * Returns: length of destination string
  */
-static inline void str_copy(char *dst, const char *src, size_t size)
+static inline size_t str_copy(char *dst, const char *src, size_t size)
 {
+	size_t len = size;
+
 	while (*src && size > 1)
 	{
 		*dst++ = *src++;
@@ -47,6 +51,8 @@ static inline void str_copy(char *dst, const char *src, size_t size)
 	}
 
 	*dst = '\0';
+
+	return len - size;
 }
 
 int parse_uint(const char *str, uint32_t *pval);
