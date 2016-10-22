@@ -57,6 +57,12 @@ static inline size_t str_copy(char *dst, const char *src, size_t size)
 
 int parse_uint(const char *str, uint32_t *pval);
 
+
+/**
+ * Path util functions
+ */
+int path_create(const char *path, mode_t mode);
+
 int lookup_user(const char *user, uid_t *puid);
 int lookup_group(const char *group, gid_t *pgid);
 
