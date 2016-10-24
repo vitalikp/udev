@@ -69,8 +69,6 @@ add_library(udev_shared_obj STATIC
 add_library(udev_label_obj STATIC
 	label.c
 	label.h
-	selinux-util.c
-	selinux-util.h
 	mkdir-label.c
 	dev-setup.c
 	dev-setup.h
