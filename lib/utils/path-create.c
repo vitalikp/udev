@@ -7,7 +7,6 @@
  * See the file LICENSE.
  */
 
-#include <stdio.h>
 #include <sys/stat.h>
 #include <errno.h>
 
@@ -123,7 +122,6 @@ static void test_create(const char *path)
 static void test_file(const char *path)
 {
 	char file[PATH_SIZE];
-	struct stat st;
 	int res;
 
 	str_copy(file, path, sizeof(file));
