@@ -217,51 +217,6 @@ int parse_boolean(const char *v) {
         return -EINVAL;
 }
 
-int parse_pid(const char *s, pid_t* ret_pid) {
-        unsigned long ul = 0;
-        pid_t pid;
-        int r;
-
-        assert(s);
-        assert(ret_pid);
-
-        r = safe_atolu(s, &ul);
-        if (r < 0)
-                return r;
-
-        pid = (pid_t) ul;
-
-        if ((unsigned long) pid != ul)
-                return -ERANGE;
-
-        if (pid <= 0)
-                return -ERANGE;
-
-        *ret_pid = pid;
-        return 0;
-}
-
-int parse_uid(const char *s, uid_t* ret_uid) {
-        unsigned long ul = 0;
-        uid_t uid;
-        int r;
-
-        assert(s);
-        assert(ret_uid);
-
-        r = safe_atolu(s, &ul);
-        if (r < 0)
-                return r;
-
-        uid = (uid_t) ul;
-
-        if ((unsigned long) uid != ul)
-                return -ERANGE;
-
-        *ret_uid = uid;
-        return 0;
-}
-
 int safe_atou(const char *s, unsigned *ret_u) {
         char *x = NULL;
         unsigned long l;
@@ -584,49 +539,6 @@ int get_process_capeff(pid_t pid, char **capeff) {
         return get_status_field(p, "\nCapEff:", capeff);
 }
 
-static int get_process_id(pid_t pid, const char *field, uid_t *uid) {
-        _cleanup_fclose_ FILE *f = NULL;
-        char line[LINE_MAX];
-        const char *p;
-
-        assert(field);
-        assert(uid);
-
-        if (pid == 0)
-                return getuid();
-
-        p = procfs_file_alloca(pid, "status");
-        f = fopen(p, "re");
-        if (!f)
-                return -errno;
-
-        FOREACH_LINE(line, f, return -errno) {
-                char *l;
-
-                l = strstrip(line);
-
-                if (startswith(l, field)) {
-                        l += strlen(field);
-                        l += strspn(l, WHITESPACE);
-
-                        l[strcspn(l, WHITESPACE)] = 0;
-
-                        return parse_uid(l, uid);
-                }
-        }
-
-        return -EIO;
-}
-
-int get_process_uid(pid_t pid, uid_t *uid) {
-        return get_process_id(pid, "Uid:", uid);
-}
-
-int get_process_gid(pid_t pid, gid_t *gid) {
-        assert_cc(sizeof(uid_t) == sizeof(gid_t));
-        return get_process_id(pid, "Gid:", gid);
-}
-
 char *strnappend(const char *s, const char *suffix, size_t b) {
         size_t a;
         char *r;
@@ -694,33 +606,6 @@ char *delete_chars(char *s, const char *bad) {
         *t = 0;
 
         return s;
-}
-
-char *file_in_same_dir(const char *path, const char *filename) {
-        char *e, *r;
-        size_t k;
-
-        assert(path);
-        assert(filename);
-
-        /* This removes the last component of path and appends
-         * filename, unless the latter is absolute anyway or the
-         * former isn't */
-
-        if (path_is_absolute(filename))
-                return strdup(filename);
-
-        if (!(e = strrchr(path, '/')))
-                return strdup(filename);
-
-        k = strlen(filename);
-        if (!(r = new(char, e-path+1+k+1)))
-                return NULL;
-
-        memcpy(r, path, e-path+1);
-        memcpy(r+(e-path)+1, filename, k+1);
-
-        return r;
 }
 
 int rmdir_parents(const char *path, const char *stop) {
@@ -3313,44 +3198,6 @@ char* gid_to_name(gid_t gid) {
         return r;
 }
 
-int get_group_creds(const char **groupname, gid_t *gid) {
-        struct group *g;
-        gid_t id;
-
-        assert(groupname);
-
-        /* We enforce some special rules for gid=0: in order to avoid
-         * NSS lookups for root we hardcode its data. */
-
-        if (streq(*groupname, "root") || streq(*groupname, "0")) {
-                *groupname = "root";
-
-                if (gid)
-                        *gid = 0;
-
-                return 0;
-        }
-
-        if (parse_gid(*groupname, &id) >= 0) {
-                errno = 0;
-                g = getgrgid(id);
-
-                if (g)
-                        *groupname = g->gr_name;
-        } else {
-                errno = 0;
-                g = getgrnam(*groupname);
-        }
-
-        if (!g)
-                return errno > 0 ? -errno : -ESRCH;
-
-        if (gid)
-                *gid = g->gr_gid;
-
-        return 0;
-}
-
 int in_gid(gid_t gid) {
         gid_t *gids;
         int ngroups_max, r, i;
@@ -3375,17 +3222,6 @@ int in_gid(gid_t gid) {
                         return 1;
 
         return 0;
-}
-
-int in_group(const char *name) {
-        int r;
-        gid_t gid;
-
-        r = get_group_creds(&name, &gid);
-        if (r < 0)
-                return r;
-
-        return in_gid(gid);
 }
 
 int glob_exists(const char *path) {
@@ -3663,15 +3499,6 @@ int file_is_priv_sticky(const char *p) {
                 (st.st_mode & S_ISVTX);
 }
 
-static const char *const ioprio_class_table[] = {
-        [IOPRIO_CLASS_NONE] = "none",
-        [IOPRIO_CLASS_RT] = "realtime",
-        [IOPRIO_CLASS_BE] = "best-effort",
-        [IOPRIO_CLASS_IDLE] = "idle"
-};
-
-DEFINE_STRING_TABLE_LOOKUP_WITH_FALLBACK(ioprio_class, int, INT_MAX);
-
 static const char *const sigchld_code_table[] = {
         [CLD_EXITED] = "exited",
         [CLD_KILLED] = "killed",
@@ -3682,31 +3509,6 @@ static const char *const sigchld_code_table[] = {
 };
 
 DEFINE_STRING_TABLE_LOOKUP(sigchld_code, int);
-
-static const char *const log_facility_unshifted_table[LOG_NFACILITIES] = {
-        [LOG_FAC(LOG_KERN)] = "kern",
-        [LOG_FAC(LOG_USER)] = "user",
-        [LOG_FAC(LOG_MAIL)] = "mail",
-        [LOG_FAC(LOG_DAEMON)] = "daemon",
-        [LOG_FAC(LOG_AUTH)] = "auth",
-        [LOG_FAC(LOG_SYSLOG)] = "syslog",
-        [LOG_FAC(LOG_LPR)] = "lpr",
-        [LOG_FAC(LOG_NEWS)] = "news",
-        [LOG_FAC(LOG_UUCP)] = "uucp",
-        [LOG_FAC(LOG_CRON)] = "cron",
-        [LOG_FAC(LOG_AUTHPRIV)] = "authpriv",
-        [LOG_FAC(LOG_FTP)] = "ftp",
-        [LOG_FAC(LOG_LOCAL0)] = "local0",
-        [LOG_FAC(LOG_LOCAL1)] = "local1",
-        [LOG_FAC(LOG_LOCAL2)] = "local2",
-        [LOG_FAC(LOG_LOCAL3)] = "local3",
-        [LOG_FAC(LOG_LOCAL4)] = "local4",
-        [LOG_FAC(LOG_LOCAL5)] = "local5",
-        [LOG_FAC(LOG_LOCAL6)] = "local6",
-        [LOG_FAC(LOG_LOCAL7)] = "local7"
-};
-
-DEFINE_STRING_TABLE_LOOKUP_WITH_FALLBACK(log_facility_unshifted, int, LOG_FAC(~0));
 
 static const char *const log_level_table[] = {
         [LOG_EMERG] = "emerg",
@@ -3720,16 +3522,6 @@ static const char *const log_level_table[] = {
 };
 
 DEFINE_STRING_TABLE_LOOKUP_WITH_FALLBACK(log_level, int, LOG_DEBUG);
-
-static const char* const sched_policy_table[] = {
-        [SCHED_OTHER] = "other",
-        [SCHED_BATCH] = "batch",
-        [SCHED_IDLE] = "idle",
-        [SCHED_FIFO] = "fifo",
-        [SCHED_RR] = "rr"
-};
-
-DEFINE_STRING_TABLE_LOOKUP_WITH_FALLBACK(sched_policy, int, INT_MAX);
 
 static const char* const rlimit_table[_RLIMIT_MAX] = {
         [RLIMIT_CPU] = "LimitCPU",
@@ -3751,15 +3543,6 @@ static const char* const rlimit_table[_RLIMIT_MAX] = {
 };
 
 DEFINE_STRING_TABLE_LOOKUP(rlimit, int);
-
-static const char* const ip_tos_table[] = {
-        [IPTOS_LOWDELAY] = "low-delay",
-        [IPTOS_THROUGHPUT] = "throughput",
-        [IPTOS_RELIABILITY] = "reliability",
-        [IPTOS_LOWCOST] = "low-cost",
-};
-
-DEFINE_STRING_TABLE_LOOKUP_WITH_FALLBACK(ip_tos, int, 0xff);
 
 static const char *const __signal_table[] = {
         [SIGHUP] = "HUP",
@@ -4178,85 +3961,6 @@ char *strreplace(const char *text, const char *old_string, const char *new_strin
 oom:
         free(r);
         return NULL;
-}
-
-static int search_and_fopen_internal(const char *path, const char *mode, const char *root, char **search, FILE **_f) {
-        char **i;
-
-        assert(path);
-        assert(mode);
-        assert(_f);
-
-        if (!path_strv_canonicalize_absolute_uniq(search, root))
-                return -ENOMEM;
-
-        STRV_FOREACH(i, search) {
-                _cleanup_free_ char *p = NULL;
-                FILE *f;
-
-                p = strjoin(*i, "/", path, NULL);
-                if (!p)
-                        return -ENOMEM;
-
-                f = fopen(p, mode);
-                if (f) {
-                        *_f = f;
-                        return 0;
-                }
-
-                if (errno != ENOENT)
-                        return -errno;
-        }
-
-        return -ENOENT;
-}
-
-int search_and_fopen(const char *path, const char *mode, const char *root, const char **search, FILE **_f) {
-        _cleanup_strv_free_ char **copy = NULL;
-
-        assert(path);
-        assert(mode);
-        assert(_f);
-
-        if (path_is_absolute(path)) {
-                FILE *f;
-
-                f = fopen(path, mode);
-                if (f) {
-                        *_f = f;
-                        return 0;
-                }
-
-                return -errno;
-        }
-
-        copy = strv_copy((char**) search);
-        if (!copy)
-                return -ENOMEM;
-
-        return search_and_fopen_internal(path, mode, root, copy, _f);
-}
-
-int search_and_fopen_nulstr(const char *path, const char *mode, const char *root, const char *search, FILE **_f) {
-        _cleanup_strv_free_ char **s = NULL;
-
-        if (path_is_absolute(path)) {
-                FILE *f;
-
-                f = fopen(path, mode);
-                if (f) {
-                        *_f = f;
-                        return 0;
-                }
-
-                return -errno;
-        }
-
-        s = strv_split_nulstr(search);
-        if (!s)
-                return -ENOMEM;
-
-        return search_and_fopen_internal(path, mode, root, s, _f);
 }
 
 char *strextend(char **x, ...) {

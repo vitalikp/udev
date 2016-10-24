@@ -86,22 +86,6 @@ int path_get_parent(const char *path, char **_r) {
         return 0;
 }
 
-char **path_split_and_make_absolute(const char *p) {
-        char **l;
-        assert(p);
-
-        l = strv_split(p, ":");
-        if (!l)
-                return NULL;
-
-        if (!path_strv_make_absolute_cwd(l)) {
-                strv_free(l);
-                return NULL;
-        }
-
-        return l;
-}
-
 char *path_make_absolute(const char *p, const char *prefix) {
         assert(p);
 
@@ -130,112 +114,6 @@ char *path_make_absolute_cwd(const char *p) {
                 return NULL;
 
         return path_make_absolute(p, cwd);
-}
-
-int path_make_relative(const char *from_dir, const char *to_path, char **_r) {
-        char *r, *p;
-        unsigned n_parents;
-
-        assert(from_dir);
-        assert(to_path);
-        assert(_r);
-
-        /* Strips the common part, and adds ".." elements as necessary. */
-
-        if (!path_is_absolute(from_dir))
-                return -EINVAL;
-
-        if (!path_is_absolute(to_path))
-                return -EINVAL;
-
-        /* Skip the common part. */
-        for (;;) {
-                size_t a;
-                size_t b;
-
-                from_dir += strspn(from_dir, "/");
-                to_path += strspn(to_path, "/");
-
-                if (!*from_dir) {
-                        if (!*to_path)
-                                /* from_dir equals to_path. */
-                                r = strdup(".");
-                        else
-                                /* from_dir is a parent directory of to_path. */
-                                r = strdup(to_path);
-
-                        if (!r)
-                                return -ENOMEM;
-
-                        path_kill_slashes(r);
-
-                        *_r = r;
-                        return 0;
-                }
-
-                if (!*to_path)
-                        break;
-
-                a = strcspn(from_dir, "/");
-                b = strcspn(to_path, "/");
-
-                if (a != b)
-                        break;
-
-                if (memcmp(from_dir, to_path, a) != 0)
-                        break;
-
-                from_dir += a;
-                to_path += b;
-        }
-
-        /* If we're here, then "from_dir" has one or more elements that need to
-         * be replaced with "..". */
-
-        /* Count the number of necessary ".." elements. */
-        for (n_parents = 0;;) {
-                from_dir += strspn(from_dir, "/");
-
-                if (!*from_dir)
-                        break;
-
-                from_dir += strcspn(from_dir, "/");
-                n_parents++;
-        }
-
-        r = malloc(n_parents * 3 + strlen(to_path) + 1);
-        if (!r)
-                return -ENOMEM;
-
-        for (p = r; n_parents > 0; n_parents--, p += 3)
-                memcpy(p, "../", 3);
-
-        strcpy(p, to_path);
-        path_kill_slashes(r);
-
-        *_r = r;
-        return 0;
-}
-
-char **path_strv_make_absolute_cwd(char **l) {
-        char **s;
-
-        /* Goes through every item in the string list and makes it
-         * absolute. This works in place and won't rollback any
-         * changes on failure. */
-
-        STRV_FOREACH(s, l) {
-                char *t;
-
-                t = path_make_absolute_cwd(*s);
-                if (!t)
-                        return NULL;
-
-                free(*s);
-                *s = t;
-        }
-
-        return l;
 }
 
 char **path_strv_canonicalize_absolute(char **l, const char *prefix) {

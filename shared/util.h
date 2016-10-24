@@ -173,9 +173,6 @@ void close_many(const int fds[], unsigned n_fd);
 int parse_size(const char *t, off_t base, off_t *size);
 
 int parse_boolean(const char *v) _pure_;
-int parse_pid(const char *s, pid_t* ret_pid);
-int parse_uid(const char *s, uid_t* ret_uid);
-#define parse_gid(s, ret_uid) parse_uid(s, ret_uid)
 
 int safe_atou(const char *s, unsigned *ret_u);
 int safe_atoi(const char *s, int *ret_i);
@@ -247,15 +244,11 @@ char *strstrip(char *s);
 char *delete_chars(char *s, const char *bad);
 char *truncate_nl(char *s);
 
-char *file_in_same_dir(const char *path, const char *filename);
-
 int rmdir_parents(const char *path, const char *stop);
 
 int get_process_state(pid_t pid);
 int get_process_comm(pid_t pid, char **name);
 int get_process_cmdline(pid_t pid, size_t max_length, bool comm_fallback, char **line);
-int get_process_uid(pid_t pid, uid_t *uid);
-int get_process_gid(pid_t pid, gid_t *gid);
 int get_process_capeff(pid_t pid, char **capeff);
 
 char hexchar(int x) _const_;
@@ -483,10 +476,7 @@ int fchmod_umask(int fd, mode_t mode);
 bool display_is_local(const char *display) _pure_;
 int socket_from_display(const char *display, char **path);
 
-int get_group_creds(const char **groupname, gid_t *gid);
-
 int in_gid(gid_t gid);
-int in_group(const char *name);
 
 char* uid_to_name(uid_t uid);
 char* gid_to_name(gid_t gid);
@@ -515,26 +505,14 @@ int strdup_or_null(const char *a, char **b);
 #define NULSTR_FOREACH_PAIR(i, j, l)                             \
         for ((i) = (l), (j) = strchr((i), 0)+1; (i) && *(i); (i) = strchr((j), 0)+1, (j) = *(i) ? strchr((i), 0)+1 : (i))
 
-int ioprio_class_to_string_alloc(int i, char **s);
-int ioprio_class_from_string(const char *s);
-
 const char *sigchld_code_to_string(int i) _const_;
 int sigchld_code_from_string(const char *s) _pure_;
-
-int log_facility_unshifted_to_string_alloc(int i, char **s);
-int log_facility_unshifted_from_string(const char *s);
 
 int log_level_to_string_alloc(int i, char **s);
 int log_level_from_string(const char *s);
 
-int sched_policy_to_string_alloc(int i, char **s);
-int sched_policy_from_string(const char *s);
-
 const char *rlimit_to_string(int i) _const_;
 int rlimit_from_string(const char *s) _pure_;
-
-int ip_tos_to_string_alloc(int i, char **s);
-int ip_tos_from_string(const char *s);
 
 const char *signal_to_string(int i) _const_;
 int signal_from_string(const char *s) _pure_;
@@ -630,9 +608,6 @@ void *xbsearch_r(const void *key, const void *base, size_t nmemb, size_t size,
                  void *arg);
 
 char *strreplace(const char *text, const char *old_string, const char *new_string);
-
-int search_and_fopen(const char *path, const char *mode, const char *root, const char **search, FILE **_f);
-int search_and_fopen_nulstr(const char *path, const char *mode, const char *root, const char *search, FILE **_f);
 
 #define FOREACH_LINE(line, f, on_error)                         \
         for (;;)                                                \
