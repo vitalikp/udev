@@ -46,8 +46,6 @@ add_library(udev_shared_obj STATIC
 	conf-files.h
 	cgroup-util.c
 	cgroup-util.h
-	unit-name.c
-	unit-name.h
 	fileio.c
 	fileio.h
 	MurmurHash2.c

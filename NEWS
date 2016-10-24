@@ -54,6 +54,7 @@
  	- remove unused FOREACH_WORD_SEPARATOR_QUOTED;
  	- use native call to is_selinux_enabled function;
  	- remove unsed selinux util module;
+ 	- remove unsed unit name module;
  * man:
  	- add udev.conf page;
  * tests:
