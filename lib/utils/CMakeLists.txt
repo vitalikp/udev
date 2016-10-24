@@ -4,6 +4,7 @@
 add_library(udev_utils_obj STATIC
 	parse-uint.c
 	path-create.c
+	path-remove.c
 	lookup-user.c
 	lookup-group.c
 )
@@ -34,6 +35,13 @@ add_executable(test-path-create
 )
 target_compile_definitions(test-path-create PRIVATE TESTS)
 
+# test path-remove
+add_executable(test-path-remove
+	path-remove.c
+)
+target_compile_definitions(test-path-remove PRIVATE TESTS)
+target_link_libraries(test-path-remove udev_utils_obj)
+
 # test lookup user
 add_executable(test-lookup-user
 	lookup-user.c
@@ -52,6 +60,7 @@ add_test(NAME utils-str-empty COMMAND ./test-str-empty)
 add_test(NAME utils-str-copy COMMAND ./test-str-copy)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
 add_test(NAME utils-path-create COMMAND ./test-path-create)
+add_test(NAME utils-path-remove COMMAND ./test-path-remove)
 add_test(NAME utils-lookup-user COMMAND ./test-lookup-user)
 add_test(NAME utils-lookup-group COMMAND ./test-lookup-group)
 

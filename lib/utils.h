@@ -62,6 +62,7 @@ int parse_uint(const char *str, uint32_t *pval);
  * Path util functions
  */
 int path_create(const char *path, mode_t mode);
+int path_remove(const char *path);
 
 int lookup_user(const char *user, uid_t *puid);
 int lookup_group(const char *group, gid_t *pgid);
