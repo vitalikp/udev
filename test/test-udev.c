@@ -34,6 +34,7 @@
 #include "missing.h"
 #include "udev.h"
 #include "udev-util.h"
+#include "utils.h"
 
 static int fake_filesystems(void) {
         static const struct fakefs {
@@ -145,7 +146,7 @@ int main(int argc, char *argv[]) {
                         mknod(udev_device_get_devnode(dev), mode, udev_device_get_devnum(dev));
                 } else {
                         unlink(udev_device_get_devnode(dev));
-                        util_delete_path(udev, udev_device_get_devnode(dev));
+                        path_remove(udev_device_get_devnode(dev));
                 }
         }
 

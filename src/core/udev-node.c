@@ -31,6 +31,7 @@
 
 #include "udev.h"
 #include "smack-util.h"
+#include "utils.h"
 
 static int node_symlink(struct udev_device *dev, const char *node, const char *slink)
 {
@@ -200,7 +201,7 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
         if (target == NULL) {
                 log_debug("no reference left, remove '%s'", slink);
                 if (unlink(slink) == 0)
-                        util_delete_path(udev, slink);
+                        path_remove(slink);
         } else {
                 log_debug("creating link '%s' to '%s'", slink, target);
                 node_symlink(dev, target, slink);
