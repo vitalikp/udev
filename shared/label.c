@@ -180,11 +180,13 @@ static int label_fix_selinux(const char *path, bool ignore_enoent, bool ignore_e
 int label_fix(const char *path, bool ignore_enoent, bool ignore_erofs) {
         int r = 0;
 
+#ifdef HAVE_SELINUX
         if (use_selinux()) {
                 r = label_fix_selinux(path, ignore_enoent, ignore_erofs);
                 if (r < 0)
                         return r;
         }
+#endif
 
         if (use_smack()) {
                 r = smack_relabel_in_dev(path);
@@ -373,11 +375,13 @@ finish:
 int label_mkdir(const char *path, mode_t mode) {
         int r;
 
+#ifdef HAVE_SELINUX
         if (use_selinux()) {
                 r = label_mkdir_selinux(path, mode);
                 if (r < 0)
                         return r;
         }
+#endif
 
         if (use_smack()) {
                 r = mkdir(path, mode);
