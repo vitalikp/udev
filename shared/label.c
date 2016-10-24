@@ -37,7 +37,6 @@
 #include "strv.h"
 #include "util.h"
 #include "path-util.h"
-#include "selinux-util.h"
 #include "smack-util.h"
 
 #ifdef HAVE_SELINUX
@@ -92,7 +91,7 @@ int label_init(const char *prefix) {
         usec_t before_timestamp, after_timestamp;
         struct mallinfo before_mallinfo, after_mallinfo;
 
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return 0;
 
         if (label_hnd)
@@ -181,7 +180,7 @@ int label_fix(const char *path, bool ignore_enoent, bool ignore_erofs) {
         int r = 0;
 
 #ifdef HAVE_SELINUX
-        if (use_selinux()) {
+        if (is_selinux_enabled()) {
                 r = label_fix_selinux(path, ignore_enoent, ignore_erofs);
                 if (r < 0)
                         return r;
@@ -200,7 +199,7 @@ int label_fix(const char *path, bool ignore_enoent, bool ignore_erofs) {
 void label_finish(void) {
 
 #ifdef HAVE_SELINUX
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return;
 
         if (label_hnd)
@@ -216,7 +215,7 @@ int label_get_create_label_from_exe(const char *exe, char **label) {
         security_context_t mycon = NULL, fcon = NULL;
         security_class_t sclass;
 
-        if (!use_selinux()) {
+        if (!is_selinux_enabled()) {
                 *label = NULL;
                 return 0;
         }
@@ -251,7 +250,7 @@ int label_context_set(const char *path, mode_t mode) {
 #ifdef HAVE_SELINUX
         security_context_t filecon = NULL;
 
-        if (!use_selinux() || !label_hnd)
+        if (!is_selinux_enabled() || !label_hnd)
                 return 0;
 
         r = selabel_lookup_raw(label_hnd, &filecon, path, mode);
@@ -277,7 +276,7 @@ int label_context_set(const char *path, mode_t mode) {
 int label_socket_set(const char *label) {
 
 #ifdef HAVE_SELINUX
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return 0;
 
         if (setsockcreatecon((security_context_t) label) < 0) {
@@ -297,7 +296,7 @@ void label_context_clear(void) {
 #ifdef HAVE_SELINUX
         PROTECT_ERRNO;
 
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return;
 
         setfscreatecon(NULL);
@@ -309,7 +308,7 @@ void label_socket_clear(void) {
 #ifdef HAVE_SELINUX
         PROTECT_ERRNO;
 
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return;
 
         setsockcreatecon(NULL);
@@ -319,7 +318,7 @@ void label_socket_clear(void) {
 void label_free(const char *label) {
 
 #ifdef HAVE_SELINUX
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return;
 
         freecon((security_context_t) label);
@@ -376,7 +375,7 @@ int label_mkdir(const char *path, mode_t mode) {
         int r;
 
 #ifdef HAVE_SELINUX
-        if (use_selinux()) {
+        if (is_selinux_enabled()) {
                 r = label_mkdir_selinux(path, mode);
                 if (r < 0)
                         return r;
@@ -414,7 +413,7 @@ int label_bind(int fd, const struct sockaddr *addr, socklen_t addrlen) {
         assert(addr);
         assert(addrlen >= sizeof(sa_family_t));
 
-        if (!use_selinux() || !label_hnd)
+        if (!is_selinux_enabled() || !label_hnd)
                 goto skipped;
 
         /* Filter out non-local sockets */
@@ -475,7 +474,7 @@ int label_apply(const char *path, const char *label) {
         int r = 0;
 
 #ifdef HAVE_SELINUX
-        if (!use_selinux())
+        if (!is_selinux_enabled())
                 return 0;
 
         r = setfilecon(path, (char *)label);

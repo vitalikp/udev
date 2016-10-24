@@ -52,6 +52,7 @@
  	- const'ify MIN/MAX/... macros;
  	- don't parse kernel cmdline to set log level;
  	- remove unused FOREACH_WORD_SEPARATOR_QUOTED;
+ 	- use native call to is_selinux_enabled function;
  * man:
  	- add udev.conf page;
  * tests:
