@@ -41,6 +41,7 @@ add_executable(test-path-create
 	path-create.c
 )
 target_compile_definitions(test-path-create PRIVATE TESTS)
+target_link_libraries(test-path-create udev_utils_obj)
 
 # test path-remove
 add_executable(test-path-remove

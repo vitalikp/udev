@@ -11,44 +11,12 @@
 #include <errno.h>
 
 #include "utils.h"
+#include "path.h"
 
 
 int path_create(const char *path, mode_t mode)
 {
-	char dir[PATH_SIZE];
-	char *p = dir;
-	struct stat st;
-
-	*p++ = *path++;
-
-	while (*path)
-	{
-		*p = *path++;
-		if (*p++ == '/')
-		{
-			*p = '\0';
-
-			if (!mkdir(dir, mode))
-				continue;
-
-			if (errno == EEXIST)
-			{
-				st = (struct stat){};
-				if (stat(dir, &st) < 0)
-					return -1;
-				if (S_ISDIR(st.st_mode))
-					continue;
-
-				errno = ENOTDIR;
-				return -1;
-			}
-
-			if (errno != ENOENT)
-				return -1;
-		}
-	}
-
-	return 0;
+	return path_mkdir(path, mode, mkdir);
 }
 
 
@@ -61,16 +29,34 @@ int path_create(const char *path, mode_t mode)
 #include <assert.h>
 
 
-static void test_root()
+static int test_mkdir(const char *path, mode_t mode)
 {
 	int res;
 
-	res = path_create("/", 0755);
+	errno = 0;
+	res = mkdir(path, mode);
+
+	printf("mkdir: '%s'(mode %o) - %m\n", path, mode);
+
+	return res;
+}
+
+static void test_root()
+{
+	printf("--- test create root path ---\n");
+
+	int res;
+
+	res = path_mkdir("/", 0755, test_mkdir);
 	assert(!res);
+
+	printf("test create root path '/'\n\n");
 }
 
 static void test_exist(const char *path)
 {
+	printf("--- test create exist path ---\n");
+
 	char dir[PATH_SIZE];
 	struct stat st;
 	int res;
@@ -85,7 +71,7 @@ static void test_exist(const char *path)
 	assert(!res);
 	assert(S_ISDIR(st.st_mode));
 
-	res = path_create(path, 0755);
+	res = path_mkdir(path, 0755, test_mkdir);
 	assert(!res);
 
 	st = (struct stat){};
@@ -93,11 +79,13 @@ static void test_exist(const char *path)
 	assert(!res);
 	assert(S_ISDIR(st.st_mode));
 
-	printf("test create exist path '%s': %s\n", path, dir);
+	printf("test create exist path '%s': %s\n\n", path, dir);
 }
 
 static void test_create(const char *path)
 {
+	printf("--- test create path ---\n");
+
 	char dir[PATH_SIZE];
 	struct stat st;
 	int res;
@@ -109,18 +97,20 @@ static void test_create(const char *path)
 
 	*p = '\0';
 
-	res = path_create(path, 0755);
+	res = path_mkdir(path, 0755, test_mkdir);
 	assert(!res);
 
 	res = stat(dir, &st);
 	assert(!res);
 	assert(S_ISDIR(st.st_mode));
 
-	printf("test create path '%s'(mode %o): %s\n", path, st.st_mode, dir);
+	printf("test create path '%s'(mode %o): %s\n\n", path, st.st_mode, dir);
 }
 
 static void test_file(const char *path)
 {
+	printf("--- test create file ---\n");
+
 	char file[PATH_SIZE];
 	int res;
 
@@ -135,11 +125,11 @@ static void test_file(const char *path)
 	assert(res > 0);
 	close(res);
 
-	res = path_create(path, 0755);
+	res = path_mkdir(path, 0755, test_mkdir);
 	assert(res < 0);
 	assert(errno == ENOTDIR);
 
-	printf("test create file path '%s': %s\n", path, file);
+	printf("test create file path '%s': %s\n\n", path, file);
 }
 
 int main()
