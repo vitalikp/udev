@@ -2335,7 +2335,7 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                                 event->group_final = true;
                         udev_event_apply_format(event, rules_str(rules, cur->key.value_off), group, sizeof(group));
                         event->group_set = true;
-                        lookup_group(group, &event->gid);
+                        res = lookup_group(group, &event->gid);
                         if (res < 0)
                         {
                         	if (errno == 0 || errno == ENOENT || errno == ESRCH)
