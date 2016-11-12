@@ -29,6 +29,7 @@
 #include <sys/inotify.h>
 
 #include "udev.h"
+#include "utils.h"
 
 static int inotify_fd = -1;
 
@@ -114,7 +115,7 @@ void udev_watch_begin(struct udev *udev, struct udev_device *dev)
         }
 
         snprintf(filename, sizeof(filename), WATCH_PATH "/%d", wd);
-        mkdir_parents(filename, 0755);
+        path_create(filename, 0755);
         unlink(filename);
         r = symlink(udev_device_get_id_filename(dev), filename);
         if (r < 0)

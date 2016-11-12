@@ -29,6 +29,7 @@
 
 #include "udev.h"
 #include "libudev-hwdb-def.h"
+#include "utils.h"
 
 /*
  * Generic udev properties, key/value database based on modalias strings.
@@ -628,7 +629,7 @@ static int adm_hwdb(struct udev *udev, int argc, char *argv[]) {
                         rc = EXIT_FAILURE;
                         goto out;
                 }
-                mkdir_parents(hwdb_bin, 0755);
+                path_create(hwdb_bin, 0755);
                 err = trie_store(trie, hwdb_bin);
                 if (err < 0) {
                         log_error("Failure writing database %s: %s", hwdb_bin, strerror(-err));

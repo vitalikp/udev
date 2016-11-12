@@ -213,9 +213,9 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
                 do {
                         int fd;
 
-                        err = mkdir_parents(filename, 0755);
-                        if (err != 0 && err != -ENOENT)
+                        if (path_create(filename, 0755) < 0)
                                 break;
+
                         fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
                         if (fd >= 0)
                                 close(fd);

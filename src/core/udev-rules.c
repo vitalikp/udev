@@ -2687,10 +2687,10 @@ int udev_rules_apply_static_dev_perms(struct udev_rules *_rules)
                                         _cleanup_free_ char *unescaped_filename = NULL;
 
                                         strscpyl(tags_dir, sizeof(tags_dir), UDEVRUNDIR "/static_node-tags/", *t, "/", NULL);
-                                        r = mkdir_p(tags_dir, 0755);
+                                        r = path_create(tags_dir, 0755);
                                         if (r < 0) {
-                                                log_error("failed to create %s: %s", tags_dir, strerror(-r));
-                                                return r;
+                                                log_error("failed to create %s: %m", tags_dir);
+                                                return -errno;
                                         }
 
                                         unescaped_filename = xescape(rules_str(rules, cur->key.value_off), "/.");
