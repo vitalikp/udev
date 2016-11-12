@@ -2647,49 +2647,6 @@ char *ellipsize(const char *s, size_t length, unsigned percent) {
         return ellipsize_mem(s, strlen(s), length, percent);
 }
 
-int touch_file(const char *path, bool parents, usec_t stamp, uid_t uid, gid_t gid, mode_t mode) {
-        _cleanup_close_ int fd;
-        int r;
-
-        assert(path);
-
-        if (parents)
-                mkdir_parents(path, 0755);
-
-        fd = open(path, O_WRONLY|O_CREAT|O_CLOEXEC|O_NOCTTY, mode > 0 ? mode : 0644);
-        if (fd < 0)
-                return -errno;
-
-        if (mode > 0) {
-                r = fchmod(fd, mode);
-                if (r < 0)
-                        return -errno;
-        }
-
-        if (uid != (uid_t) -1 || gid != (gid_t) -1) {
-                r = fchown(fd, uid, gid);
-                if (r < 0)
-                        return -errno;
-        }
-
-        if (stamp != (usec_t) -1) {
-                struct timespec ts[2];
-
-                timespec_store(&ts[0], stamp);
-                ts[1] = ts[0];
-                r = futimens(fd, ts);
-        } else
-                r = futimens(fd, NULL);
-        if (r < 0)
-                return -errno;
-
-        return 0;
-}
-
-int touch(const char *path) {
-        return touch_file(path, false, (usec_t) -1, (uid_t) -1, (gid_t) -1, 0);
-}
-
 char *unquote(const char *s, const char* quotes) {
         size_t l;
         assert(s);

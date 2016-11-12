@@ -36,7 +36,3 @@ void label_context_clear(void);
 int label_mkdir(const char *path, mode_t mode);
 
 int label_apply(const char *path, const char *label);
-
-int label_write_one_line_file_atomic(const char *fn, const char *line);
-int label_write_env_file(const char *fname, char **l);
-int label_fopen_temporary(const char *path, FILE **_f, char **_temp_path);
