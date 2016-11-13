@@ -50,8 +50,6 @@ add_library(udev_shared_obj STATIC
 	fileio.h
 	MurmurHash2.c
 	MurmurHash2.h
-	acpi-fpdt.h
-	acpi-fpdt.c
 	mkdir.c
 	mkdir.h
 	smack-util.c
