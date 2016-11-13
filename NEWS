@@ -57,6 +57,7 @@
  	- remove unsed unit name module;
  	- remove unused acpi fpdt module;
  	- remove unsed apparmor util module;
+ 	- remove unused bus label module;
  * man:
  	- add udev.conf page;
  * tests:
