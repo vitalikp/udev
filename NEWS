@@ -56,6 +56,7 @@
  	- remove unsed selinux util module;
  	- remove unsed unit name module;
  	- remove unused acpi fpdt module;
+ 	- remove unsed apparmor util module;
  * man:
  	- add udev.conf page;
  * tests:

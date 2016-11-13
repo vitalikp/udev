@@ -54,8 +54,6 @@ add_library(udev_shared_obj STATIC
 	mkdir.h
 	smack-util.c
 	smack-util.h
-	apparmor-util.c
-	apparmor-util.h
 	ima-util.c
 	ima-util.h
 	bus-label.c
