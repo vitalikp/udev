@@ -237,9 +237,6 @@ const char* split(const char **state, size_t *l, const char *separator, bool quo
 char *strappend(const char *s, const char *suffix);
 char *strnappend(const char *s, const char *suffix, size_t length);
 
-char *replace_env(const char *format, char **env);
-char **replace_env_argv(char **argv, char **env);
-
 char *strstrip(char *s);
 char *delete_chars(char *s, const char *bad);
 char *truncate_nl(char *s);
