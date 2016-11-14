@@ -49,7 +49,6 @@
 
 #include "udev.h"
 #include "udev-util.h"
-#include "cgroup-util.h"
 #include "dev-setup.h"
 #include "fileio.h"
 
@@ -78,7 +77,6 @@ static usec_t event_timeout_usec = 30 * USEC_PER_SEC;
 static sigset_t sigmask_orig;
 static UDEV_LIST(event_list);
 static UDEV_LIST(worker_list);
-static char *udev_cgroup;
 static bool udev_exit;
 
 enum event_state {
@@ -1135,10 +1133,6 @@ int main(int argc, char *argv[])
                         rc = 3;
                         goto exit;
                 }
-
-                /* get our own cgroup, we regularly kill everything udev has left behind */
-                if (cg_pid_get_path(SYSTEMD_CGROUP_CONTROLLER, 0, &udev_cgroup) < 0)
-                        udev_cgroup = NULL;
         } else {
                 /* open control and netlink socket */
                 udev_ctrl = udev_ctrl_new(udev);
@@ -1340,10 +1334,6 @@ int main(int argc, char *argv[])
                 } else if (udev_list_node_is_empty(&event_list) && children == 0) {
                         /* we are idle */
                         timeout = -1;
-
-                        /* cleanup possible left-over processes in our cgroup */
-                        if (udev_cgroup)
-                                cg_kill(SYSTEMD_CGROUP_CONTROLLER, udev_cgroup, SIGKILL, false, true, NULL);
                 } else {
                         /* kill idle or hanging workers */
                         timeout = 3 * MSEC_PER_SEC;
