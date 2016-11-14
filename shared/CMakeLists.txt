@@ -42,8 +42,6 @@ add_library(udev_shared_obj STATIC
 	gunicode.h
 	conf-files.c
 	conf-files.h
-	cgroup-util.c
-	cgroup-util.h
 	fileio.c
 	fileio.h
 	MurmurHash2.c

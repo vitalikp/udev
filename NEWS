@@ -60,6 +60,7 @@
  	- remove unsed apparmor util module;
  	- remove unused bus label module;
  	- remove unsed env util module;
+ 	- remove unsed cgroup util module;
  * man:
  	- add udev.conf page;
  * tests:
