@@ -23,8 +23,6 @@ add_library(udev_shared_obj STATIC
 	hashmap.h
 	siphash24.c
 	siphash24.h
-	set.c
-	set.h
 	prioq.c
 	prioq.h
 	strv.c

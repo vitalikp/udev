@@ -76,7 +76,6 @@
 #include "label.h"
 #include "mkdir.h"
 #include "path-util.h"
-#include "set.h"
 #include "hashmap.h"
 #include "fileio.h"
 #include "device-nodes.h"
