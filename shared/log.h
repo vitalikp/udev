@@ -168,5 +168,3 @@ bool log_on_console(void) _pure_;
 
 const char *log_target_to_string(LogTarget target) _const_;
 LogTarget log_target_from_string(const char *s) _pure_;
-
-void log_received_signal(int level, const struct signalfd_siginfo *si);

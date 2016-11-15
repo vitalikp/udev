@@ -243,11 +243,6 @@ char *truncate_nl(char *s);
 
 int rmdir_parents(const char *path, const char *stop);
 
-int get_process_state(pid_t pid);
-int get_process_comm(pid_t pid, char **name);
-int get_process_cmdline(pid_t pid, size_t max_length, bool comm_fallback, char **line);
-int get_process_capeff(pid_t pid, char **capeff);
-
 char hexchar(int x) _const_;
 int unhexchar(char c) _const_;
 char octchar(int x) _const_;
@@ -384,8 +379,6 @@ char* getusername_malloc(void);
 
 int getttyname_malloc(int fd, char **r);
 
-int get_ctty_devnr(pid_t pid, dev_t *d);
-
 int chmod_and_chown(const char *path, mode_t mode, uid_t uid, gid_t gid);
 int fchmod_and_fchown(int fd, mode_t mode, uid_t uid, gid_t gid);
 
@@ -431,10 +424,6 @@ static inline const char *ansi_highlight_off(void) {
 int files_same(const char *filea, const char *fileb);
 
 int running_in_chroot(void);
-
-char *ellipsize(const char *s, size_t length, unsigned percent);
-                                   /* bytes                 columns */
-char *ellipsize_mem(const char *s, size_t old_length, size_t new_length, unsigned percent);
 
 char *unquote(const char *s, const char *quotes);
 char *normalize_env_assignment(const char *s);
@@ -526,14 +515,10 @@ int fd_wait_for_event(int fd, int event, usec_t timeout);
 
 void* memdup(const void *p, size_t l) _alloc_(2);
 
-int is_kernel_thread(pid_t pid);
-
 int fd_inc_sndbuf(int fd, size_t n);
 int fd_inc_rcvbuf(int fd, size_t n);
 
 int setrlimit_closest(int resource, const struct rlimit *rlim);
-
-int getenv_for_pid(pid_t pid, const char *field, char **_value);
 
 static inline void freep(void *p) {
         free(*(void**) p);
@@ -671,19 +656,6 @@ int unlink_noerrno(const char *path);
                 for (_i = 0; _i < ELEMENTSOF(_appendees_); _i++) \
                         _p_ = stpcpy(_p_, _appendees_[_i]);      \
                 _d_;                                             \
-        })
-
-#define procfs_file_alloca(pid, field)                                  \
-        ({                                                              \
-                pid_t _pid_ = (pid);                                    \
-                const char *_r_;                                        \
-                if (_pid_ == 0) {                                       \
-                        _r_ = ("/proc/self/" field);                    \
-                } else {                                                \
-                        _r_ = alloca(strlen("/proc/") + DECIMAL_STR_MAX(pid_t) + 1 + sizeof(field)); \
-                        sprintf((char*) _r_, "/proc/"PID_FMT"/" field, _pid_);                       \
-                }                                                       \
-                _r_;                                                    \
         })
 
 /**
