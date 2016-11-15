@@ -54,15 +54,15 @@
  	- don't parse kernel cmdline to set log level;
  	- remove unused FOREACH_WORD_SEPARATOR_QUOTED;
  	- use native call to is_selinux_enabled function;
- 	- remove unsed selinux util module;
- 	- remove unsed unit name module;
- 	- remove unused acpi fpdt module;
- 	- remove unsed apparmor util module;
- 	- remove unused bus label module;
- 	- remove unsed env util module;
- 	- remove unsed cgroup util module;
- 	- remove unused set module;
- 	- remove unused virt module;
+ 	- remove selinux util module;
+ 	- remove unit name module;
+ 	- remove acpi fpdt module;
+ 	- remove apparmor util module;
+ 	- remove bus label module;
+ 	- remove env util module;
+ 	- remove cgroup util module;
+ 	- remove set module;
+ 	- remove virt module;
  * man:
  	- add udev.conf page;
  * tests:
