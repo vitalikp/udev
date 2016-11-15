@@ -63,6 +63,7 @@
  	- remove cgroup util module;
  	- remove set module;
  	- remove virt module;
+ 	- remove prioq module;
  * man:
  	- add udev.conf page;
  * tests:
