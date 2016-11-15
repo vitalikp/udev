@@ -28,8 +28,6 @@ add_library(udev_shared_obj STATIC
 	log.h
 	utf8.c
 	utf8.h
-	gunicode.c
-	gunicode.h
 	conf-files.c
 	conf-files.h
 	fileio.c

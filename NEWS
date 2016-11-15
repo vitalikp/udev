@@ -65,6 +65,7 @@
  	- remove virt module;
  	- remove prioq module;
  	- remove ima util module;
+ 	- remove gunicode module;
  * man:
  	- add udev.conf page;
  * tests:

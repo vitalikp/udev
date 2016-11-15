@@ -79,7 +79,6 @@
 #include "fileio.h"
 #include "device-nodes.h"
 #include "utf8.h"
-#include "gunicode.h"
 
 int saved_argc = 0;
 char **saved_argv = NULL;
