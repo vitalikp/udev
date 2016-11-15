@@ -40,8 +40,6 @@ add_library(udev_shared_obj STATIC
 	mkdir.h
 	smack-util.c
 	smack-util.h
-	ima-util.c
-	ima-util.h
 )
 
 add_library(udev_label_obj STATIC
