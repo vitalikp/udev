@@ -90,6 +90,7 @@
  * bugfix:
     - fix crash with invalid udev.log-priority;
  * never bypass our own logging framework and call vsyslog() directly;
+ * remove SMACK support;
 
    udev (214.3)
 ~~~~~~~

@@ -116,9 +116,3 @@ if (${SELINUX_ENABLE})
 	pkg_check_modules(SELINUX REQUIRED libselinux)
 	set(HAVE_SELINUX 1)
 endif()
-
-# check SMACK option
-option(SMACK_ENABLE "Disable optional SMACK support")
-if (${SMACK_ENABLE})
-	set(HAVE_SMACK 1)
-endif()

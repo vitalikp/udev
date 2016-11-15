@@ -28,9 +28,6 @@
 /* Define if SELinux is available */
 #cmakedefine HAVE_SELINUX @HAVE_SELINUX@
 
-/* Define if SMACK is available */
-#cmakedefine HAVE_SMACK @HAVE_SMACK@
-
 /* Define to 1 if you have the <sys/auxv.h> header file. */
 #cmakedefine HAVE_SYS_AUXV_H @HAVE_SYS_AUXV_H@
 

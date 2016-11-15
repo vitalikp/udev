@@ -36,8 +36,6 @@ add_library(udev_shared_obj STATIC
 	MurmurHash2.h
 	mkdir.c
 	mkdir.h
-	smack-util.c
-	smack-util.h
 )
 
 add_library(udev_label_obj STATIC

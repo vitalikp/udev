@@ -30,7 +30,6 @@
 #include <sys/types.h>
 
 #include "udev.h"
-#include "smack-util.h"
 #include "utils.h"
 
 static int node_symlink(struct udev_device *dev, const char *node, const char *slink)
@@ -283,7 +282,6 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
 
         if (apply) {
                 bool selinux = false;
-                bool smack = false;
 
                 if ((stats.st_mode & 0777) != (mode & 0777) || stats.st_uid != uid || stats.st_gid != gid) {
                         log_debug("set permissions %s, %#o, uid=%u, gid=%u", devnode, mode, uid, gid);
@@ -307,13 +305,6 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
                                 else
                                         log_debug("SECLABEL: set SELinux label '%s'", label);
 
-                        } else if (streq(name, "smack")) {
-                                smack = true;
-                                if (smack_label_path(devnode, label) < 0)
-                                        log_error("SECLABEL: failed to set SMACK label '%s'", label);
-                                else
-                                        log_debug("SECLABEL: set SMACK label '%s'", label);
-
                         } else
                                 log_error("SECLABEL: unknown subsystem, ignoring '%s'='%s'", name, label);
                 }
@@ -321,8 +312,6 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
                 /* set the defaults */
                 if (!selinux)
                         label_fix(devnode, true, false);
-                if (!smack)
-                        smack_label_path(devnode, NULL);
         }
 
         /* always update timestamp when we re-use the node, like on media change events */
