@@ -52,61 +52,8 @@
 /* If RLIMIT_RTTIME is not defined, then we cannot use RLIMIT_NLIMITS as is */
 #define _RLIMIT_MAX (RLIMIT_RTTIME+1 > RLIMIT_NLIMITS ? RLIMIT_RTTIME+1 : RLIMIT_NLIMITS)
 
-#ifndef F_LINUX_SPECIFIC_BASE
-#define F_LINUX_SPECIFIC_BASE 1024
-#endif
-
-#ifndef F_SETPIPE_SZ
-#define F_SETPIPE_SZ (F_LINUX_SPECIFIC_BASE + 7)
-#endif
-
-#ifndef F_GETPIPE_SZ
-#define F_GETPIPE_SZ (F_LINUX_SPECIFIC_BASE + 8)
-#endif
-
-#ifndef IP_FREEBIND
-#define IP_FREEBIND 15
-#endif
-
-#ifndef OOM_SCORE_ADJ_MIN
-#define OOM_SCORE_ADJ_MIN (-1000)
-#endif
-
-#ifndef OOM_SCORE_ADJ_MAX
-#define OOM_SCORE_ADJ_MAX 1000
-#endif
-
-#ifndef AUDIT_SERVICE_START
-#define AUDIT_SERVICE_START 1130 /* Service (daemon) start */
-#endif
-
-#ifndef AUDIT_SERVICE_STOP
-#define AUDIT_SERVICE_STOP 1131 /* Service (daemon) stop */
-#endif
-
 #ifndef TIOCVHANGUP
 #define TIOCVHANGUP 0x5437
-#endif
-
-#ifndef IP_TRANSPARENT
-#define IP_TRANSPARENT 19
-#endif
-
-#ifndef IFLA_CARRIER
-  #define IFLA_CARRIER 33
-  #ifndef IFLA_NUM_RX_QUEUES
-    #define IFLA_NUM_RX_QUEUES 32
-    #ifndef IFLA_NUM_TX_QUEUES
-      #define IFLA_NUM_TX_QUEUES 31
-      #ifndef IFLA_PROMISCUITY
-        #define IFLA_PROMISCUITY 30
-      #endif
-    #endif
-  #endif
-#endif
-
-#ifndef SOL_NETLINK
-#define SOL_NETLINK 270
 #endif
 
 #if !HAVE_DECL_PIVOT_ROOT
@@ -222,32 +169,9 @@ struct btrfs_ioctl_fs_info_args {
 };
 #endif
 
-#ifndef BTRFS_IOC_DEFRAG
-#define BTRFS_IOC_DEFRAG _IOW(BTRFS_IOCTL_MAGIC, 2, \
-                                 struct btrfs_ioctl_vol_args)
-#endif
-
-#ifndef BTRFS_IOC_DEV_INFO
-#define BTRFS_IOC_DEV_INFO _IOWR(BTRFS_IOCTL_MAGIC, 30, \
-                                 struct btrfs_ioctl_dev_info_args)
-#endif
-
-#ifndef BTRFS_IOC_FS_INFO
-#define BTRFS_IOC_FS_INFO _IOR(BTRFS_IOCTL_MAGIC, 31, \
-                                 struct btrfs_ioctl_fs_info_args)
-#endif
-
 #ifndef BTRFS_IOC_DEVICES_READY
 #define BTRFS_IOC_DEVICES_READY _IOR(BTRFS_IOCTL_MAGIC, 39, \
                                  struct btrfs_ioctl_vol_args)
-#endif
-
-#ifndef BTRFS_SUPER_MAGIC
-#define BTRFS_SUPER_MAGIC 0x9123683E
-#endif
-
-#ifndef MS_MOVE
-#define MS_MOVE 8192
 #endif
 
 #ifndef MS_PRIVATE
@@ -260,28 +184,8 @@ static inline pid_t gettid(void) {
 }
 #endif
 
-#ifndef SCM_SECURITY
-#define SCM_SECURITY 0x03
-#endif
-
-#ifndef MS_STRICTATIME
-#define MS_STRICTATIME (1<<24)
-#endif
-
 #ifndef MS_REC
 #define MS_REC 16384
-#endif
-
-#ifndef MS_SHARED
-#define MS_SHARED (1<<20)
-#endif
-
-#ifndef PR_SET_NO_NEW_PRIVS
-#define PR_SET_NO_NEW_PRIVS 38
-#endif
-
-#ifndef PR_SET_CHILD_SUBREAPER
-#define PR_SET_CHILD_SUBREAPER 36
 #endif
 
 #ifndef MAX_HANDLE_SZ
@@ -322,46 +226,6 @@ static inline int name_to_handle_at(int fd, const char *name, struct file_handle
 #  endif
 #endif
 
-#ifndef CIFS_MAGIC_NUMBER
-#  define CIFS_MAGIC_NUMBER 0xFF534D42
-#endif
-
-#ifndef TFD_TIMER_CANCEL_ON_SET
-#  define TFD_TIMER_CANCEL_ON_SET (1 << 1)
-#endif
-
-#ifndef SO_REUSEPORT
-#  define SO_REUSEPORT 15
-#endif
-
-#ifndef EVIOCREVOKE
-#  define EVIOCREVOKE _IOW('E', 0x91, int)
-#endif
-
-#ifndef DRM_IOCTL_SET_MASTER
-#  define DRM_IOCTL_SET_MASTER _IO('d', 0x1e)
-#endif
-
-#ifndef DRM_IOCTL_DROP_MASTER
-#  define DRM_IOCTL_DROP_MASTER _IO('d', 0x1f)
-#endif
-
-#if defined(__i386__) || defined(__x86_64__)
-
-/* The precise definition of __O_TMPFILE is arch specific, so let's
- * just define this on x86 where we know the value. */
-
-#ifndef __O_TMPFILE
-#define __O_TMPFILE     020000000
-#endif
-
-/* a horrid kludge trying to make sure that this will fail on old kernels */
-#ifndef O_TMPFILE
-#define O_TMPFILE (__O_TMPFILE | O_DIRECTORY)
-#endif
-
-#endif
-
 #ifndef __NR_setns
 #  if defined(__x86_64__)
 #    define __NR_setns 308
@@ -376,48 +240,4 @@ static inline int name_to_handle_at(int fd, const char *name, struct file_handle
 static inline int setns(int fd, int nstype) {
         return syscall(__NR_setns, fd, nstype);
 }
-#endif
-
-#if !HAVE_DECL_LO_FLAGS_PARTSCAN
-#define LO_FLAGS_PARTSCAN 8
-#endif
-
-#ifndef LOOP_CTL_REMOVE
-#define LOOP_CTL_REMOVE 0x4C81
-#endif
-
-#ifndef LOOP_CTL_GET_FREE
-#define LOOP_CTL_GET_FREE 0x4C82
-#endif
-
-#ifndef IFLA_BOND_MAX
-enum {
-        IFLA_BOND_UNSPEC,
-        IFLA_BOND_MODE,
-        IFLA_BOND_ACTIVE_SLAVE,
-        IFLA_BOND_MIIMON,
-        IFLA_BOND_UPDELAY,
-        IFLA_BOND_DOWNDELAY,
-        IFLA_BOND_USE_CARRIER,
-        IFLA_BOND_ARP_INTERVAL,
-        IFLA_BOND_ARP_IP_TARGET,
-        IFLA_BOND_ARP_VALIDATE,
-        IFLA_BOND_ARP_ALL_TARGETS,
-        IFLA_BOND_PRIMARY,
-        IFLA_BOND_PRIMARY_RESELECT,
-        IFLA_BOND_FAIL_OVER_MAC,
-        IFLA_BOND_XMIT_HASH_POLICY,
-        IFLA_BOND_RESEND_IGMP,
-        IFLA_BOND_NUM_PEER_NOTIF,
-        IFLA_BOND_ALL_SLAVES_ACTIVE,
-        IFLA_BOND_MIN_LINKS,
-        IFLA_BOND_LP_INTERVAL,
-        IFLA_BOND_PACKETS_PER_SLAVE,
-        IFLA_BOND_AD_LACP_RATE,
-        IFLA_BOND_AD_SELECT,
-        IFLA_BOND_AD_INFO,
-        __IFLA_BOND_MAX,
-};
-
-#define IFLA_BOND_MAX	(__IFLA_BOND_MAX - 1)
 #endif
