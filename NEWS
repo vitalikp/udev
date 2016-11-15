@@ -62,6 +62,7 @@
  	- remove unsed env util module;
  	- remove unsed cgroup util module;
  	- remove unused set module;
+ 	- remove unused virt module;
  * man:
  	- add udev.conf page;
  * tests:

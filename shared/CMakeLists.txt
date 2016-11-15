@@ -13,8 +13,6 @@ add_library(udev_shared_obj STATIC
 	device-nodes.h
 	util.c
 	util.h
-	virt.c
-	virt.h
 	path-util.c
 	path-util.h
 	time-util.c
