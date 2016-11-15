@@ -33,7 +33,7 @@ static inline int str_empty(const char *str)
  * str_copy:
  * @dst: destination string
  * @src: source string
- * @len: maximum size of the destination string
+ * @size: maximum size of the destination string
  *
  * Copy source string src to destination dst with length len-1
  * and put zero at the end.
