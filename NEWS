@@ -68,6 +68,7 @@
  	- remove prioq module;
  	- remove ima util module;
  	- remove gunicode module;
+ 	- remove list.h header file;
  * man:
  	- add udev.conf page;
  * tests:

@@ -3,7 +3,6 @@
 # udev shared objects
 add_library(udev_shared_obj STATIC
 	missing.h
-	list.h
 	macro.h
 	sparse-endian.h
 	device-nodes.c
