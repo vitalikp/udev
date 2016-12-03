@@ -102,7 +102,6 @@ struct udev_list_node {
         struct udev_list_node *next, *prev;
 };
 struct udev_list {
-        struct udev *udev;
         struct udev_list_node node;
         struct udev_list_entry **entries;
         unsigned int entries_cur;
