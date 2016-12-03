@@ -252,8 +252,17 @@ void udev_list_cleanup(struct udev_list *list)
         list->entries = NULL;
         list->entries_cur = 0;
         list->entries_max = 0;
-        udev_list_entry_foreach_safe(entry_loop, entry_tmp, udev_list_get_entry(list))
-                udev_list_entry_delete(entry_loop);
+
+        entry_loop = udev_list_get_entry(list);
+
+        while (entry_loop != NULL)
+        {
+        	entry_tmp = udev_list_entry_get_next(entry_loop);
+
+        	udev_list_entry_delete(entry_loop);
+
+        	entry_loop = entry_tmp;
+        }
 }
 
 struct udev_list_entry *udev_list_get_entry(struct udev_list *list)

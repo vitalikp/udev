@@ -128,10 +128,6 @@ struct udev_list_entry *udev_list_entry_add(struct udev_list *list, const char *
 void udev_list_entry_delete(struct udev_list_entry *entry);
 int udev_list_entry_get_num(struct udev_list_entry *list_entry);
 void udev_list_entry_set_num(struct udev_list_entry *list_entry, int num);
-#define udev_list_entry_foreach_safe(entry, tmp, first) \
-        for (entry = first, tmp = udev_list_entry_get_next(entry); \
-             entry != NULL; \
-             entry = tmp, tmp = udev_list_entry_get_next(tmp))
 
 /* libudev-queue.c */
 #define QUEUE_PATH UDEVRUNDIR "/queue"

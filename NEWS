@@ -26,6 +26,7 @@
  	- add PATH_SIZE macro;
  	- remove udev parameter from udev_list_init function;
  	- remove udev field from udev_list struct;
+ 	- remove udev_list_entry_foreach_safe macro;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:
