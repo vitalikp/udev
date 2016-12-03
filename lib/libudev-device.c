@@ -656,11 +656,11 @@ struct udev_device *udev_device_new(struct udev *udev)
         }
         udev_device->refcount = 1;
         udev_device->udev = udev;
-        udev_list_init(udev, &udev_device->devlinks_list, true);
-        udev_list_init(udev, &udev_device->properties_list, true);
-        udev_list_init(udev, &udev_device->sysattr_value_list, true);
-        udev_list_init(udev, &udev_device->sysattr_list, false);
-        udev_list_init(udev, &udev_device->tags_list, true);
+        udev_list_init(&udev_device->devlinks_list, true);
+        udev_list_init(&udev_device->properties_list, true);
+        udev_list_init(&udev_device->sysattr_value_list, true);
+        udev_list_init(&udev_device->sysattr_list, false);
+        udev_list_init(&udev_device->tags_list, true);
         udev_device->watch_handle = -1;
         /* copy global properties */
         udev_list_entry_foreach(list_entry, udev_get_properties_list_entry(udev))

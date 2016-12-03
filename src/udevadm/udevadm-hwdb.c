@@ -440,7 +440,7 @@ static int import_file(struct udev *udev, struct trie *trie, const char *filenam
         char line[LINE_MAX];
         struct udev_list match_list;
 
-        udev_list_init(udev, &match_list, false);
+        udev_list_init(&match_list, false);
 
         f = fopen(filename, "re");
         if (f == NULL)

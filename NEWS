@@ -24,6 +24,7 @@
  	- add utils module;
  	- remove unused functions;
  	- add PATH_SIZE macro;
+ 	- remove udev parameter from udev_list_init function;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:

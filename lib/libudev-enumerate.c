@@ -88,14 +88,14 @@ _public_ struct udev_enumerate *udev_enumerate_new(struct udev *udev)
                 return NULL;
         udev_enumerate->refcount = 1;
         udev_enumerate->udev = udev;
-        udev_list_init(udev, &udev_enumerate->sysattr_match_list, false);
-        udev_list_init(udev, &udev_enumerate->sysattr_nomatch_list, false);
-        udev_list_init(udev, &udev_enumerate->subsystem_match_list, true);
-        udev_list_init(udev, &udev_enumerate->subsystem_nomatch_list, true);
-        udev_list_init(udev, &udev_enumerate->sysname_match_list, true);
-        udev_list_init(udev, &udev_enumerate->properties_match_list, false);
-        udev_list_init(udev, &udev_enumerate->tags_match_list, true);
-        udev_list_init(udev, &udev_enumerate->devices_list, false);
+        udev_list_init(&udev_enumerate->sysattr_match_list, false);
+        udev_list_init(&udev_enumerate->sysattr_nomatch_list, false);
+        udev_list_init(&udev_enumerate->subsystem_match_list, true);
+        udev_list_init(&udev_enumerate->subsystem_nomatch_list, true);
+        udev_list_init(&udev_enumerate->sysname_match_list, true);
+        udev_list_init(&udev_enumerate->properties_match_list, false);
+        udev_list_init(&udev_enumerate->tags_match_list, true);
+        udev_list_init(&udev_enumerate->devices_list, false);
         return udev_enumerate;
 }
 

@@ -100,8 +100,8 @@ static struct udev_monitor *udev_monitor_new(struct udev *udev)
                 return NULL;
         udev_monitor->refcount = 1;
         udev_monitor->udev = udev;
-        udev_list_init(udev, &udev_monitor->filter_subsystem_list, false);
-        udev_list_init(udev, &udev_monitor->filter_tag_list, true);
+        udev_list_init(&udev_monitor->filter_subsystem_list, false);
+        udev_list_init(&udev_monitor->filter_tag_list, true);
         return udev_monitor;
 }
 

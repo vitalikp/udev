@@ -122,7 +122,7 @@ void udev_list_node_remove(struct udev_list_node *entry);
         for (node = (list)->next, tmp = (node)->next; \
              node != list; \
              node = tmp, tmp = (tmp)->next)
-void udev_list_init(struct udev *udev, struct udev_list *list, bool unique);
+void udev_list_init(struct udev_list *list, bool unique);
 void udev_list_cleanup(struct udev_list *list);
 struct udev_list_entry *udev_list_get_entry(struct udev_list *list);
 struct udev_list_entry *udev_list_entry_add(struct udev_list *list, const char *name, const char *value);

@@ -274,7 +274,7 @@ _public_ struct udev_hwdb *udev_hwdb_new(struct udev *udev) {
                 return NULL;
 
         hwdb->refcount = 1;
-        udev_list_init(udev, &hwdb->properties_list, true);
+        udev_list_init(&hwdb->properties_list, true);
 
         hwdb->f = fopen(hwdb_bin, "re");
         if (!hwdb->f) {
