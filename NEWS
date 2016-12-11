@@ -14,6 +14,7 @@
     - add udev_rules_reload function;
     - add WATCH_PATH macro;
     - use udev utils library;
+    - print error message on seclabel operation;
  * libudev:
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  	- use PRIu64 in udev_hwdb_new function;

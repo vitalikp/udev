@@ -303,7 +303,7 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
                         if (streq(name, "selinux")) {
                                 selinux = true;
                                 if (label_apply(devnode, label) < 0)
-                                        log_error("SECLABEL: failed to set SELinux label '%s'", label);
+                                        log_error("SECLABEL: failed to set SELinux label '%s': %m", label);
                                 else
                                         log_debug("SECLABEL: set SELinux label '%s'", label);
 
