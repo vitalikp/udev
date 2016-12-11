@@ -184,7 +184,6 @@ static const char *link_find_prioritized(struct udev_device *dev, bool add, cons
 /* manage "stack of names" with possibly specified device priorities */
 static void link_update(struct udev_device *dev, const char *slink, bool add)
 {
-        struct udev *udev = udev_device_get_udev(dev);
         char name_enc[UTIL_PATH_SIZE];
         char filename[UTIL_PATH_SIZE * 2];
         char dirname[UTIL_PATH_SIZE];
