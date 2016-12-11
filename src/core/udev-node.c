@@ -68,7 +68,9 @@ static int node_symlink(struct udev_device *dev, const char *node, const char *s
                 if (S_ISBLK(stats.st_mode) || S_ISCHR(stats.st_mode)) {
                         log_error("conflicting device node '%s' found, link to '%s' will not be created", slink, node);
                         goto exit;
-                } else if (S_ISLNK(stats.st_mode)) {
+                }
+
+                if (S_ISLNK(stats.st_mode)) {
                         char buf[UTIL_PATH_SIZE];
                         int len;
 
@@ -130,6 +132,7 @@ static const char *link_find_prioritized(struct udev_device *dev, bool add, cons
 {
         struct udev *udev = udev_device_get_udev(dev);
         DIR *dir;
+        struct dirent *dent;
         int priority = 0;
         const char *target = NULL;
 
@@ -144,7 +147,6 @@ static const char *link_find_prioritized(struct udev_device *dev, bool add, cons
                 return target;
         for (;;) {
                 struct udev_device *dev_db;
-                struct dirent *dent;
 
                 dent = readdir(dir);
                 if (dent == NULL || dent->d_name[0] == '\0')
