@@ -32,7 +32,7 @@
 #include "udev.h"
 #include "utils.h"
 
-static int node_symlink(struct udev_device *dev, const char *node, const char *slink)
+static int node_symlink(const char *devnum, const char *node, const char *slink)
 {
         struct stat stats;
         char target[UTIL_PATH_SIZE];
@@ -82,7 +82,7 @@ static int node_symlink(struct udev_device *dev, const char *node, const char *s
         }
 
         log_debug("atomically replace '%s'", slink);
-        strscpyl(slink_tmp, sizeof(slink_tmp), slink, ".tmp-", udev_device_get_id_filename(dev), NULL);
+        strscpyl(slink_tmp, sizeof(slink_tmp), slink, ".tmp-", devnum, NULL);
         unlink(slink_tmp);
         do {
                 err = mkdir_parents_label(slink_tmp, 0755);
@@ -169,10 +169,13 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
         char dirname[UTIL_PATH_SIZE];
         const char *target;
         char buf[UTIL_PATH_SIZE];
+        const char *devnum;
+
+        devnum = udev_device_get_id_filename(dev);
 
         util_path_encode(slink + strlen("/dev"), name_enc, sizeof(name_enc));
         strscpyl(dirname, sizeof(dirname), UDEVRUNDIR "/links/", name_enc, NULL);
-        strscpyl(filename, sizeof(filename), dirname, "/", udev_device_get_id_filename(dev), NULL);
+        strscpyl(filename, sizeof(filename), dirname, "/", devnum, NULL);
 
         if (!add && unlink(filename) == 0)
                 rmdir(dirname);
@@ -184,7 +187,7 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
                         path_remove(slink);
         } else {
                 log_debug("creating link '%s' to '%s'", slink, target);
-                node_symlink(dev, target, slink);
+                node_symlink(devnum, target, slink);
         }
 
         if (add) {
@@ -306,9 +309,12 @@ void udev_node_add(struct udev_device *dev, bool apply,
                    struct udev_list *seclabel_list) {
         char filename[UTIL_PATH_SIZE];
         struct udev_list_entry *list_entry;
+        const char *devnum;
+
+        devnum = udev_device_get_id_filename(dev);
 
         log_debug("handling device node '%s', devnum=%s, mode=%#o, uid=%d, gid=%d",
-                  udev_device_get_devnode(dev), udev_device_get_id_filename(dev), mode, uid, gid);
+                  udev_device_get_devnode(dev), devnum, mode, uid, gid);
 
         if (node_permissions_apply(dev, apply, mode, uid, gid, seclabel_list) < 0)
                 return;
@@ -317,7 +323,7 @@ void udev_node_add(struct udev_device *dev, bool apply,
         snprintf(filename, sizeof(filename), "/dev/%s/%u:%u",
                  streq(udev_device_get_subsystem(dev), "block") ? "block" : "char",
                  major(udev_device_get_devnum(dev)), minor(udev_device_get_devnum(dev)));
-        node_symlink(dev, udev_device_get_devnode(dev), filename);
+        node_symlink(devnum, udev_device_get_devnode(dev), filename);
 
         /* create/update symlinks, add symlinks to name index */
         udev_list_entry_foreach(list_entry, udev_device_get_devlinks_list_entry(dev))
