@@ -1,12 +1,13 @@
 # udev utils library cmake file
 
 
+include_directories(.)
+
 add_library(udev_utils_obj STATIC
 	parse-uint.c
-	path-relative.c
-	path-mkdir.c
-	path-create.c
-	path-remove.c
+	path/relative.c
+	path/mkdir.c
+	path/remove.c
 	lookup-user.c
 	lookup-group.c
 )
@@ -33,26 +34,26 @@ target_compile_definitions(test-parse-uint PRIVATE TESTS)
 
 # test path-relative
 add_executable(test-path-relative
-	path-relative.c
+	path/relative.c
 )
 target_compile_definitions(test-path-relative PRIVATE TESTS)
 
 # test path-mkdir
 add_executable(test-path-mkdir
-	path-mkdir.c
+	path/mkdir.c
 )
 target_compile_definitions(test-path-mkdir PRIVATE TESTS)
 
 # test path-create
 add_executable(test-path-create
-	path-create.c
+	path/create.c
 )
 target_compile_definitions(test-path-create PRIVATE TESTS)
 target_link_libraries(test-path-create udev_utils_obj)
 
 # test path-remove
 add_executable(test-path-remove
-	path-remove.c
+	path/remove.c
 )
 target_compile_definitions(test-path-remove PRIVATE TESTS)
 target_link_libraries(test-path-remove udev_utils_obj)
