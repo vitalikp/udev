@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include "utils/path.h"
+
 
 /* The max size of udev path */
 #define PATH_SIZE		1024
