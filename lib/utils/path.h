@@ -13,10 +13,33 @@
 #include <sys/types.h>
 
 
+/* The max size of udev path */
+#define PATH_SIZE		1024
+
+
 typedef int (*mkdir_func)(const char *path, mode_t mode);
 
 
+/**
+ * Path util functions
+ */
+
 int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir);
+
+/**
+ * path_relative:
+ * @dst: destination string
+ * @from: source path
+ * @to: destination path
+ * @size: maximum size of the destination string
+ *
+ * Build relative path from 'to' to 'from', store string in dst.
+ *
+ * Returns: length of destination string, or 0 if error
+ */
+size_t path_relative(char *dst, const char *from, const char *to, size_t size);
+int path_create(const char *path, mode_t mode);
+int path_remove(const char *path);
 
 
 #endif	/* _UDEV_UTILS_PATH_H_ */

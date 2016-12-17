@@ -10,8 +10,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include "utils.h"
 #include "path.h"
+#include "utils.h"
 
 
 size_t path_relative(char *dst, const char *from, const char *to, size_t size)

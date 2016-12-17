@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "path.h"
 #include "utils.h"
 
 

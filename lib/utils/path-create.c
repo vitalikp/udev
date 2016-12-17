@@ -10,8 +10,8 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include "utils.h"
 #include "path.h"
+#include "utils.h"
 
 
 int path_create(const char *path, mode_t mode)
