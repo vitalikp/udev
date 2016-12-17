@@ -11,6 +11,7 @@
 #define _UDEV_UTILS_PATH_H_
 
 #include <sys/types.h>
+#include <sys/stat.h>
 
 
 /* The max size of udev path */
@@ -38,7 +39,21 @@ int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir);
  * Returns: length of destination string, or 0 if error
  */
 size_t path_relative(char *dst, const char *from, const char *to, size_t size);
-int path_create(const char *path, mode_t mode);
+
+/**
+ * path_create:
+ * @path: path string
+ * @mode: path mode
+ *
+ * Create a directory with name 'path' and mode 'mode'.
+ *
+ * Returns: 0 on success, or -1 if error
+ */
+static inline int path_create(const char *path, mode_t mode)
+{
+	return path_mkdir(path, mode, mkdir);
+}
+
 int path_remove(const char *path);
 
 

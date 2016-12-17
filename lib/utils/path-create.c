@@ -7,17 +7,10 @@
  * See the file LICENSE.
  */
 
-#include <sys/stat.h>
 #include <errno.h>
 
 #include "path.h"
 #include "utils.h"
-
-
-int path_create(const char *path, mode_t mode)
-{
-	return path_mkdir(path, mode, mkdir);
-}
 
 
 #ifdef TESTS
