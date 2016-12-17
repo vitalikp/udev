@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
                         mode |= S_IFCHR;
 
                 if (!streq(action, "remove")) {
-                        mkdir_parents_label(udev_device_get_devnode(dev), 0755);
+                        path_create(udev_device_get_devnode(dev), 0755);
                         mknod(udev_device_get_devnode(dev), mode, udev_device_get_devnum(dev));
                 } else {
                         unlink(udev_device_get_devnode(dev));
