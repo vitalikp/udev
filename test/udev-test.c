@@ -844,7 +844,7 @@ KERNEL==\"sda\", ENV{ID_PATH}==\"?*\", SYMLINK+=\"disk/by-path/$env{ID_PATH}\"\n
 
 int error = 0;
 
-void udev(const char *action, const char *devpath, const char *rules)
+int udev(const char *action, const char *devpath, const char *rules)
 {
 	// create temporary rules
 	unsigned char *p = (char*)rules;
@@ -860,7 +860,7 @@ void udev(const char *action, const char *devpath, const char *rules)
 
 	char cmd[512];
 	sprintf(cmd, "%s %s %s", udev_bin, action, devpath);
-	system(cmd);
+	return system(cmd);
 }
 
 void permissions_test(const perm_t perm, uid_t uid, gid_t gid, mode_t mode)
@@ -954,10 +954,18 @@ void udev_setup(void)
 
 void run_test(const udev_test_t *rules, int number)
 {
+	int res;
+
 	printf("TEST %d: %s\n", number, rules->desc);
 	printf("device '%s' expecting node/link '%s'\n", rules->devpath, rules->exp_name);
 
-	udev("add", rules->devpath, rules->rules);
+	res = udev("add", rules->devpath, rules->rules);
+	if (res)
+	{
+		printf("%s add failed with code %d\n", udev_bin, res);
+		error++;
+	}
+
 	struct stat st;
 	int r;
 	if (rules->not_exp_name)
@@ -1001,7 +1009,13 @@ void run_test(const udev_test_t *rules, int number)
 		return;
 	}
 
-	udev("remove", rules->devpath, rules->rules);
+	res = udev("remove", rules->devpath, rules->rules);
+	if (res)
+	{
+		printf("%s remove failed with code %d\n", udev_bin, res);
+		error++;
+	}
+
 	r = stat(rules->exp_name, &st);
 	if (r < 0 && errno == ENOENT && S_ISLNK(st.st_mode) != 1)
 		printf("remove:      ok\n");
