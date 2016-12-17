@@ -36,32 +36,12 @@ static int node_symlink(struct udev_device *dev, const char *node, const char *s
 {
         struct stat stats;
         char target[UTIL_PATH_SIZE];
-        char *s;
-        size_t l;
         char slink_tmp[UTIL_PATH_SIZE + 32];
-        int i = 0;
-        int tail = 0;
         int err = 0;
 
         /* use relative link */
-        target[0] = '\0';
-        while (node[i] && (node[i] == slink[i])) {
-                if (node[i] == '/')
-                        tail = i+1;
-                i++;
-        }
-        s = target;
-        l = sizeof(target);
-        while (slink[i] != '\0') {
-                if (slink[i] == '/')
-                        l = strpcpy(&s, l, "../");
-                i++;
-        }
-        l = strscpy(s, l, &node[tail]);
-        if (l == 0) {
-                err = -EINVAL;
-                goto exit;
-        }
+        if (!path_relative(target, node, slink, sizeof(target)))
+        	return -1;
 
         /* preserve link with correct target, do not replace node of other device */
         if (lstat(slink, &stats) == 0) {
