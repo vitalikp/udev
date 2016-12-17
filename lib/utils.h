@@ -61,6 +61,19 @@ int parse_uint(const char *str, uint32_t *pval);
 /**
  * Path util functions
  */
+
+/**
+ * path_relative:
+ * @dst: destination string
+ * @from: source path
+ * @to: destination path
+ * @size: maximum size of the destination string
+ *
+ * Build relative path from 'to' to 'from', store string in dst.
+ *
+ * Returns: length of destination string, or 0 if error
+ */
+size_t path_relative(char *dst, const char *from, const char *to, size_t size);
 int path_create(const char *path, mode_t mode);
 int path_remove(const char *path);
 

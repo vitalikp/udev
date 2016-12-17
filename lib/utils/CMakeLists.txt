@@ -3,6 +3,7 @@
 
 add_library(udev_utils_obj STATIC
 	parse-uint.c
+	path-relative.c
 	path-mkdir.c
 	path-create.c
 	path-remove.c
@@ -29,6 +30,12 @@ add_executable(test-parse-uint
 	parse-uint.c
 )
 target_compile_definitions(test-parse-uint PRIVATE TESTS)
+
+# test path-relative
+add_executable(test-path-relative
+	path-relative.c
+)
+target_compile_definitions(test-path-relative PRIVATE TESTS)
 
 # test path-mkdir
 add_executable(test-path-mkdir
@@ -67,6 +74,7 @@ target_link_libraries(test-lookup-group udev_utils_obj)
 add_test(NAME utils-str-empty COMMAND ./test-str-empty)
 add_test(NAME utils-str-copy COMMAND ./test-str-copy)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
+add_test(NAME utils-path-relative COMMAND ./test-path-relative)
 add_test(NAME utils-path-mkdir COMMAND ./test-path-mkdir)
 add_test(NAME utils-path-create COMMAND ./test-path-create)
 add_test(NAME utils-path-remove COMMAND ./test-path-remove)
