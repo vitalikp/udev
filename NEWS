@@ -77,6 +77,7 @@
  	- ignore unknown option in test-libudev;
  	- add test-device-nodes test;
  	- add test-rules test;
+ 	- fix udev test for non existent user;
  * build:
  	- don't use optimizations for debug build type;
  	- add SYSCONFCDIR path variable;

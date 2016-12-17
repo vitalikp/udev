@@ -368,15 +368,15 @@ SUBSYSTEMS==\"scsi\", ATTRS{whitespace_test}==\"WHITE  SPACE   \", SYMLINK+=\"ma
 	  .exp_perms = {"0","0","0600"},
 	  .rules = "KERNEL==\"tty33\", OWNER=\"bad\", GROUP=\"name\"\n\0"
 	},
-	{ "permissions OWNER=5000",
+	{ "permissions OWNER=1",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/node",
-	  .exp_perms = { "5000",0,"0600"},
-	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", OWNER=\"5000\"\n\0"
+	  .exp_perms = { "1",0,"0600"},
+	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", OWNER=\"1\"\n\0"
 	},
-	{ "permissions GROUP=100",
+	{ "permissions GROUP=1",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/node",
-	  .exp_perms = {0,"100","0660"},
-	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", GROUP=\"100\"\n\0"
+	  .exp_perms = {0,"1","0660"},
+	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", GROUP=\"1\"\n\0"
 	},
 	{ "textual user id",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/node",
@@ -398,20 +398,20 @@ SUBSYSTEMS==\"scsi\", ATTRS{whitespace_test}==\"WHITE  SPACE   \", SYMLINK+=\"ma
 	  .exp_perms = {0,0,"0777"},
 	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", MODE=\"0777\"\n\0"
 	},
-	{ "permissions OWNER=5000 GROUP=100 MODE=0777",
+	{ "permissions OWNER=1 GROUP=1 MODE=0777",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/node",
-	  .exp_perms = {"5000","100","0777"},
-	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", OWNER=\"5000\", GROUP=\"100\", MODE=\"0777\"\n\0"
+	  .exp_perms = {"1","1","0777"},
+	  .rules = "SUBSYSTEMS==\"scsi\", KERNEL==\"sda\", SYMLINK+=\"node\", OWNER=\"1\", GROUP=\"1\", MODE=\"0777\"\n\0"
 	},
-	{ "permissions OWNER to 5000",
+	{ "permissions OWNER to 1",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {"5000",0,0},
-	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", OWNER=\"5000\"\n\0"
+	  .exp_perms = {"1",0,0},
+	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", OWNER=\"1\"\n\0"
 	},
-	{ "permissions GROUP to 100",
+	{ "permissions GROUP to 1",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {0,"100","0660"},
-	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", GROUP=\"100\"\n\0"
+	  .exp_perms = {0,"1","0660"},
+	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", GROUP=\"1\"\n\0"
 	},
 	{ "permissions MODE to 0060",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
@@ -420,36 +420,36 @@ SUBSYSTEMS==\"scsi\", ATTRS{whitespace_test}==\"WHITE  SPACE   \", SYMLINK+=\"ma
 	},
 	{ "permissions OWNER, GROUP, MODE",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {"5000","100","0777"},
-	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", OWNER=\"5000\", GROUP=\"100\", MODE=\"0777\"\n\0"
+	  .exp_perms = {"1","1","0777"},
+	  .rules = "KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", OWNER=\"1\", GROUP=\"1\", MODE=\"0777\"\n\0"
 	},
 	{ "permissions only rule",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {"5000","100","0777"},
+	  .exp_perms = {"1","1","0777"},
 	  .rules =
-"KERNEL==\"ttyACM[0-9]*\", OWNER=\"5000\", GROUP=\"100\", MODE=\"0777\"\n\
-KERNEL==\"ttyUSX[0-9]*\", OWNER=\"5001\", GROUP=\"101\", MODE=\"0444\"\n\
+"KERNEL==\"ttyACM[0-9]*\", OWNER=\"1\", GROUP=\"1\", MODE=\"0777\"\n\
+KERNEL==\"ttyUSX[0-9]*\", OWNER=\"2\", GROUP=\"2\", MODE=\"0444\"\n\
 KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\"\n\0"
 	},
 	{ "multiple permissions only rule",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {"3000","4000","0777"},
+	  .exp_perms = {"1","1","0777"}	,
 	  .rules =
-"SUBSYSTEM==\"tty\", OWNER=\"3000\"\n\
-SUBSYSTEM==\"tty\", GROUP=\"4000\"\n\
+"SUBSYSTEM==\"tty\", OWNER=\"1\"\n\
+SUBSYSTEM==\"tty\", GROUP=\"1\"\n\
 SUBSYSTEM==\"tty\", MODE=\"0777\"\n\
-KERNEL==\"ttyUSX[0-9]*\", OWNER=\"5001\", GROUP=\"101\", MODE=\"0444\"\n\
+KERNEL==\"ttyUSX[0-9]*\", OWNER=\"2\", GROUP=\"2\", MODE=\"0444\"\n\
 KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\"\n\0"
 	},
 	{ "permissions only rule with override at SYMLINK+ rule",
 	  "/devices/pci0000:00/0000:00:1d.7/usb5/5-2/5-2:1.0/tty/ttyACM0", "dev/ttyACM0",
-	  .exp_perms = {"3000","8000","0777"},
+	  .exp_perms = {"1","2","0777"},
 	  .rules =
-"SUBSYSTEM==\"tty\", OWNER=\"3000\"\n\
-SUBSYSTEM==\"tty\", GROUP=\"4000\"\n\
+"SUBSYSTEM==\"tty\", OWNER=\"1\"\n\
+SUBSYSTEM==\"tty\", GROUP=\"2\"\n\
 SUBSYSTEM==\"tty\", MODE=\"0777\"\n\
-KERNEL==\"ttyUSX[0-9]*\", OWNER=\"5001\", GROUP=\"101\", MODE=\"0444\"\n\
-KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", GROUP=\"8000\"\n\0"
+KERNEL==\"ttyUSX[0-9]*\", OWNER=\"2\", GROUP=\"2\", MODE=\"0444\"\n\
+KERNEL==\"ttyACM[0-9]*\", SYMLINK+=\"ttyACM%n\", GROUP=\"2\"\n\0"
 	},
 	{ "device number test",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/node",
@@ -812,11 +812,11 @@ TEST!=\"/etc/hosts\", SYMLINK+=\"notthere\"\n\0"
 	},
 	{ "TEST PROGRAM feeds OWNER, GROUP, MODE",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/sda",
-	  .exp_perms = {"5000","100","0400"},
+	  .exp_perms = {"1","1","0400"},
 	  .exp_rem_error = true,
 	  .rules =
 "KERNEL==\"sda\", MODE=\"666\"\n\
-KERNEL==\"sda\", PROGRAM==\"/bin/echo 5000 100 0400\", OWNER=\"%c{1}\", GROUP=\"%c{2}\", MODE=\"%c{3}\"\n\0"
+KERNEL==\"sda\", PROGRAM==\"/bin/echo 1 1 0400\", OWNER=\"%c{1}\", GROUP=\"%c{2}\", MODE=\"%c{3}\"\n\0"
 	},
 	{ "TEST PROGRAM feeds MODE with overflow",
 	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda", "dev/sda",
