@@ -85,14 +85,12 @@ int main(int argc, char *argv[]) {
         const char *devpath;
         const char *action;
         sigset_t mask, sigmask_orig;
-        int err;
 
-        err = fake_filesystems();
-        if (err < 0)
+        if (fake_filesystems() < 0)
                 return EXIT_FAILURE;
 
         udev = udev_new();
-        if (udev == NULL)
+        if (!udev)
                 return EXIT_FAILURE;
 
         log_debug("version %s", VERSION);
@@ -101,13 +99,13 @@ int main(int argc, char *argv[]) {
         sigprocmask(SIG_SETMASK, NULL, &sigmask_orig);
 
         action = argv[1];
-        if (action == NULL) {
+        if (!action) {
                 log_error("action missing");
                 goto out;
         }
 
         devpath = argv[2];
-        if (devpath == NULL) {
+        if (!devpath) {
                 log_error("devpath missing");
                 goto out;
         }
@@ -116,7 +114,7 @@ int main(int argc, char *argv[]) {
 
         strscpyl(syspath, sizeof(syspath), "/sys", devpath, NULL);
         dev = udev_device_new_from_syspath(udev, syspath);
-        if (dev == NULL) {
+        if (!dev) {
                 log_debug("unknown device '%s'", devpath);
                 goto out;
         }
@@ -157,5 +155,5 @@ out:
                 close(event->fd_signal);
         label_finish();
 
-        return err ? EXIT_FAILURE : EXIT_SUCCESS;
+        return EXIT_SUCCESS;
 }
