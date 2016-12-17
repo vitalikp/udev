@@ -1929,6 +1929,8 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
         enum escape_type esc = ESCAPE_UNSET;
         bool can_set_name;
 
+        rules = _rules->rules;
+
         if (rules->tokens == NULL)
                 return -1;
 
@@ -1936,7 +1938,6 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                         (major(udev_device_get_devnum(event->dev)) > 0 ||
                          udev_device_get_ifindex(event->dev) > 0));
 
-        rules = _rules->rules;
         /* loop through token list, match, run actions or forward to next rule */
         cur = &rules->tokens[0];
         rule = cur;
