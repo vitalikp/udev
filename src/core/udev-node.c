@@ -173,7 +173,7 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
 
         devnum = udev_device_get_id_filename(dev);
 
-        util_path_encode(slink + strlen("/dev"), name_enc, sizeof(name_enc));
+        path_encode(name_enc, slink + strlen("/dev"), sizeof(name_enc));
         strscpyl(dirname, sizeof(dirname), UDEVRUNDIR "/links/", name_enc, NULL);
         strscpyl(filename, sizeof(filename), dirname, "/", devnum, NULL);
 
