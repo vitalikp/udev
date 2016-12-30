@@ -6,6 +6,7 @@ include_directories(.)
 add_library(udev_utils_obj STATIC
 	parse-uint.c
 	path/relative.c
+	path/encode.c
 	path/mkdir.c
 	path/remove.c
 	lookup-user.c
@@ -42,6 +43,12 @@ add_executable(test-path-relative
 	path/relative.c
 )
 target_compile_definitions(test-path-relative PRIVATE TESTS)
+
+# test path-encode
+add_executable(test-path-encode
+	path/encode.c
+)
+target_compile_definitions(test-path-encode PRIVATE TESTS)
 
 # test path-mkdir
 add_executable(test-path-mkdir
@@ -82,6 +89,7 @@ add_test(NAME utils-str-copy COMMAND ./test-str-copy)
 add_test(NAME utils-char-encode COMMAND ./test-char-encode)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
 add_test(NAME utils-path-relative COMMAND ./test-path-relative)
+add_test(NAME utils-path-encode COMMAND ./test-path-encode)
 add_test(NAME utils-path-mkdir COMMAND ./test-path-mkdir)
 add_test(NAME utils-path-create COMMAND ./test-path-create)
 add_test(NAME utils-path-remove COMMAND ./test-path-remove)

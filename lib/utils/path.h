@@ -40,6 +40,8 @@ int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir);
  */
 size_t path_relative(char *dst, const char *from, const char *to, size_t size);
 
+size_t path_encode(char *dest, const char *src, size_t size);
+
 /**
  * path_create:
  * @path: path string
