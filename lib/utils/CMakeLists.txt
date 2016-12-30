@@ -26,6 +26,11 @@ add_executable(test-str-copy
 	test-str-copy.c
 )
 
+# test char-encode
+add_executable(test-char-encode
+	test-char-encode.c
+)
+
 # test parse-uint
 add_executable(test-parse-uint
 	parse-uint.c
@@ -74,6 +79,7 @@ target_link_libraries(test-lookup-group udev_utils_obj)
 
 add_test(NAME utils-str-empty COMMAND ./test-str-empty)
 add_test(NAME utils-str-copy COMMAND ./test-str-copy)
+add_test(NAME utils-char-encode COMMAND ./test-char-encode)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
 add_test(NAME utils-path-relative COMMAND ./test-path-relative)
 add_test(NAME utils-path-mkdir COMMAND ./test-path-mkdir)

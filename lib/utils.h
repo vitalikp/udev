@@ -53,6 +53,22 @@ static inline size_t str_copy(char *dst, const char *src, size_t size)
 	return len - size;
 }
 
+static inline char char_hex(uint8_t val)
+{
+	if (val < 10)
+		return '0' + val;
+
+	return 'a' + val - 10;
+}
+
+static inline void char_encode(char *dst, const char ch)
+{
+	*dst++ = '\\';
+	*dst++ = 'x';
+	*dst++ = char_hex(ch>>4 & 0xf);
+	*dst++ = char_hex(ch & 0xf);
+}
+
 int parse_uint(const char *str, uint32_t *pval);
 
 
