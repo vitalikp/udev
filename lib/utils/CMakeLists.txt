@@ -19,12 +19,12 @@ if (${TESTS_ENABLE})
 
 # test test-str-empty
 add_executable(test-str-empty
-	test-str-empty.c
+	str/test-empty.c
 )
 
 # test test-str-copy
 add_executable(test-str-copy
-	test-str-copy.c
+	str/test-copy.c
 )
 
 # test char-encode
