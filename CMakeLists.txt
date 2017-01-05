@@ -1,6 +1,6 @@
 # main udev cmake file
 project(udev)
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 
 
 set(VERSION 214.4-dev)
