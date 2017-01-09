@@ -241,8 +241,6 @@ char *strstrip(char *s);
 char *delete_chars(char *s, const char *bad);
 char *truncate_nl(char *s);
 
-int rmdir_parents(const char *path, const char *stop);
-
 char hexchar(int x) _const_;
 int unhexchar(char c) _const_;
 char octchar(int x) _const_;
@@ -345,8 +343,6 @@ int fd_cloexec(int fd, bool cloexec);
 
 int close_all_fds(const int except[], unsigned n_except);
 
-bool fstype_is_network(const char *fstype);
-
 int chvt(int vt);
 
 int reset_terminal_fd(int fd, bool switch_to_text);
@@ -368,8 +364,6 @@ ssize_t loop_write(int fd, const void *buf, size_t nbytes, bool do_poll);
 
 bool is_device_path(const char *path);
 
-void rename_process(const char name[8]);
-
 void sigset_add_many(sigset_t *ss, ...);
 int sigprocmask_many(int how, ...);
 
@@ -378,14 +372,6 @@ char* getlogname_malloc(void);
 char* getusername_malloc(void);
 
 int getttyname_malloc(int fd, char **r);
-
-int chmod_and_chown(const char *path, mode_t mode, uid_t uid, gid_t gid);
-int fchmod_and_fchown(int fd, mode_t mode, uid_t uid, gid_t gid);
-
-int rm_rf_children(int fd, bool only_dirs, bool honour_sticky, struct stat *root_dev);
-int rm_rf_children_dangerous(int fd, bool only_dirs, bool honour_sticky, struct stat *root_dev);
-int rm_rf(const char *path, bool only_dirs, bool delete_root, bool honour_sticky);
-int rm_rf_dangerous(const char *path, bool only_dirs, bool delete_root, bool honour_sticky);
 
 int pipe_eof(int fd);
 
@@ -464,23 +450,9 @@ int in_gid(gid_t gid);
 char* uid_to_name(uid_t uid);
 char* gid_to_name(gid_t gid);
 
-int glob_exists(const char *path);
-int glob_extend(char ***strv, const char *path);
-
-int dirent_ensure_type(DIR *d, struct dirent *de);
-
-int in_search_path(const char *path, char **search);
-int get_files_in_directory(const char *path, char ***list);
-
 char *strjoin(const char *x, ...) _sentinel_;
 
 bool is_main_thread(void);
-
-int block_get_whole_disk(dev_t d, dev_t *ret);
-
-int file_is_priv_sticky(const char *p);
-
-int strdup_or_null(const char *a, char **b);
 
 #define NULSTR_FOREACH(i, l)                                    \
         for ((i) = (l); (i) && *(i); (i) = strchr((i), 0)+1)
@@ -488,37 +460,17 @@ int strdup_or_null(const char *a, char **b);
 #define NULSTR_FOREACH_PAIR(i, j, l)                             \
         for ((i) = (l), (j) = strchr((i), 0)+1; (i) && *(i); (i) = strchr((j), 0)+1, (j) = *(i) ? strchr((i), 0)+1 : (i))
 
-const char *sigchld_code_to_string(int i) _const_;
-int sigchld_code_from_string(const char *s) _pure_;
-
 int log_level_to_string_alloc(int i, char **s);
 int log_level_from_string(const char *s);
 
-const char *rlimit_to_string(int i) _const_;
-int rlimit_from_string(const char *s) _pure_;
-
-const char *signal_to_string(int i) _const_;
-int signal_from_string(const char *s) _pure_;
-
-int signal_from_string_try_harder(const char *s);
-
 extern int saved_argc;
 extern char **saved_argv;
-
-bool kexec_loaded(void);
-
-int prot_from_flags(int flags) _const_;
-
-char *format_bytes(char *buf, size_t l, off_t t);
 
 int fd_wait_for_event(int fd, int event, usec_t timeout);
 
 void* memdup(const void *p, size_t l) _alloc_(2);
 
 int fd_inc_sndbuf(int fd, size_t n);
-int fd_inc_rcvbuf(int fd, size_t n);
-
-int setrlimit_closest(int resource, const struct rlimit *rlim);
 
 static inline void freep(void *p) {
         free(*(void**) p);
@@ -572,9 +524,6 @@ _alloc_(2, 3) static inline void *memdup_multiply(const void *p, size_t a, size_
         return memdup(p, a * b);
 }
 
-bool filename_is_safe(const char *p) _pure_;
-bool path_is_safe(const char *p) _pure_;
-
 /**
  * Check if a string contains any glob patterns.
  */
@@ -586,8 +535,6 @@ void *xbsearch_r(const void *key, const void *base, size_t nmemb, size_t size,
                  int (*compar) (const void *, const void *, void *),
                  void *arg);
 
-char *strreplace(const char *text, const char *old_string, const char *new_string);
-
 #define FOREACH_LINE(line, f, on_error)                         \
         for (;;)                                                \
                 if (!fgets(line, sizeof(line), f)) {            \
@@ -596,25 +543,6 @@ char *strreplace(const char *text, const char *old_string, const char *new_strin
                         }                                       \
                         break;                                  \
                 } else
-
-#define FOREACH_DIRENT(de, d, on_error)                                 \
-        for (errno = 0, de = readdir(d);; errno = 0, de = readdir(d))   \
-                if (!de) {                                              \
-                        if (errno > 0) {                                \
-                                on_error;                               \
-                        }                                               \
-                        break;                                          \
-                } else if (ignore_file((de)->d_name))                   \
-                        continue;                                       \
-                else
-
-static inline void *mempset(void *s, int c, size_t n) {
-        memset(s, c, n);
-        return (uint8_t*)s + n;
-}
-
-char *hexmem(const void *p, size_t l);
-void *unhexmem(const char *p, size_t l);
 
 char *strextend(char **x, ...) _sentinel_;
 char *strrep(const char *s, unsigned n);
