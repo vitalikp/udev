@@ -47,7 +47,7 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
         if (lstat(slink, &stats) == 0) {
                 if (S_ISBLK(stats.st_mode) || S_ISCHR(stats.st_mode)) {
                         log_error("conflicting device node '%s' found, link to '%s' will not be created", slink, node);
-                        goto exit;
+                        return 0;
                 }
 
                 if (S_ISLNK(stats.st_mode)) {
@@ -61,7 +61,7 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
                                         log_debug("preserve already existing symlink '%s' to '%s'", slink, target);
                                         label_fix(slink, true, false);
                                         utimensat(AT_FDCWD, slink, NULL, AT_SYMLINK_NOFOLLOW);
-                                        goto exit;
+                                        return 0;
                                 }
                         }
                 }
@@ -78,7 +78,7 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
                         label_context_clear();
                 } while (err == -ENOENT);
                 if (err == 0)
-                        goto exit;
+                        return 0;
         }
 
         log_debug("atomically replace '%s'", slink);
@@ -96,14 +96,14 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
         } while (err == -ENOENT);
         if (err != 0) {
                 log_error("symlink '%s' '%s' failed: %m", target, slink_tmp);
-                goto exit;
+                return -1;
         }
         err = rename(slink_tmp, slink);
         if (err != 0) {
                 log_error("rename '%s' '%s' failed: %m", slink_tmp, slink);
                 unlink(slink_tmp);
         }
-exit:
+
         return err;
 }
 
