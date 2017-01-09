@@ -32,6 +32,25 @@
 #include "udev.h"
 #include "utils.h"
 
+
+static int symlink_create(const char *target, const char *slink)
+{
+	int err = 0;
+
+	do {
+		err = mkdir_parents_label(slink, 0755);
+		if (err != 0 && err != -ENOENT)
+				break;
+		label_context_set(slink, S_IFLNK);
+		err = symlink(target, slink);
+		if (err != 0)
+				err = -errno;
+		label_context_clear();
+	} while (err == -ENOENT);
+
+	return err;
+}
+
 static int node_symlink(const char *devnum, const char *node, const char *slink)
 {
         struct stat stats;
@@ -67,16 +86,7 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
                 }
         } else {
                 log_debug("creating symlink '%s' to '%s'", slink, target);
-                do {
-                        err = mkdir_parents_label(slink, 0755);
-                        if (err != 0 && err != -ENOENT)
-                                break;
-                        label_context_set(slink, S_IFLNK);
-                        err = symlink(target, slink);
-                        if (err != 0)
-                                err = -errno;
-                        label_context_clear();
-                } while (err == -ENOENT);
+                err = symlink_create(target, slink);
                 if (err == 0)
                         return 0;
         }
@@ -84,16 +94,7 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
         log_debug("atomically replace '%s'", slink);
         strscpyl(slink_tmp, sizeof(slink_tmp), slink, ".tmp-", devnum, NULL);
         unlink(slink_tmp);
-        do {
-                err = mkdir_parents_label(slink_tmp, 0755);
-                if (err != 0 && err != -ENOENT)
-                        break;
-                label_context_set(slink_tmp, S_IFLNK);
-                err = symlink(target, slink_tmp);
-                if (err != 0)
-                        err = -errno;
-                label_context_clear();
-        } while (err == -ENOENT);
+        err = symlink_create(target, slink_tmp);
         if (err != 0) {
                 log_error("symlink '%s' '%s' failed: %m", target, slink_tmp);
                 return -1;
