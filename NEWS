@@ -80,6 +80,7 @@
  	- fix udev test for non existent user;
  	- check segfault on run test-udev in udev test;
  	- don't label '/dev/*' directories on run udev test;
+ 	- set debug log level in udev test;
  * build:
  	- don't use optimizations for debug build type;
  	- add SYSCONFCDIR path variable;

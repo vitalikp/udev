@@ -86,6 +86,8 @@ int main(int argc, char *argv[]) {
         const char *action;
         sigset_t mask, sigmask_orig;
 
+        log_set_max_level(LOG_DEBUG);
+
         if (fake_filesystems() < 0)
                 return EXIT_FAILURE;
 
