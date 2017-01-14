@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -67,7 +67,7 @@ int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir)
 
 static int test_mkdir(const char *path, mode_t mode)
 {
-	printf("mkdir: '%s'(mode %o)\n", path, mode);
+	printf("mkdir: '%s'(mode %#o)\n", path, mode);
 
 	return 0;
 }
