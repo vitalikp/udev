@@ -56,7 +56,6 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
         struct stat stats;
         char target[UTIL_PATH_SIZE];
         char slink_tmp[UTIL_PATH_SIZE + 32];
-        int err = 0;
 
         /* use relative link */
         if (!path_relative(target, node, slink, sizeof(target)))
@@ -86,26 +85,27 @@ static int node_symlink(const char *devnum, const char *node, const char *slink)
                 }
         } else {
                 log_debug("creating symlink '%s' to '%s'", slink, target);
-                err = symlink_create(target, slink);
-                if (err == 0)
+                if (!symlink_create(target, slink))
                         return 0;
         }
 
         log_debug("atomically replace '%s'", slink);
         strscpyl(slink_tmp, sizeof(slink_tmp), slink, ".tmp-", devnum, NULL);
         unlink(slink_tmp);
-        err = symlink_create(target, slink_tmp);
-        if (err != 0) {
+        if (symlink_create(target, slink_tmp) != 0) {
                 log_error("symlink '%s' '%s' failed: %m", target, slink_tmp);
+
                 return -1;
         }
-        err = rename(slink_tmp, slink);
-        if (err != 0) {
+
+        if (rename(slink_tmp, slink) < 0) {
                 log_error("rename '%s' '%s' failed: %m", slink_tmp, slink);
                 unlink(slink_tmp);
+
+                return -1;
         }
 
-        return err;
+        return 0;
 }
 
 /* find device node of device with highest priority */
