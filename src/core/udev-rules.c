@@ -1458,7 +1458,7 @@ static int add_rule(struct udev_rules *rules, char *line,
                         mode_t mode;
                         char *endptr;
 
-                        mode = strtol(value, &endptr, 8);
+                        mode = (ACCESSPERMS & strtol(value, &endptr, 8));
                         if (endptr[0] == '\0')
                                 rule_add_key(&rule_tmp, TK_A_MODE_ID, op, NULL, &mode);
                         else
@@ -2360,7 +2360,7 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
                         if (event->mode_final)
                                 break;
                         udev_event_apply_format(event, rules_str(rules, cur->key.value_off), mode_str, sizeof(mode_str));
-                        mode = strtol(mode_str, &endptr, 8);
+                        mode = (ACCESSPERMS & strtol(mode_str, &endptr, 8));
                         if (endptr[0] != '\0') {
                                 log_error("ignoring invalid mode '%s'", mode_str);
                                 break;
