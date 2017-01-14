@@ -245,24 +245,22 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
         dev_t devnum = udev_device_get_devnum(dev);
         struct stat stats;
         struct udev_list_entry *entry;
-        int err = 0;
 
         if (streq(udev_device_get_subsystem(dev), "block"))
                 mode |= S_IFBLK;
         else
                 mode |= S_IFCHR;
 
-        if (lstat(devnode, &stats) != 0) {
-                err = -errno;
+        if (lstat(devnode, &stats) < 0) {
                 log_debug("can not stat() node '%s' (%m)", devnode);
-                goto out;
+                return -1;
         }
 
         if (((stats.st_mode & S_IFMT) != (mode & S_IFMT)) || (stats.st_rdev != devnum)) {
-                err = -EEXIST;
+                errno = EEXIST;
                 log_debug("found node '%s' with non-matching devnum %s, skip handling",
                           udev_device_get_devnode(dev), udev_device_get_id_filename(dev));
-                goto out;
+                return -1;
         }
 
         if (apply) {
@@ -301,8 +299,8 @@ static int node_permissions_apply(struct udev_device *dev, bool apply,
 
         /* always update timestamp when we re-use the node, like on media change events */
         utimensat(AT_FDCWD, devnode, NULL, 0);
-out:
-        return err;
+
+        return 0;
 }
 
 void udev_node_add(struct udev_device *dev, bool apply,
