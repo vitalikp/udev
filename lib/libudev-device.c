@@ -467,7 +467,7 @@ void udev_device_add_property_from_string_parse(struct udev_device *udev_device,
         } else if (startswith(property, "IFINDEX=")) {
                 udev_device_set_ifindex(udev_device, strtoull(&property[8], NULL, 10));
         } else if (startswith(property, "DEVMODE=")) {
-                udev_device_set_devnode_mode(udev_device, strtoul(&property[8], NULL, 8));
+                udev_device_set_devnode_mode(udev_device, (ACCESSPERMS & strtoul(&property[8], NULL, 8)));
         } else if (startswith(property, "DEVUID=")) {
                 udev_device_set_devnode_uid(udev_device, strtoul(&property[7], NULL, 10));
         } else if (startswith(property, "DEVGID=")) {
@@ -624,7 +624,7 @@ int udev_device_read_uevent_file(struct udev_device *udev_device)
                 else if (startswith(line, "MINOR="))
                         min = strtoull(&line[6], NULL, 10);
                 else if (startswith(line, "DEVMODE="))
-                        udev_device->devnode_mode = strtoul(&line[8], NULL, 8);
+                        udev_device->devnode_mode = (ACCESSPERMS & strtoul(&line[8], NULL, 8));
 
                 udev_device_add_property_from_string(udev_device, line);
         }

@@ -28,6 +28,7 @@
  	- remove udev parameter from udev_list_init function;
  	- remove udev field from udev_list struct;
  	- remove udev_list_entry_foreach_safe macro;
+ 	- read DEVMODE only access permission mode bits;
  * accelerometer:
  	- don't wait for new data from the sensor;
  * udevadm:
