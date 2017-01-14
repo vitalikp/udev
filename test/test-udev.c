@@ -88,6 +88,18 @@ int main(int argc, char *argv[]) {
 
         log_set_max_level(LOG_DEBUG);
 
+        action = argv[1];
+        if (!action) {
+                log_error("action missing");
+                return EXIT_FAILURE;
+        }
+
+        devpath = argv[2];
+        if (!devpath) {
+                log_error("devpath missing");
+                return EXIT_FAILURE;
+        }
+
         if (fake_filesystems() < 0)
                 return EXIT_FAILURE;
 
@@ -98,18 +110,6 @@ int main(int argc, char *argv[]) {
         log_debug("version %s", VERSION);
 
         sigprocmask(SIG_SETMASK, NULL, &sigmask_orig);
-
-        action = argv[1];
-        if (!action) {
-                log_error("action missing");
-                goto out;
-        }
-
-        devpath = argv[2];
-        if (!devpath) {
-                log_error("devpath missing");
-                goto out;
-        }
 
         rules = udev_rules_new(udev, 1);
 
