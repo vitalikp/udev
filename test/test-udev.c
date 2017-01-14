@@ -122,6 +122,10 @@ int main(int argc, char *argv[]) {
 
         udev_device_set_action(dev, action);
         event = udev_event_new(dev);
+        if (!event) {
+                log_oom();
+                goto out;
+        }
 
         sigfillset(&mask);
         sigprocmask(SIG_SETMASK, &mask, &sigmask_orig);
