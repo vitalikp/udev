@@ -24,7 +24,7 @@ add_library(libudev_obj OBJECT
 	libudev-list.c
 	libudev-util.c
 	utils.h
-	libudev-device.c
+	device/libudev-device.c
 	libudev-enumerate.c
 	libudev-monitor.c
 	libudev-queue.c
@@ -35,7 +35,7 @@ add_library(libudev_obj OBJECT
 # internal
 add_library(udev_int_obj STATIC
 	$<TARGET_OBJECTS:libudev_obj>
-	libudev-device-private.c
+	device/libudev-device-private.c
 )
 target_link_libraries(udev_int_obj udev_utils_obj)
 
