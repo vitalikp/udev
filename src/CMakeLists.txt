@@ -4,7 +4,6 @@
 include(keyboard-keys.cmake)
 
 include_directories(core)
-include_directories(core/net)
 
 
 # udev
