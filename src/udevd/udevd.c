@@ -1116,7 +1116,7 @@ int main(int argc, char *argv[])
 
         mkdir(UDEVRUNDIR, 0755);
 
-        dev_setup(NULL);
+        dev_setup();
 
         if (systemd_fds(udev, &fd_ctrl, &fd_netlink) >= 0) {
                 /* get control and netlink socket from systemd */

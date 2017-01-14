@@ -50,7 +50,7 @@ static int symlink_and_label(const char *old_path, const char *new_path) {
         return r;
 }
 
-int dev_setup(const char *prefix) {
+int dev_setup() {
         const char *j, *k;
 
         static const char symlinks[] =
@@ -68,16 +68,7 @@ int dev_setup(const char *prefix) {
                                 continue;
                 }
 
-                if (prefix) {
-                        _cleanup_free_ char *link_name = NULL;
-
-                        link_name = strjoin(prefix, "/", k, NULL);
-                        if (!link_name)
-                                return -ENOMEM;
-
-                        symlink_and_label(j, link_name);
-                } else
-                        symlink_and_label(j, k);
+                symlink_and_label(j, k);
         }
 
         return 0;
