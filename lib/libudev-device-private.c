@@ -30,58 +30,6 @@
 #include "libudev-private.h"
 #include "utils.h"
 
-static void udev_device_tag(struct udev_device *dev, const char *tag, bool add)
-{
-        const char *id;
-        char filename[UTIL_PATH_SIZE];
-
-        id = udev_device_get_id_filename(dev);
-        if (id == NULL)
-                return;
-        strscpyl(filename, sizeof(filename), UDEVRUNDIR "/tags/", tag, "/", id, NULL);
-
-        if (add) {
-                int fd;
-
-                path_create(filename, 0755);
-                fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
-                if (fd >= 0)
-                        close(fd);
-        } else {
-                unlink(filename);
-        }
-}
-
-int udev_device_tag_index(struct udev_device *dev, struct udev_device *dev_old, bool add)
-{
-        struct udev_list_entry *list_entry;
-        bool found;
-
-        if (add && dev_old != NULL) {
-                /* delete possible left-over tags */
-                udev_list_entry_foreach(list_entry, udev_device_get_tags_list_entry(dev_old)) {
-                        const char *tag_old = udev_list_entry_get_name(list_entry);
-                        struct udev_list_entry *list_entry_current;
-
-                        found = false;
-                        udev_list_entry_foreach(list_entry_current, udev_device_get_tags_list_entry(dev)) {
-                                const char *tag = udev_list_entry_get_name(list_entry_current);
-
-                                if (streq(tag, tag_old)) {
-                                        found = true;
-                                        break;
-                                }
-                        }
-                        if (!found)
-                                udev_device_tag(dev_old, tag_old, false);
-                }
-        }
-
-        udev_list_entry_foreach(list_entry, udev_device_get_tags_list_entry(dev))
-                udev_device_tag(dev, udev_list_entry_get_name(list_entry), add);
-
-        return 0;
-}
 
 static bool device_has_info(struct udev_device *udev_device)
 {
@@ -188,5 +136,58 @@ int udev_device_delete_db(struct udev_device *udev_device)
                 return -1;
         strscpyl(filename, sizeof(filename), UDEVRUNDIR "/data/", id, NULL);
         unlink(filename);
+        return 0;
+}
+
+static void udev_device_tag(struct udev_device *dev, const char *tag, bool add)
+{
+        const char *id;
+        char filename[UTIL_PATH_SIZE];
+
+        id = udev_device_get_id_filename(dev);
+        if (id == NULL)
+                return;
+        strscpyl(filename, sizeof(filename), UDEVRUNDIR "/tags/", tag, "/", id, NULL);
+
+        if (add) {
+                int fd;
+
+                path_create(filename, 0755);
+                fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
+                if (fd >= 0)
+                        close(fd);
+        } else {
+                unlink(filename);
+        }
+}
+
+int udev_device_tag_index(struct udev_device *dev, struct udev_device *dev_old, bool add)
+{
+        struct udev_list_entry *list_entry;
+        bool found;
+
+        if (add && dev_old != NULL) {
+                /* delete possible left-over tags */
+                udev_list_entry_foreach(list_entry, udev_device_get_tags_list_entry(dev_old)) {
+                        const char *tag_old = udev_list_entry_get_name(list_entry);
+                        struct udev_list_entry *list_entry_current;
+
+                        found = false;
+                        udev_list_entry_foreach(list_entry_current, udev_device_get_tags_list_entry(dev)) {
+                                const char *tag = udev_list_entry_get_name(list_entry_current);
+
+                                if (streq(tag, tag_old)) {
+                                        found = true;
+                                        break;
+                                }
+                        }
+                        if (!found)
+                                udev_device_tag(dev_old, tag_old, false);
+                }
+        }
+
+        udev_list_entry_foreach(list_entry, udev_device_get_tags_list_entry(dev))
+                udev_device_tag(dev, udev_list_entry_get_name(list_entry), add);
+
         return 0;
 }
