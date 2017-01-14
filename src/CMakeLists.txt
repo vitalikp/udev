@@ -11,34 +11,7 @@ include_directories(core/net)
 configure_file(udev.pc.cmake udev.pc)
 
 # udev core
-set(libudev_core_src
-	core/udev.h
-	core/udev-event.c
-	core/udev-watch.c
-	core/udev-node.c
-	core/udev-rules.c
-	core/udev-ctrl.c
-	core/builtin/udev-builtin.c
-	core/builtin/udev-builtin-btrfs.c
-	core/builtin/udev-builtin-hwdb.c
-	core/builtin/udev-builtin-input_id.c
-	core/builtin/udev-builtin-keyboard.c
-	core/builtin/udev-builtin-net_id.c
-	core/builtin/udev-builtin-path_id.c
-	core/builtin/udev-builtin-usb_id.c
-)
-if (${KMOD_ENABLE})
-	list(APPEND libudev_core_src core/builtin/udev-builtin-kmod.c)
-endif()
-if (${BLKID_ENABLE})
-	list(APPEND libudev_core_src core/builtin/udev-builtin-blkid.c)
-endif()
-add_library(udev_core_obj STATIC
-	${libudev_core_src}
-)
-target_link_libraries(udev_core_obj udev_int_obj udev_label_obj udev_shared_obj)
-target_link_libraries(udev_core_obj ${KMOD_LIBRARIES} ${BLKID_LIBRARIES} ${SYSTEMD_LIBRARIES})
-target_link_libraries(udev_core_obj -pthread rt)
+add_subdirectory(core)
 
 # udebadm
 add_library(udevadm_obj OBJECT
@@ -132,18 +105,3 @@ install(FILES ${PROJECT_BINARY_DIR}/src/udev.pc DESTINATION share/pkgconfig)
 install(TARGETS udevadm DESTINATION ${bindir})
 install(TARGETS udevrule DESTINATION ${bindir})
 install(TARGETS udevd DESTINATION ${sbindir})
-
-
-# tests
-if (${TESTS_ENABLE})
-
-# test rules
-add_executable(test-rules
-	core/udev-rules.c
-)
-target_compile_definitions(test-rules PRIVATE DEBUG TESTS)
-target_link_libraries(test-rules udev_core_obj)
-
-add_test(NAME udev-rules COMMAND ./test-rules)
-
-endif()
