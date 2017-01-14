@@ -15,12 +15,15 @@
 #include "utils.h"
 
 
-int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir)
+int path_mkdir(const char *path, mkdir_func pmkdir, mode_t mode, void* data)
 {
 	char dir[PATH_SIZE];
 	char *p = dir;
 	struct stat st;
 	bool first = true;
+
+	if (!pmkdir)
+		pmkdir = run_mkdir;
 
 	while (*path)
 	{
@@ -36,7 +39,7 @@ int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir)
 				continue;
 			}
 
-			if (!pmkdir(dir, mode))
+			if (!pmkdir(dir, mode, data))
 				continue;
 
 			if (errno == EEXIST)
@@ -65,7 +68,8 @@ int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir)
 #include <stdio.h>
 #include <assert.h>
 
-static int test_mkdir(const char *path, mode_t mode)
+
+static int test_mkdir(const char *path, mode_t mode, void* data)
 {
 	printf("mkdir: '%s'(mode %#o)\n", path, mode);
 
@@ -76,10 +80,10 @@ int main()
 {
 	int res;
 
-	res = path_mkdir("/path/a/b/c/d/e/f", 0755, test_mkdir);
+	res = path_mkdir("/path/a/b/c/d/e/f", test_mkdir, 0755, NULL);
 	assert(!res);
 
-	res = path_mkdir("/path1/1/new", 0400, test_mkdir);
+	res = path_mkdir("/path1/1/new", test_mkdir, 0400, NULL);
 	assert(!res);
 
 	return EXIT_SUCCESS;

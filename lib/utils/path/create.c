@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -22,7 +22,7 @@
 #include <assert.h>
 
 
-static int test_mkdir(const char *path, mode_t mode)
+static int test_mkdir(const char *path, mode_t mode, void* data)
 {
 	int res;
 
@@ -40,7 +40,7 @@ static void test_root()
 
 	int res;
 
-	res = path_mkdir("/", 0755, test_mkdir);
+	res = path_mkdir("/", test_mkdir, 0755, NULL);
 	assert(!res);
 
 	printf("test create root path '/'\n\n");
@@ -64,7 +64,7 @@ static void test_exist(const char *path)
 	assert(!res);
 	assert(S_ISDIR(st.st_mode));
 
-	res = path_mkdir(path, 0755, test_mkdir);
+	res = path_mkdir(path, test_mkdir, 0755, NULL);
 	assert(!res);
 
 	st = (struct stat){};
@@ -90,7 +90,7 @@ static void test_create(const char *path)
 
 	*p = '\0';
 
-	res = path_mkdir(path, 0755, test_mkdir);
+	res = path_mkdir(path, test_mkdir, 0755, NULL);
 	assert(!res);
 
 	res = stat(dir, &st);
@@ -118,7 +118,7 @@ static void test_file(const char *path)
 	assert(res > 0);
 	close(res);
 
-	res = path_mkdir(path, 0755, test_mkdir);
+	res = path_mkdir(path, test_mkdir, 0755, NULL);
 	assert(res < 0);
 	assert(errno == ENOTDIR);
 

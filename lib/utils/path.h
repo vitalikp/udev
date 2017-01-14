@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -10,6 +10,7 @@
 #ifndef _UDEV_UTILS_PATH_H_
 #define _UDEV_UTILS_PATH_H_
 
+#include <stddef.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -18,14 +19,19 @@
 #define PATH_SIZE		1024
 
 
-typedef int (*mkdir_func)(const char *path, mode_t mode);
+typedef int (*mkdir_func)(const char *path, mode_t mode, void* data);
 
 
 /**
  * Path util functions
  */
 
-int path_mkdir(const char *path, mode_t mode, mkdir_func pmkdir);
+static inline int run_mkdir(const char *path, mode_t mode, void* data)
+{
+	return mkdir(path, mode);
+}
+
+int path_mkdir(const char *path, mkdir_func pmkdir, mode_t mode, void* data);
 
 /**
  * path_relative:
@@ -53,7 +59,7 @@ size_t path_encode(char *dest, const char *src, size_t size);
  */
 static inline int path_create(const char *path, mode_t mode)
 {
-	return path_mkdir(path, mode, mkdir);
+	return path_mkdir(path, NULL, mode, NULL);
 }
 
 int path_remove(const char *path);
