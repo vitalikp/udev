@@ -70,7 +70,7 @@ add_custom_target(man ALL DEPENDS ${docs})
 # source code
 include_directories(shared)
 include_directories(lib)
-include_directories(src/core)
+include_directories(src)
 add_subdirectory(shared)
 add_subdirectory(lib)
 add_subdirectory(src)

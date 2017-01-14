@@ -5,7 +5,6 @@ include_directories(.)
 
 # udev core
 set(libudev_core_src
-	udev.h
 	udev-event.c
 	udev-watch.c
 	udev-node.c
