@@ -42,6 +42,8 @@
  	- reload rules without reinit udev_rules struct;
  	- don't checking containers while parse kernel cmdline;
  	- don't kill cgroup child process;
+ * scsi_id:
+ 	- don't use exit function;
  * shared:
  	- remove unused functions;
  	- remove conf parser util;

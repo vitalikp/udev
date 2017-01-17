@@ -360,7 +360,7 @@ static int set_options(struct udev *udev,
 
                 case 'h':
                         help();
-                        exit(0);
+                        return -1;
 
                 case 'p':
                         if (streq(optarg, "0x80"))
@@ -396,7 +396,7 @@ static int set_options(struct udev *udev,
 
                 case 'V':
                         printf("%s\n", VERSION);
-                        exit(0);
+                        return -1;
 
                 case 'x':
                         export = true;
@@ -613,8 +613,10 @@ int main(int argc, char **argv)
         /*
          * Get command line options (overriding any config file settings).
          */
-        if (set_options(udev, argc, argv, maj_min_dev) < 0)
-                exit(1);
+        if (set_options(udev, argc, argv, maj_min_dev) < 0) {
+                retval = 1;
+                goto exit;
+        }
 
         if (!dev_specified) {
                 log_error("no device specified");
