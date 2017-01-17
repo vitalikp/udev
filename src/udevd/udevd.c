@@ -288,7 +288,7 @@ static void worker_new(struct event *event)
                          * acquired the lock, the external process can block until
                          * udev has finished its event handling.
                          */
-                        if (!streq_ptr(udev_device_get_action(dev), "remove") &&
+                        if (udev_device_action(dev) != ACTION_REMOVE &&
                             streq_ptr("block", udev_device_get_subsystem(dev)) &&
                             !startswith(udev_device_get_sysname(dev), "dm-") &&
                             !startswith(udev_device_get_sysname(dev), "md")) {

@@ -807,7 +807,7 @@ void udev_event_execute_rules(struct udev_event *event,
         if (udev_device_get_subsystem(dev) == NULL)
                 return;
 
-        if (streq(udev_device_get_action(dev), "remove")) {
+        if (udev_device_action(dev) == ACTION_REMOVE) {
                 udev_device_read_db(dev, NULL);
                 udev_device_delete_db(dev);
                 udev_device_tag_index(dev, NULL, false);
@@ -835,7 +835,7 @@ void udev_event_execute_rules(struct udev_event *event,
                 udev_rules_apply_to_event(rules, event, timeout_usec, sigmask);
 
                 /* rename a new network interface, if needed */
-                if (udev_device_get_ifindex(dev) > 0 && streq(udev_device_get_action(dev), "add") &&
+                if (udev_device_get_ifindex(dev) > 0 && udev_device_action(dev) == ACTION_ADD &&
                     event->name != NULL && !streq(event->name, udev_device_get_sysname(dev))) {
                         char syspath[UTIL_PATH_SIZE];
                         char *pos;
@@ -878,7 +878,7 @@ void udev_event_execute_rules(struct udev_event *event,
                                 }
                         }
 
-                        apply = streq(udev_device_get_action(dev), "add") || event->owner_set || event->group_set || event->mode_set;
+                        apply = udev_device_action(dev) == ACTION_ADD || event->owner_set || event->group_set || event->mode_set;
                         udev_node_add(dev, apply, event->mode, event->uid, event->gid, &event->seclabel_list);
                 }
 

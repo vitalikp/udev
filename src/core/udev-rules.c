@@ -1934,7 +1934,7 @@ int udev_rules_apply_to_event(struct udev_rules *_rules,
         if (rules->tokens == NULL)
                 return -1;
 
-        can_set_name = ((!streq(udev_device_get_action(event->dev), "remove")) &&
+        can_set_name = ((udev_device_action(event->dev) != ACTION_REMOVE) &&
                         (major(udev_device_get_devnum(event->dev)) > 0 ||
                          udev_device_get_ifindex(event->dev) > 0));
 
