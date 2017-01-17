@@ -28,7 +28,6 @@
 #include <sys/epoll.h>
 
 #include "libudev.h"
-#include "udev-util.h"
 #include "util.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
@@ -115,7 +114,7 @@ static void print_device(struct udev_device *device) {
 }
 
 static int test_device(struct udev *udev, const char *syspath) {
-        _cleanup_udev_device_unref_ struct udev_device *device;
+        struct udev_device *device;
 
         printf("looking at device: %s\n", syspath);
         device = udev_device_new_from_syspath(udev, syspath);
@@ -124,12 +123,13 @@ static int test_device(struct udev *udev, const char *syspath) {
                 return -1;
         }
         print_device(device);
+        udev_device_unref(device);
 
         return 0;
 }
 
 static int test_device_parents(struct udev *udev, const char *syspath) {
-        _cleanup_udev_device_unref_ struct udev_device *device;
+        struct udev_device *device;
         struct udev_device *device_parent;
 
         printf("looking at device: %s\n", syspath);
@@ -150,6 +150,7 @@ static int test_device_parents(struct udev *udev, const char *syspath) {
                 print_device(device_parent);
                 device_parent = udev_device_get_parent(device_parent);
         } while (device_parent != NULL);
+        udev_device_unref(device);
 
         return 0;
 }
