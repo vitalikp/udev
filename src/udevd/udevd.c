@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
         log_set_max_level(udev_get_log_priority(udev));
 
         log_debug("version %s", VERSION);
-        label_init("/dev");
+        label_init();
 
         for (;;) {
                 int option;

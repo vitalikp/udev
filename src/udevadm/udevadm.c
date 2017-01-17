@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
         log_parse_environment();
         log_open();
         udev_set_log_fn(udev, udev_main_log);
-        label_init("/dev");
+        label_init();
 
         while ((c = getopt_long(argc, argv, "+dhV", options, NULL)) >= 0) {
                 switch (c) {

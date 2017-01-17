@@ -42,7 +42,7 @@
 static struct selabel_handle *label_hnd = NULL;
 #endif
 
-int label_init(const char *prefix) {
+int label_init() {
         int r = 0;
 
 #ifdef HAVE_SELINUX
@@ -58,14 +58,7 @@ int label_init(const char *prefix) {
         before_mallinfo = mallinfo();
         before_timestamp = now(CLOCK_MONOTONIC);
 
-        if (prefix) {
-                struct selinux_opt options[] = {
-                        { .type = SELABEL_OPT_SUBSET, .value = prefix },
-                };
-
-                label_hnd = selabel_open(SELABEL_CTX_FILE, options, ELEMENTSOF(options));
-        } else
-                label_hnd = selabel_open(SELABEL_CTX_FILE, NULL, 0);
+        label_hnd = selabel_open(SELABEL_CTX_FILE, NULL, 0);
 
         if (!label_hnd) {
                 log_full(security_getenforce() == 1 ? LOG_ERR : LOG_DEBUG,
