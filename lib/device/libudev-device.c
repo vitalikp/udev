@@ -35,6 +35,7 @@
 
 #include "libudev.h"
 #include "libudev-private.h"
+#include "action.h"
 
 static int udev_device_set_devnode(struct udev_device *udev_device, const char *devnode);
 
@@ -67,7 +68,7 @@ struct udev_device {
         char *subsystem;
         char *devtype;
         char *driver;
-        char *action;
+        device_t dev;
         char *devpath_old;
         char *id_filename;
         char **envp;
@@ -656,6 +657,7 @@ struct udev_device *udev_device_new(struct udev *udev)
         }
         udev_device->refcount = 1;
         udev_device->udev = udev;
+        device_init(&udev_device->dev);
         udev_list_init(&udev_device->devlinks_list, true);
         udev_list_init(&udev_device->properties_list, true);
         udev_list_init(&udev_device->sysattr_value_list, true);
@@ -1145,7 +1147,6 @@ _public_ struct udev_device *udev_device_unref(struct udev_device *udev_device)
         udev_list_cleanup(&udev_device->sysattr_value_list);
         udev_list_cleanup(&udev_device->sysattr_list);
         udev_list_cleanup(&udev_device->tags_list);
-        free(udev_device->action);
         free(udev_device->driver);
         free(udev_device->devpath_old);
         free(udev_device->id_filename);
@@ -1332,9 +1333,17 @@ _public_ struct udev_list_entry *udev_device_get_properties_list_entry(struct ud
  **/
 _public_ const char *udev_device_get_action(struct udev_device *udev_device)
 {
-        if (udev_device == NULL)
-                return NULL;
-        return udev_device->action;
+	if (!udev_device)
+		return NULL;
+
+	int act;
+
+	act = device_get_action(&udev_device->dev);
+
+	if (act < 0 || act >= ACTION_COUNT)
+		return NULL;
+
+	return actions[act];
 }
 
 /**
@@ -1862,12 +1871,12 @@ ssize_t udev_device_get_properties_monitor_buf(struct udev_device *udev_device, 
 
 int udev_device_set_action(struct udev_device *udev_device, const char *action)
 {
-        free(udev_device->action);
-        udev_device->action = strdup(action);
-        if (udev_device->action == NULL)
-                return -ENOMEM;
-        udev_device_add_property(udev_device, "ACTION", udev_device->action);
-        return 0;
+	if (device_set_action(&udev_device->dev, action) < 0)
+		return -1;
+
+	udev_device_add_property(udev_device, "ACTION", action);
+
+	return 0;
 }
 
 int udev_device_get_devlink_priority(struct udev_device *udev_device)
