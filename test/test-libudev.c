@@ -30,7 +30,6 @@
 #include "libudev.h"
 #include "util.h"
 
-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 _printf_(6,0)
 static void log_fn(struct udev *udev,
@@ -276,7 +275,7 @@ static int test_monitor(struct udev *udev) {
                 int i;
 
                 printf("waiting for events from udev, press ENTER to exit\n");
-                fdcount = epoll_wait(fd_ep, ev, ARRAY_SIZE(ev), -1);
+                fdcount = epoll_wait(fd_ep, ev, 4, -1);
                 printf("epoll fd count: %i\n", fdcount);
 
                 for (i = 0; i < fdcount; i++) {
