@@ -1321,6 +1321,14 @@ _public_ struct udev_list_entry *udev_device_get_properties_list_entry(struct ud
         return udev_list_get_entry(&udev_device->properties_list);
 }
 
+int udev_device_action(struct udev_device *udev_device)
+{
+	if (!udev_device)
+		return -1;
+
+	return device_get_action(&udev_device->dev);
+}
+
 /**
  * udev_device_get_action:
  * @udev_device: udev device
