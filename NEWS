@@ -111,6 +111,7 @@
  * never bypass our own logging framework and call vsyslog() directly;
  * remove SMACK support;
  * load full selinux db;
+ * remove _cleanup_udev_unref_ auto cleanup macros;
 
    udev (214.3)
 ~~~~~~~
