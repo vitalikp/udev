@@ -253,7 +253,7 @@ static int adm_monitor(struct udev *udev, int argc, char *argv[])
                 }
 
                 for (i = 0; i < fdcount; i++) {
-                        if (ev[i].data.fd == fd_kernel && ev[i].events & EPOLLIN) {
+                        if (ev[i].data.fd == fd_kernel && (ev[i].events & EPOLLIN)) {
                                 struct udev_device *device;
 
                                 device = udev_monitor_receive_device(kernel_monitor);
@@ -261,7 +261,7 @@ static int adm_monitor(struct udev *udev, int argc, char *argv[])
                                         continue;
                                 print_device(device, "KERNEL", prop);
                                 udev_device_unref(device);
-                        } else if (ev[i].data.fd == fd_udev && ev[i].events & EPOLLIN) {
+                        } else if (ev[i].data.fd == fd_udev && (ev[i].events & EPOLLIN)) {
                                 struct udev_device *device;
 
                                 device = udev_monitor_receive_device(udev_monitor);

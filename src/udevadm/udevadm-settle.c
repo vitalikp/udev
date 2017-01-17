@@ -134,7 +134,7 @@ static int adm_settle(struct udev *udev, int argc, char *argv[])
                 }
 
                 /* wake up when queue is empty */
-                if (poll(pfd, 1, MSEC_PER_SEC) > 0 && pfd[0].revents & POLLIN)
+                if (poll(pfd, 1, MSEC_PER_SEC) > 0 && (pfd[0].revents & POLLIN))
                         udev_queue_flush(queue);
         }
 
