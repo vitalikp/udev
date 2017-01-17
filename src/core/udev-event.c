@@ -47,6 +47,7 @@ struct udev_event *udev_event_new(struct udev_device *dev)
                 return NULL;
         event->dev = dev;
         event->udev = udev;
+        event->mode = 0600;
         udev_list_init(&event->run_list, false);
         udev_list_init(&event->seclabel_list, false);
         event->fd_signal = -1;
@@ -878,9 +879,6 @@ void udev_event_execute_rules(struct udev_event *event,
                                 } else if (event->gid > 0) {
                                         /* default 0660 if a group is assigned */
                                         event->mode = 0660;
-                                } else {
-                                        /* default 0600 */
-                                        event->mode = 0600;
                                 }
                         }
 
