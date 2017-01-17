@@ -127,6 +127,11 @@ static int adm_test(struct udev *udev, int argc, char *argv[])
 
         udev_device_set_action(dev, action);
         event = udev_event_new(dev);
+        if (!event) {
+                fprintf(stderr, "unable to create event for device '%s'\n", filename);
+                rc = 4;
+                goto out;
+        }
 
         sigfillset(&mask);
         sigprocmask(SIG_SETMASK, &mask, &sigmask_orig);

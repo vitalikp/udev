@@ -34,6 +34,7 @@
  	- don't wait for new data from the sensor;
  * udevadm:
  	- don't print full help on error;
+ 	- check udev event is created;
  * udevd:
  	- exclude MD from block device ownership event locking;
  	- add event-timeout commandline option;
