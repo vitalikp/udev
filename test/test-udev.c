@@ -33,7 +33,6 @@
 
 #include "missing.h"
 #include "udev.h"
-#include "udev-util.h"
 #include "utils.h"
 
 static int fake_filesystems(void) {
@@ -77,10 +76,10 @@ out:
 }
 
 int main(int argc, char *argv[]) {
-        _cleanup_udev_unref_ struct udev *udev = NULL;
-        _cleanup_udev_event_unref_ struct udev_event *event = NULL;
-        _cleanup_udev_device_unref_ struct udev_device *dev = NULL;
-        _cleanup_udev_rules_unref_ struct udev_rules *rules = NULL;
+        struct udev *udev = NULL;
+        struct udev_event *event = NULL;
+        struct udev_device *dev = NULL;
+        struct udev_rules *rules = NULL;
         char syspath[UTIL_PATH_SIZE];
         const char *devpath;
         const char *action;
@@ -158,6 +157,10 @@ int main(int argc, char *argv[]) {
 out:
         if (event != NULL && event->fd_signal >= 0)
                 close(event->fd_signal);
+        udev_event_unref(event);
+        udev_device_unref(dev);
+        udev_rules_unref(rules);
+        udev_unref(udev);
 
         return EXIT_SUCCESS;
 }
