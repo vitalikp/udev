@@ -32,7 +32,6 @@
 #include "libudev.h"
 #include "libudev-private.h"
 #include "scsi_id.h"
-#include "udev-util.h"
 
 static const struct option options[] = {
         { "device",             required_argument, NULL, 'd' },
@@ -578,7 +577,7 @@ out:
 
 int main(int argc, char **argv)
 {
-        _cleanup_udev_unref_ struct udev *udev;
+        struct udev *udev;
         int retval = 0;
         char maj_min_dev[MAX_PATH_LEN];
         int newargc;
@@ -588,7 +587,7 @@ int main(int argc, char **argv)
         log_open();
 
         udev = udev_new();
-        if (udev == NULL)
+        if (!udev)
                 goto exit;
 
         udev_set_log_fn(udev, log_fn);
@@ -631,6 +630,7 @@ exit:
                 free(newargv[0]);
                 free(newargv);
         }
+        udev_unref(udev);
         log_close();
         return retval;
 }

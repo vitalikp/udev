@@ -44,6 +44,7 @@
  	- don't kill cgroup child process;
  * scsi_id:
  	- don't use exit function;
+ 	- don't use auto cleanup for udev;
  * shared:
  	- remove unused functions;
  	- remove conf parser util;
