@@ -48,6 +48,7 @@ struct udev_event *udev_event_new(struct udev_device *dev)
         event->dev = dev;
         event->udev = udev;
         event->mode = 0600;
+        event->uid = udev_device_get_devnode_uid(dev);
         udev_list_init(&event->run_list, false);
         udev_list_init(&event->seclabel_list, false);
         event->fd_signal = -1;
@@ -865,9 +866,6 @@ void udev_event_execute_rules(struct udev_event *event,
                         /* remove/update possible left-over symlinks from old database entry */
                         if (event->dev_db != NULL)
                                 udev_node_update_old_links(dev, event->dev_db);
-
-                        if (!event->owner_set)
-                                event->uid = udev_device_get_devnode_uid(dev);
 
                         if (!event->group_set)
                                 event->gid = udev_device_get_devnode_gid(dev);
