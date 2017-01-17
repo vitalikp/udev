@@ -35,6 +35,7 @@
  * udevadm:
  	- don't print full help on error;
  	- check udev event is created;
+ 	- don't use exit function;
  * udevd:
  	- exclude MD from block device ownership event locking;
  	- add event-timeout commandline option;

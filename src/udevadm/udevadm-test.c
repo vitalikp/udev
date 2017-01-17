@@ -68,7 +68,7 @@ static int adm_test(struct udev *udev, int argc, char *argv[])
                         } else {
                                 fprintf(stderr, "resolve-names must be early, late or never\n");
                                 log_error("resolve-names must be early, late or never");
-                                exit(EXIT_FAILURE);
+                                return EXIT_FAILURE;
                         }
                         break;
                 case 'h':
@@ -77,9 +77,9 @@ static int adm_test(struct udev *udev, int argc, char *argv[])
                                "  -N,--resolve-names=early|late|never when to resolve names\n"
                                "  -h,--help                           print this help string\n"
                                "\n");
-                        exit(EXIT_SUCCESS);
+                        return EXIT_SUCCESS;
                 case '?':
-                        exit(EXIT_FAILURE);
+                        return EXIT_FAILURE;
                 default:
                         assert_not_reached("Unknown option");
                 }

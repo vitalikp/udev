@@ -70,7 +70,7 @@ static int adm_settle(struct udev *udev, int argc, char *argv[])
                         if (r < 0) {
                                 fprintf(stderr, "Invalid timeout value '%s': %s\n",
                                         optarg, strerror(-r));
-                                exit(EXIT_FAILURE);
+                                return EXIT_FAILURE;
                         };
                         break;
                 }
