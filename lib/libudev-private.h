@@ -25,6 +25,7 @@
 #include <stdbool.h>
 
 #include "libudev.h"
+#include "libudev0.h"
 #include "macro.h"
 #include "util.h"
 #include "mkdir.h"
