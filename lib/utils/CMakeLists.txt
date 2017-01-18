@@ -2,6 +2,7 @@
 
 
 include_directories(.)
+add_subdirectory(str)
 
 add_library(udev_utils_obj STATIC
 	parse-uint.c
@@ -12,20 +13,11 @@ add_library(udev_utils_obj STATIC
 	lookup-user.c
 	lookup-group.c
 )
+target_link_libraries(udev_utils_obj udev_str_obj)
 
 
 # tests
 if (${TESTS_ENABLE})
-
-# test test-str-empty
-add_executable(test-str-empty
-	str/test-empty.c
-)
-
-# test test-str-copy
-add_executable(test-str-copy
-	str/test-copy.c
-)
 
 # test char-encode
 add_executable(test-char-encode
@@ -84,8 +76,6 @@ add_executable(test-lookup-group
 target_compile_definitions(test-lookup-group PRIVATE TESTS)
 target_link_libraries(test-lookup-group udev_utils_obj)
 
-add_test(NAME utils-str-empty COMMAND ./test-str-empty)
-add_test(NAME utils-str-copy COMMAND ./test-str-copy)
 add_test(NAME utils-char-encode COMMAND ./test-char-encode)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
 add_test(NAME utils-path-relative COMMAND ./test-path-relative)
