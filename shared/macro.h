@@ -66,17 +66,6 @@
 #define REENABLE_WARNING                                                \
         _Pragma("GCC diagnostic pop")
 
-/* automake test harness */
-#define EXIT_TEST_SKIP 77
-
-#define XSTRINGIFY(x) #x
-#define STRINGIFY(x) XSTRINGIFY(x)
-
-#define XCONCATENATE(x, y) x ## y
-#define CONCATENATE(x, y) XCONCATENATE(x, y)
-
-#define UNIQUE(prefix) CONCATENATE(prefix, __LINE__)
-
 /* Rounds up */
 
 #define ALIGN4(l) (((l) + 3) & ~3)
@@ -150,23 +139,6 @@ static inline unsigned long ALIGN_POWER2(unsigned long u) {
                         _a < _b ? _a : _b;              \
                 })
 
-#define LESS_BY(A,B)                                    \
-        __extension__ ({                                \
-                        const typeof(A) _A = (A);       \
-                        const typeof(B) _B = (B);       \
-                        _A > _B ? _A - _B : 0;          \
-                })
-
-#ifndef CLAMP
-#define CLAMP(x, low, high)                                             \
-        __extension__ ({                                                \
-                        const typeof(x) _x = (x);                       \
-                        const typeof(low) _low = (low);                 \
-                        const typeof(high) _high = (high);              \
-                        ((_x > _high) ? _high : ((_x < _low) ? _low : _x)); \
-                })
-#endif
-
 #define assert_se(expr)                                                 \
         do {                                                            \
                 if (_unlikely_(!(expr)))                                \
@@ -186,55 +158,8 @@ static inline unsigned long ALIGN_POWER2(unsigned long u) {
                 log_assert_failed_unreachable(t, __FILE__, __LINE__, __PRETTY_FUNCTION__); \
         } while (false)
 
-#if defined(static_assert)
-/* static_assert() is sometimes defined in a way that trips up
- * -Wdeclaration-after-statement, hence let's temporarily turn off
- * this warning around it. */
-#define assert_cc(expr)                                                 \
-        DISABLE_WARNING_DECLARATION_AFTER_STATEMENT;                    \
-        static_assert(expr, #expr);                                     \
-        REENABLE_WARNING
-#else
-#define assert_cc(expr)                                                 \
-        DISABLE_WARNING_DECLARATION_AFTER_STATEMENT;                    \
-        struct UNIQUE(_assert_struct_) {                                \
-                char x[(expr) ? 0 : -1];                                \
-        };                                                              \
-        REENABLE_WARNING
-#endif
-
-#define assert_return(expr, r)                                          \
-        do {                                                            \
-                if (_unlikely_(!(expr))) {                              \
-                        log_assert_failed_return(#expr, __FILE__, __LINE__, __PRETTY_FUNCTION__); \
-                        return (r);                                     \
-                }                                                       \
-        } while (false)
-
-#define PTR_TO_INT(p) ((int) ((intptr_t) (p)))
-#define INT_TO_PTR(u) ((void *) ((intptr_t) (u)))
-#define PTR_TO_UINT(p) ((unsigned int) ((uintptr_t) (p)))
-#define UINT_TO_PTR(u) ((void *) ((uintptr_t) (u)))
-
-#define PTR_TO_LONG(p) ((long) ((intptr_t) (p)))
-#define LONG_TO_PTR(u) ((void *) ((intptr_t) (u)))
-#define PTR_TO_ULONG(p) ((unsigned long) ((uintptr_t) (p)))
-#define ULONG_TO_PTR(u) ((void *) ((uintptr_t) (u)))
-
-#define PTR_TO_INT32(p) ((int32_t) ((intptr_t) (p)))
-#define INT32_TO_PTR(u) ((void *) ((intptr_t) (u)))
-#define PTR_TO_UINT32(p) ((uint32_t) ((uintptr_t) (p)))
-#define UINT32_TO_PTR(u) ((void *) ((uintptr_t) (u)))
-
-#define PTR_TO_INT64(p) ((int64_t) ((intptr_t) (p)))
-#define INT64_TO_PTR(u) ((void *) ((intptr_t) (u)))
-#define PTR_TO_UINT64(p) ((uint64_t) ((uintptr_t) (p)))
-#define UINT64_TO_PTR(u) ((void *) ((uintptr_t) (u)))
-
 #define memzero(x,l) (memset((x), 0, (l)))
 #define zero(x) (memzero(&(x), sizeof(x)))
-
-#define CHAR_TO_STR(x) ((char[2]) { x, 0 })
 
 #define char_array_0(x) x[sizeof(x)-1] = 0;
 
@@ -318,38 +243,6 @@ do {                                                                    \
                 }                                                       \
         }                                                               \
 } while(false)
-
- /* Because statfs.t_type can be int on some architectures, we have to cast
-  * the const magic to the type, otherwise the compiler warns about
-  * signed/unsigned comparison, because the magic can be 32 bit unsigned.
- */
-#define F_TYPE_EQUAL(a, b) (a == (typeof(a)) b)
-
-/* Returns the number of chars needed to format variables of the
- * specified type as a decimal string. Adds in extra space for a
- * negative '-' prefix. */
-#define DECIMAL_STR_MAX(type)                                           \
-        (2+(sizeof(type) <= 1 ? 3 :                                     \
-            sizeof(type) <= 2 ? 5 :                                     \
-            sizeof(type) <= 4 ? 10 :                                    \
-            sizeof(type) <= 8 ? 20 : sizeof(int[-2*(sizeof(type) > 8)])))
-
-#define SET_FLAG(v, flag, b) \
-        (v) = (b) ? ((v) | (flag)) : ((v) & ~(flag))
-
-#define IN_SET(x, y, ...)                                               \
-        ({                                                              \
-                const typeof(y) _y = (y);                               \
-                const typeof(_y) _x = (x);                              \
-                unsigned _i;                                            \
-                bool _found = false;                                    \
-                for (_i = 0; _i < 1 + sizeof((const typeof(_x)[]) { __VA_ARGS__ })/sizeof(const typeof(_x)); _i++) \
-                        if (((const typeof(_x)[]) { _y, __VA_ARGS__ })[_i] == _x) { \
-                                _found = true;                          \
-                                break;                                  \
-                        }                                               \
-                _found;                                                 \
-        })
 
 /* Define C11 thread_local attribute even on older gcc compiler
  * version */
