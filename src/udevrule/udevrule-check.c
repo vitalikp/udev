@@ -73,7 +73,7 @@ int check_no_args(const char *key)
 
 	while (no_args_keys[i])
 	{
-		if (!strcmp(key, no_args_keys[i]))
+		if (str_eq(key, no_args_keys[i]))
 			return 1;
 
 		i++;
@@ -88,7 +88,7 @@ int check_no_args_match(const char *key, int op, char *value)
 
 	while (no_args_match_keys[i])
 	{
-		if (!strcmp(key, no_args_match_keys[i]))
+		if (str_eq(key, no_args_match_keys[i]))
 		{
 			if (op > OP_NOMATCH)
 				return -EILOPER;
