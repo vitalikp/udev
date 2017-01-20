@@ -30,6 +30,3 @@ int write_string_file(const char *fn, const char *line);
 
 int read_one_line_file(const char *fn, char **line);
 int read_full_file(const char *fn, char **contents, size_t *size);
-
-int parse_env_file(const char *fname, const char *separator, ...) _sentinel_;
-int load_env_file(const char *fname, const char *separator, char ***l);
