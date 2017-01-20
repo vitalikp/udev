@@ -23,6 +23,7 @@
 
 #include "device-nodes.h"
 #include "util.h"
+#include "utils.h"
 
 /* helpers for test_encode_devnode_name */
 static char *do_encode_string(const char *in) {
@@ -38,7 +39,7 @@ static char *do_encode_string(const char *in) {
 
 static bool expect_encoded_as(const char *in, const char *expected) {
         _cleanup_free_ char *encoded = do_encode_string(in);
-        return streq(encoded, expected);
+        return str_eq(encoded, expected);
 }
 
 static void test_encode_devnode_name(void) {

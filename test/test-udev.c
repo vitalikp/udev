@@ -33,7 +33,6 @@
 
 #include "missing.h"
 #include "udev.h"
-#include "utils.h"
 
 static int fake_filesystems(void) {
         static const struct fakefs {
@@ -138,12 +137,12 @@ int main(int argc, char *argv[]) {
         if (udev_device_get_devnode(dev) != NULL) {
                 mode_t mode = 0600;
 
-                if (streq(udev_device_get_subsystem(dev), "block"))
+                if (str_eq(udev_device_get_subsystem(dev), "block"))
                         mode |= S_IFBLK;
                 else
                         mode |= S_IFCHR;
 
-                if (!streq(action, "remove")) {
+                if (!str_eq(action, "remove")) {
                         path_create(udev_device_get_devnode(dev), 0755);
                         mknod(udev_device_get_devnode(dev), mode, udev_device_get_devnum(dev));
                 } else {
