@@ -46,11 +46,8 @@ static void help(void) {
 static int adm_settle(struct udev *udev, int argc, char *argv[])
 {
         static const struct option options[] = {
-                { "seq-start",      required_argument, NULL, '\0' }, /* removed */
-                { "seq-end",        required_argument, NULL, '\0' }, /* removed */
                 { "timeout",        required_argument, NULL, 't' },
                 { "exit-if-exists", required_argument, NULL, 'E' },
-                { "quiet",          no_argument,       NULL, 'q' },  /* removed */
                 { "help",           no_argument,       NULL, 'h' },
                 {}
         };
@@ -61,7 +58,7 @@ static int adm_settle(struct udev *udev, int argc, char *argv[])
         struct udev_queue *queue;
         int rc = EXIT_FAILURE;
 
-        while ((c = getopt_long(argc, argv, "s:e:t:E:qh", options, NULL)) >= 0) {
+        while ((c = getopt_long(argc, argv, "t:E:h", options, NULL)) >= 0) {
                 switch (c) {
                 case 't': {
                         int r;
