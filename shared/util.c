@@ -251,40 +251,6 @@ int safe_atoi(const char *s, int *ret_i) {
         return 0;
 }
 
-int safe_atollu(const char *s, long long unsigned *ret_llu) {
-        char *x = NULL;
-        unsigned long long l;
-
-        assert(s);
-        assert(ret_llu);
-
-        errno = 0;
-        l = strtoull(s, &x, 0);
-
-        if (!x || x == s || *x || errno)
-                return errno ? -errno : -EINVAL;
-
-        *ret_llu = l;
-        return 0;
-}
-
-int safe_atolli(const char *s, long long int *ret_lli) {
-        char *x = NULL;
-        long long l;
-
-        assert(s);
-        assert(ret_lli);
-
-        errno = 0;
-        l = strtoll(s, &x, 0);
-
-        if (!x || x == s || *x || errno)
-                return errno ? -errno : -EINVAL;
-
-        *ret_lli = l;
-        return 0;
-}
-
 static size_t strcspn_escaped(const char *s, const char *reject) {
         bool escaped = false;
         size_t n;
@@ -339,17 +305,6 @@ const char* split(const char **state, size_t *l, const char *separator, bool quo
         }
 
         return current;
-}
-
-int fchmod_umask(int fd, mode_t m) {
-        mode_t u;
-        int r;
-
-        u = umask(0777);
-        r = fchmod(fd, m & (~u)) < 0 ? -errno : 0;
-        umask(u);
-
-        return r;
 }
 
 char *truncate_nl(char *s) {
@@ -799,78 +754,6 @@ int fd_cloexec(int fd, bool cloexec) {
         return 0;
 }
 
-_pure_ static bool fd_in_set(int fd, const int fdset[], unsigned n_fdset) {
-        unsigned i;
-
-        assert(n_fdset == 0 || fdset);
-
-        for (i = 0; i < n_fdset; i++)
-                if (fdset[i] == fd)
-                        return true;
-
-        return false;
-}
-
-int close_all_fds(const int except[], unsigned n_except) {
-        DIR *d;
-        struct dirent *de;
-        int r = 0;
-
-        assert(n_except == 0 || except);
-
-        d = opendir("/proc/self/fd");
-        if (!d) {
-                int fd;
-                struct rlimit rl;
-
-                /* When /proc isn't available (for example in chroots)
-                 * the fallback is brute forcing through the fd
-                 * table */
-
-                assert_se(getrlimit(RLIMIT_NOFILE, &rl) >= 0);
-                for (fd = 3; fd < (int) rl.rlim_max; fd ++) {
-
-                        if (fd_in_set(fd, except, n_except))
-                                continue;
-
-                        if (close_nointr(fd) < 0)
-                                if (errno != EBADF && r == 0)
-                                        r = -errno;
-                }
-
-                return r;
-        }
-
-        while ((de = readdir(d))) {
-                int fd = -1;
-
-                if (ignore_file(de->d_name))
-                        continue;
-
-                if (safe_atoi(de->d_name, &fd) < 0)
-                        /* Let's better ignore this, just in case */
-                        continue;
-
-                if (fd < 3)
-                        continue;
-
-                if (fd == dirfd(d))
-                        continue;
-
-                if (fd_in_set(fd, except, n_except))
-                        continue;
-
-                if (close_nointr(fd) < 0) {
-                        /* Valgrind has its own FD and doesn't want to have it closed */
-                        if (errno != EBADF && r == 0)
-                                r = -errno;
-                }
-        }
-
-        closedir(d);
-        return r;
-}
-
 bool chars_intersect(const char *a, const char *b) {
         const char *p;
 
@@ -880,31 +763,6 @@ bool chars_intersect(const char *a, const char *b) {
                         return true;
 
         return false;
-}
-
-int chvt(int vt) {
-        _cleanup_close_ int fd;
-
-        fd = open_terminal("/dev/tty0", O_RDWR|O_NOCTTY|O_CLOEXEC);
-        if (fd < 0)
-                return -errno;
-
-        if (vt < 0) {
-                int tiocl[2] = {
-                        TIOCL_GETKMSGREDIRECT,
-                        0
-                };
-
-                if (ioctl(fd, TIOCLINUX, tiocl) < 0)
-                        return -errno;
-
-                vt = tiocl[0] <= 0 ? 1 : tiocl[0];
-        }
-
-        if (ioctl(fd, VT_ACTIVATE, vt) < 0)
-                return -errno;
-
-        return 0;
 }
 
 int reset_terminal_fd(int fd, bool switch_to_text) {
@@ -1065,170 +923,6 @@ int flush_fd(int fd) {
         }
 }
 
-int acquire_terminal(
-                const char *name,
-                bool fail,
-                bool force,
-                bool ignore_tiocstty_eperm,
-                usec_t timeout) {
-
-        int fd = -1, notify = -1, r = 0, wd = -1;
-        usec_t ts = 0;
-
-        assert(name);
-
-        /* We use inotify to be notified when the tty is closed. We
-         * create the watch before checking if we can actually acquire
-         * it, so that we don't lose any event.
-         *
-         * Note: strictly speaking this actually watches for the
-         * device being closed, it does *not* really watch whether a
-         * tty loses its controlling process. However, unless some
-         * rogue process uses TIOCNOTTY on /dev/tty *after* closing
-         * its tty otherwise this will not become a problem. As long
-         * as the administrator makes sure not configure any service
-         * on the same tty as an untrusted user this should not be a
-         * problem. (Which he probably should not do anyway.) */
-
-        if (timeout != (usec_t) -1)
-                ts = now(CLOCK_MONOTONIC);
-
-        if (!fail && !force) {
-                notify = inotify_init1(IN_CLOEXEC | (timeout != (usec_t) -1 ? IN_NONBLOCK : 0));
-                if (notify < 0) {
-                        r = -errno;
-                        goto fail;
-                }
-
-                wd = inotify_add_watch(notify, name, IN_CLOSE);
-                if (wd < 0) {
-                        r = -errno;
-                        goto fail;
-                }
-        }
-
-        for (;;) {
-                struct sigaction sa_old, sa_new = {
-                        .sa_handler = SIG_IGN,
-                        .sa_flags = SA_RESTART,
-                };
-
-                if (notify >= 0) {
-                        r = flush_fd(notify);
-                        if (r < 0)
-                                goto fail;
-                }
-
-                /* We pass here O_NOCTTY only so that we can check the return
-                 * value TIOCSCTTY and have a reliable way to figure out if we
-                 * successfully became the controlling process of the tty */
-                fd = open_terminal(name, O_RDWR|O_NOCTTY|O_CLOEXEC);
-                if (fd < 0)
-                        return fd;
-
-                /* Temporarily ignore SIGHUP, so that we don't get SIGHUP'ed
-                 * if we already own the tty. */
-                assert_se(sigaction(SIGHUP, &sa_new, &sa_old) == 0);
-
-                /* First, try to get the tty */
-                if (ioctl(fd, TIOCSCTTY, force) < 0)
-                        r = -errno;
-
-                assert_se(sigaction(SIGHUP, &sa_old, NULL) == 0);
-
-                /* Sometimes it makes sense to ignore TIOCSCTTY
-                 * returning EPERM, i.e. when very likely we already
-                 * are have this controlling terminal. */
-                if (r < 0 && r == -EPERM && ignore_tiocstty_eperm)
-                        r = 0;
-
-                if (r < 0 && (force || fail || r != -EPERM)) {
-                        goto fail;
-                }
-
-                if (r >= 0)
-                        break;
-
-                assert(!fail);
-                assert(!force);
-                assert(notify >= 0);
-
-                for (;;) {
-                        uint8_t inotify_buffer[sizeof(struct inotify_event) + FILENAME_MAX];
-                        ssize_t l;
-                        struct inotify_event *e;
-
-                        if (timeout != (usec_t) -1) {
-                                usec_t n;
-
-                                n = now(CLOCK_MONOTONIC);
-                                if (ts + timeout < n) {
-                                        r = -ETIMEDOUT;
-                                        goto fail;
-                                }
-
-                                r = fd_wait_for_event(fd, POLLIN, ts + timeout - n);
-                                if (r < 0)
-                                        goto fail;
-
-                                if (r == 0) {
-                                        r = -ETIMEDOUT;
-                                        goto fail;
-                                }
-                        }
-
-                        l = read(notify, inotify_buffer, sizeof(inotify_buffer));
-                        if (l < 0) {
-
-                                if (errno == EINTR || errno == EAGAIN)
-                                        continue;
-
-                                r = -errno;
-                                goto fail;
-                        }
-
-                        e = (struct inotify_event*) inotify_buffer;
-
-                        while (l > 0) {
-                                size_t step;
-
-                                if (e->wd != wd || !(e->mask & IN_CLOSE)) {
-                                        r = -EIO;
-                                        goto fail;
-                                }
-
-                                step = sizeof(struct inotify_event) + e->len;
-                                assert(step <= (size_t) l);
-
-                                e = (struct inotify_event*) ((uint8_t*) e + step);
-                                l -= step;
-                        }
-
-                        break;
-                }
-
-                /* We close the tty fd here since if the old session
-                 * ended our handle will be dead. It's important that
-                 * we do this after sleeping, so that we don't enter
-                 * an endless loop. */
-                safe_close(fd);
-        }
-
-        safe_close(notify);
-
-        r = reset_terminal_fd(fd, true);
-        if (r < 0)
-                log_warning("Failed to reset terminal: %s", strerror(-r));
-
-        return fd;
-
-fail:
-        safe_close(fd);
-        safe_close(notify);
-
-        return r;
-}
-
 int sigaction_many(const struct sigaction *sa, ...) {
         va_list ap;
         int r = 0, sig;
@@ -1280,20 +974,6 @@ int default_signals(int sig, ...) {
         va_end(ap);
 
         return r;
-}
-
-void safe_close_pair(int p[]) {
-        assert(p);
-
-        if (p[0] == p[1]) {
-                /* Special case pairs which use the same fd in both
-                 * directions... */
-                p[0] = p[1] = safe_close(p[0]);
-                return;
-        }
-
-        p[0] = safe_close(p[0]);
-        p[1] = safe_close(p[1]);
 }
 
 ssize_t loop_read(int fd, void *buf, size_t nbytes, bool do_poll) {
@@ -1495,36 +1175,6 @@ int parse_size(const char *t, off_t base, off_t *size) {
         return 0;
 }
 
-int make_stdio(int fd) {
-        int r, s, t;
-
-        assert(fd >= 0);
-
-        r = dup3(fd, STDIN_FILENO, 0);
-        s = dup3(fd, STDOUT_FILENO, 0);
-        t = dup3(fd, STDERR_FILENO, 0);
-
-        if (fd >= 3)
-                safe_close(fd);
-
-        if (r < 0 || s < 0 || t < 0)
-                return -errno;
-
-        /* We rely here that the new fd has O_CLOEXEC not set */
-
-        return 0;
-}
-
-int make_null_stdio(void) {
-        int null_fd;
-
-        null_fd = open("/dev/null", O_RDWR|O_NOCTTY);
-        if (null_fd < 0)
-                return -errno;
-
-        return make_stdio(null_fd);
-}
-
 bool is_device_path(const char *path) {
 
         /* Returns true on paths that refer to a device, either in
@@ -1589,96 +1239,6 @@ void random_bytes(void *p, size_t n) {
 
         for (q = p; q < (uint8_t*) p + n; q ++)
                 *q = rand();
-}
-
-void sigset_add_many(sigset_t *ss, ...) {
-        va_list ap;
-        int sig;
-
-        assert(ss);
-
-        va_start(ap, ss);
-        while ((sig = va_arg(ap, int)) > 0)
-                assert_se(sigaddset(ss, sig) == 0);
-        va_end(ap);
-}
-
-int sigprocmask_many(int how, ...) {
-        va_list ap;
-        sigset_t ss;
-        int sig;
-
-        assert_se(sigemptyset(&ss) == 0);
-
-        va_start(ap, how);
-        while ((sig = va_arg(ap, int)) > 0)
-                assert_se(sigaddset(&ss, sig) == 0);
-        va_end(ap);
-
-        if (sigprocmask(how, &ss, NULL) < 0)
-                return -errno;
-
-        return 0;
-}
-
-char* gethostname_malloc(void) {
-        struct utsname u;
-
-        assert_se(uname(&u) >= 0);
-
-        if (!isempty(u.nodename) && !streq(u.nodename, "(none)"))
-                return strdup(u.nodename);
-
-        return strdup(u.sysname);
-}
-
-static char *lookup_uid(uid_t uid) {
-        long bufsize;
-        char *name;
-        _cleanup_free_ char *buf = NULL;
-        struct passwd pwbuf, *pw = NULL;
-
-        /* Shortcut things to avoid NSS lookups */
-        if (uid == 0)
-                return strdup("root");
-
-        bufsize = sysconf(_SC_GETPW_R_SIZE_MAX);
-        if (bufsize <= 0)
-                bufsize = 4096;
-
-        buf = malloc(bufsize);
-        if (!buf)
-                return NULL;
-
-        if (getpwuid_r(uid, &pwbuf, buf, bufsize, &pw) == 0 && pw)
-                return strdup(pw->pw_name);
-
-        if (asprintf(&name, UID_FMT, uid) < 0)
-                return NULL;
-
-        return name;
-}
-
-char* getlogname_malloc(void) {
-        uid_t uid;
-        struct stat st;
-
-        if (isatty(STDIN_FILENO) && fstat(STDIN_FILENO, &st) >= 0)
-                uid = st.st_uid;
-        else
-                uid = getuid();
-
-        return lookup_uid(uid);
-}
-
-char *getusername_malloc(void) {
-        const char *e;
-
-        e = getenv("USER");
-        if (e)
-                return strdup(e);
-
-        return lookup_uid(getuid());
 }
 
 int getttyname_malloc(int fd, char **r) {
@@ -1898,25 +1458,6 @@ int null_or_empty_fd(int fd) {
         return null_or_empty(&st);
 }
 
-DIR *xopendirat(int fd, const char *name, int flags) {
-        int nfd;
-        DIR *d;
-
-        assert(!(flags & O_CREAT));
-
-        nfd = openat(fd, name, O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC|flags, 0);
-        if (nfd < 0)
-                return NULL;
-
-        d = fdopendir(nfd);
-        if (!d) {
-                safe_close(nfd);
-                return NULL;
-        }
-
-        return d;
-}
-
 static char *tag_to_udev_node(const char *tagvalue, const char *by) {
         _cleanup_free_ char *t = NULL, *u = NULL;
         size_t enc_len;
@@ -1954,15 +1495,6 @@ char *fstab_node_to_udev_node(const char *p) {
         return strdup(p);
 }
 
-bool tty_is_console(const char *tty) {
-        assert(tty);
-
-        if (startswith(tty, "/dev/"))
-                tty += 5;
-
-        return streq(tty, "console");
-}
-
 bool dirent_is_file(const struct dirent *de) {
         assert(de);
 
@@ -1991,17 +1523,6 @@ bool dirent_is_file_with_suffix(const struct dirent *de, const char *suffix) {
         return endswith(de->d_name, suffix);
 }
 
-int kill_and_sigcont(pid_t pid, int sig) {
-        int r;
-
-        r = kill(pid, sig) < 0 ? -errno : 0;
-
-        if (r >= 0)
-                kill(pid, SIGCONT);
-
-        return r;
-}
-
 bool nulstr_contains(const char*nulstr, const char *needle) {
         const char *i;
 
@@ -2015,83 +1536,11 @@ bool nulstr_contains(const char*nulstr, const char *needle) {
         return false;
 }
 
-bool plymouth_running(void) {
-        return access("/run/plymouth/pid", F_OK) >= 0;
-}
-
 char* strshorten(char *s, size_t l) {
         assert(s);
 
         if (l < strlen(s))
                 s[l] = 0;
-
-        return s;
-}
-
-static bool hostname_valid_char(char c) {
-        return
-                (c >= 'a' && c <= 'z') ||
-                (c >= 'A' && c <= 'Z') ||
-                (c >= '0' && c <= '9') ||
-                c == '-' ||
-                c == '_' ||
-                c == '.';
-}
-
-bool hostname_is_valid(const char *s) {
-        const char *p;
-        bool dot;
-
-        if (isempty(s))
-                return false;
-
-        for (p = s, dot = true; *p; p++) {
-                if (*p == '.') {
-                        if (dot)
-                                return false;
-
-                        dot = true;
-                } else {
-                        if (!hostname_valid_char(*p))
-                                return false;
-
-                        dot = false;
-                }
-        }
-
-        if (dot)
-                return false;
-
-        if (p-s > HOST_NAME_MAX)
-                return false;
-
-        return true;
-}
-
-char* hostname_cleanup(char *s, bool lowercase) {
-        char *p, *d;
-        bool dot;
-
-        for (p = s, d = s, dot = true; *p; p++) {
-                if (*p == '.') {
-                        if (dot)
-                                continue;
-
-                        *(d++) = '.';
-                        dot = true;
-                } else if (hostname_valid_char(*p)) {
-                        *(d++) = lowercase ? tolower(*p) : *p;
-                        dot = false;
-                }
-
-        }
-
-        if (dot && d > s)
-                d[-1] = 0;
-        else
-                *d = 0;
-
-        strshorten(s, HOST_NAME_MAX);
 
         return s;
 }
@@ -2170,101 +1619,6 @@ int fopen_temporary(const char *path, FILE **_f, char **_temp_path) {
 
         *_f = f;
         *_temp_path = t;
-
-        return 0;
-}
-
-int terminal_vhangup_fd(int fd) {
-        assert(fd >= 0);
-
-        if (ioctl(fd, TIOCVHANGUP) < 0)
-                return -errno;
-
-        return 0;
-}
-
-int terminal_vhangup(const char *name) {
-        _cleanup_close_ int fd;
-
-        fd = open_terminal(name, O_RDWR|O_NOCTTY|O_CLOEXEC);
-        if (fd < 0)
-                return fd;
-
-        return terminal_vhangup_fd(fd);
-}
-
-int symlink_atomic(const char *from, const char *to) {
-        char *x;
-        _cleanup_free_ char *t;
-        const char *fn;
-        size_t k;
-        uint64_t u;
-        unsigned i;
-        int r;
-
-        assert(from);
-        assert(to);
-
-        t = new(char, strlen(to) + 1 + 16 + 1);
-        if (!t)
-                return -ENOMEM;
-
-        fn = basename(to);
-        k = fn-to;
-        memcpy(t, to, k);
-        t[k] = '.';
-        x = stpcpy(t+k+1, fn);
-
-        u = random_u64();
-        for (i = 0; i < 16; i++) {
-                *(x++) = hexchar(u & 0xF);
-                u >>= 4;
-        }
-
-        *x = 0;
-
-        if (symlink(from, t) < 0)
-                return -errno;
-
-        if (rename(t, to) < 0) {
-                r = -errno;
-                unlink(t);
-                return r;
-        }
-
-        return 0;
-}
-
-bool display_is_local(const char *display) {
-        assert(display);
-
-        return
-                display[0] == ':' &&
-                display[1] >= '0' &&
-                display[1] <= '9';
-}
-
-int socket_from_display(const char *display, char **path) {
-        size_t k;
-        char *f, *c;
-
-        assert(display);
-        assert(path);
-
-        if (!display_is_local(display))
-                return -EINVAL;
-
-        k = strspn(display+1, "0123456789");
-
-        f = new(char, strlen("/tmp/.X11-unix/X") + k + 1);
-        if (!f)
-                return -ENOMEM;
-
-        c = stpcpy(f, "/tmp/.X11-unix/X");
-        memcpy(c, display+1, k);
-        c[k] = 0;
-
-        *path = f;
 
         return 0;
 }
@@ -2437,26 +1791,6 @@ int fd_inc_sndbuf(int fd, size_t n) {
                         return -errno;
 
         return 1;
-}
-
-int make_console_stdio(void) {
-        int fd, r;
-
-        /* Make /dev/console the controlling terminal and stdin/stdout/stderr */
-
-        fd = acquire_terminal("/dev/console", false, true, true, (usec_t) -1);
-        if (fd < 0) {
-                log_error("Failed to acquire terminal: %s", strerror(-fd));
-                return fd;
-        }
-
-        r = make_stdio(fd);
-        if (r < 0) {
-                log_error("Failed to duplicate terminal fd: %s", strerror(-r));
-                return r;
-        }
-
-        return 0;
 }
 
 /* hey glibc, APIs with callbacks without a user pointer are so useless */

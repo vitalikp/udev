@@ -166,7 +166,6 @@ char *endswith(const char *s, const char *postfix) _pure_;
 
 int close_nointr(int fd);
 int safe_close(int fd);
-void safe_close_pair(int p[]);
 
 void close_many(const int fds[], unsigned n_fd);
 
@@ -176,49 +175,6 @@ int parse_boolean(const char *v) _pure_;
 
 int safe_atou(const char *s, unsigned *ret_u);
 int safe_atoi(const char *s, int *ret_i);
-
-int safe_atollu(const char *s, unsigned long long *ret_u);
-int safe_atolli(const char *s, long long int *ret_i);
-
-#if __WORDSIZE == 32
-static inline int safe_atolu(const char *s, unsigned long *ret_u) {
-        assert_cc(sizeof(unsigned long) == sizeof(unsigned));
-        return safe_atou(s, (unsigned*) ret_u);
-}
-static inline int safe_atoli(const char *s, long int *ret_u) {
-        assert_cc(sizeof(long int) == sizeof(int));
-        return safe_atoi(s, (int*) ret_u);
-}
-#else
-static inline int safe_atolu(const char *s, unsigned long *ret_u) {
-        assert_cc(sizeof(unsigned long) == sizeof(unsigned long long));
-        return safe_atollu(s, (unsigned long long*) ret_u);
-}
-static inline int safe_atoli(const char *s, long int *ret_u) {
-        assert_cc(sizeof(long int) == sizeof(long long int));
-        return safe_atolli(s, (long long int*) ret_u);
-}
-#endif
-
-static inline int safe_atou32(const char *s, uint32_t *ret_u) {
-        assert_cc(sizeof(uint32_t) == sizeof(unsigned));
-        return safe_atou(s, (unsigned*) ret_u);
-}
-
-static inline int safe_atoi32(const char *s, int32_t *ret_i) {
-        assert_cc(sizeof(int32_t) == sizeof(int));
-        return safe_atoi(s, (int*) ret_i);
-}
-
-static inline int safe_atou64(const char *s, uint64_t *ret_u) {
-        assert_cc(sizeof(uint64_t) == sizeof(unsigned long long));
-        return safe_atollu(s, (unsigned long long*) ret_u);
-}
-
-static inline int safe_atoi64(const char *s, int64_t *ret_i) {
-        assert_cc(sizeof(int64_t) == sizeof(long long int));
-        return safe_atolli(s, (long long int*) ret_i);
-}
 
 const char* split(const char **state, size_t *l, const char *separator, bool quoted);
 
@@ -263,10 +219,6 @@ bool dirent_is_file_with_suffix(const struct dirent *de, const char *suffix) _pu
 bool ignore_file(const char *filename) _pure_;
 
 bool chars_intersect(const char *a, const char *b) _pure_;
-
-int make_stdio(int fd);
-int make_null_stdio(void);
-int make_console_stdio(void);
 
 int dev_urandom(void *p, size_t n);
 void random_bytes(void *p, size_t n);
@@ -341,15 +293,10 @@ static inline uint32_t random_u32(void) {
 int fd_nonblock(int fd, bool nonblock);
 int fd_cloexec(int fd, bool cloexec);
 
-int close_all_fds(const int except[], unsigned n_except);
-
-int chvt(int vt);
-
 int reset_terminal_fd(int fd, bool switch_to_text);
 int reset_terminal(const char *name);
 
 int open_terminal(const char *name, int mode);
-int acquire_terminal(const char *name, bool fail, bool force, bool ignore_tiocstty_eperm, usec_t timeout);
 
 int flush_fd(int fd);
 
@@ -363,13 +310,6 @@ ssize_t loop_read(int fd, void *buf, size_t nbytes, bool do_poll);
 ssize_t loop_write(int fd, const void *buf, size_t nbytes, bool do_poll);
 
 bool is_device_path(const char *path);
-
-void sigset_add_many(sigset_t *ss, ...);
-int sigprocmask_many(int how, ...);
-
-char* gethostname_malloc(void);
-char* getlogname_malloc(void);
-char* getusername_malloc(void);
 
 int getttyname_malloc(int fd, char **r);
 
@@ -418,32 +358,11 @@ bool null_or_empty(struct stat *st) _pure_;
 int null_or_empty_path(const char *fn);
 int null_or_empty_fd(int fd);
 
-DIR *xopendirat(int dirfd, const char *name, int flags);
-
 char *fstab_node_to_udev_node(const char *p);
-
-bool tty_is_console(const char *tty) _pure_;
-
-int kill_and_sigcont(pid_t pid, int sig);
 
 bool nulstr_contains(const char*nulstr, const char *needle);
 
-bool plymouth_running(void);
-
-bool hostname_is_valid(const char *s) _pure_;
-char* hostname_cleanup(char *s, bool lowercase);
-
 char* strshorten(char *s, size_t l);
-
-int terminal_vhangup_fd(int fd);
-int terminal_vhangup(const char *name);
-
-int symlink_atomic(const char *from, const char *to);
-
-int fchmod_umask(int fd, mode_t mode);
-
-bool display_is_local(const char *display) _pure_;
-int socket_from_display(const char *display, char **path);
 
 int in_gid(gid_t gid);
 
@@ -491,10 +410,6 @@ static inline void umaskp(mode_t *u) {
         umask(*u);
 }
 
-static inline void close_pairp(int (*p)[2]) {
-        safe_close_pair(*p);
-}
-
 DEFINE_TRIVIAL_CLEANUP_FUNC(FILE*, fclose);
 DEFINE_TRIVIAL_CLEANUP_FUNC(FILE*, pclose);
 DEFINE_TRIVIAL_CLEANUP_FUNC(DIR*, closedir);
@@ -508,7 +423,6 @@ DEFINE_TRIVIAL_CLEANUP_FUNC(FILE*, endmntent);
 #define _cleanup_pclose_ _cleanup_(pclosep)
 #define _cleanup_closedir_ _cleanup_(closedirp)
 #define _cleanup_endmntent_ _cleanup_(endmntentp)
-#define _cleanup_close_pair_ _cleanup_(close_pairp)
 
 _malloc_  _alloc_(1, 2) static inline void *malloc_multiply(size_t a, size_t b) {
         if (_unlikely_(b == 0 || a > ((size_t) -1) / b))
