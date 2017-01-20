@@ -262,7 +262,7 @@ static int names_pci(struct udev_device *dev, struct netnames *names) {
         if (!parent)
                 return -ENOENT;
         /* check if our direct parent is a PCI device with no other bus in-between */
-        if (streq_ptr("pci", udev_device_get_subsystem(parent))) {
+        if (str_eq("pci", udev_device_get_subsystem(parent))) {
                 names->type = NET_PCI;
                 names->pcidev = parent;
         } else {
@@ -359,7 +359,7 @@ static int names_ccw(struct  udev_device *dev, struct netnames *names) {
                 return -ENOENT;
 
         /* Network devices are always grouped CCW devices */
-        if (!streq_ptr("ccwgroup", udev_device_get_subsystem(cdev)))
+        if (!str_eq("ccwgroup", udev_device_get_subsystem(cdev)))
                 return -ENOENT;
 
         /* Retrieve bus-ID of the grouped CCW device.  The bus-ID uniquely
