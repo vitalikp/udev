@@ -33,11 +33,13 @@ static void test_notequal(const char *str1, const char *str2)
 
 int main()
 {
-//	test_equal(NULL);
+	test_equal(NULL, NULL);
 	test_equal("", "");
 	test_equal("eq", "eq");
 	test_equal("equal string", "equal string");
 
+	test_notequal(NULL, "");
+	test_notequal("", NULL);
 	test_notequal("string", "not string");
 	test_notequal("not string", "string");
 	test_notequal("string 1", "string");
