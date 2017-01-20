@@ -84,7 +84,7 @@ static struct udev_device *skip_subsystem(struct udev_device *dev, const char *s
                 const char *subsystem;
 
                 subsystem = udev_device_get_subsystem(parent);
-                if (subsystem == NULL || !streq(subsystem, subsys))
+                if (subsystem == NULL || !str_eq(subsystem, subsys))
                         break;
                 dev = parent;
                 parent = udev_device_get_parent(parent);
@@ -346,7 +346,7 @@ static struct udev_device *handle_scsi(struct udev_device *parent, char **path)
         const char *id;
 
         devtype = udev_device_get_devtype(parent);
-        if (devtype == NULL || !streq(devtype, "scsi_device"))
+        if (devtype == NULL || !str_eq(devtype, "scsi_device"))
                 return parent;
 
         /* firewire */
@@ -439,7 +439,7 @@ static struct udev_device *handle_usb(struct udev_device *parent, char **path)
         devtype = udev_device_get_devtype(parent);
         if (devtype == NULL)
                 return parent;
-        if (!streq(devtype, "usb_interface") && !streq(devtype, "usb_device"))
+        if (!str_eq(devtype, "usb_interface") && !str_eq(devtype, "usb_device"))
                 return parent;
 
         str = udev_device_get_sysname(parent);
@@ -513,41 +513,41 @@ static int builtin_path_id(struct udev_device *dev, int argc, char *argv[], bool
                 subsys = udev_device_get_subsystem(parent);
                 if (subsys == NULL) {
                         ;
-                } else if (streq(subsys, "scsi_tape")) {
+                } else if (str_eq(subsys, "scsi_tape")) {
                         handle_scsi_tape(parent, &path);
-                } else if (streq(subsys, "scsi")) {
+                } else if (str_eq(subsys, "scsi")) {
                         parent = handle_scsi(parent, &path);
                         supported_transport = true;
-                } else if (streq(subsys, "cciss")) {
+                } else if (str_eq(subsys, "cciss")) {
                         parent = handle_cciss(parent, &path);
                         supported_transport = true;
-                } else if (streq(subsys, "usb")) {
+                } else if (str_eq(subsys, "usb")) {
                         parent = handle_usb(parent, &path);
                         supported_transport = true;
-                } else if (streq(subsys, "bcma")) {
+                } else if (str_eq(subsys, "bcma")) {
                         parent = handle_bcma(parent, &path);
                         supported_transport = true;
-                } else if (streq(subsys, "serio")) {
+                } else if (str_eq(subsys, "serio")) {
                         path_prepend(&path, "serio-%s", udev_device_get_sysnum(parent));
                         parent = skip_subsystem(parent, "serio");
-                } else if (streq(subsys, "pci")) {
+                } else if (str_eq(subsys, "pci")) {
                         path_prepend(&path, "pci-%s", udev_device_get_sysname(parent));
                         parent = skip_subsystem(parent, "pci");
                         supported_parent = true;
-                } else if (streq(subsys, "platform")) {
+                } else if (str_eq(subsys, "platform")) {
                         path_prepend(&path, "platform-%s", udev_device_get_sysname(parent));
                         parent = skip_subsystem(parent, "platform");
                         supported_transport = true;
                         supported_parent = true;
-                } else if (streq(subsys, "acpi")) {
+                } else if (str_eq(subsys, "acpi")) {
                         path_prepend(&path, "acpi-%s", udev_device_get_sysname(parent));
                         parent = skip_subsystem(parent, "acpi");
                         supported_parent = true;
-                } else if (streq(subsys, "xen")) {
+                } else if (str_eq(subsys, "xen")) {
                         path_prepend(&path, "xen-%s", udev_device_get_sysname(parent));
                         parent = skip_subsystem(parent, "xen");
                         supported_parent = true;
-                } else if (streq(subsys, "scm")) {
+                } else if (str_eq(subsys, "scm")) {
                         path_prepend(&path, "scm-%s", udev_device_get_sysname(parent));
                         parent = skip_subsystem(parent, "scm");
                         supported_transport = true;
@@ -572,7 +572,7 @@ static int builtin_path_id(struct udev_device *dev, int argc, char *argv[], bool
          * have entire hidden buses behind it, and not create predictable
          * IDs that way.
          */
-        if (streq(udev_device_get_subsystem(dev), "block") && !supported_transport) {
+        if (str_eq(udev_device_get_subsystem(dev), "block") && !supported_transport) {
                 free(path);
                 path = NULL;
         }

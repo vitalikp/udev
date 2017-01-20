@@ -99,13 +99,13 @@ static int udev_builtin_hwdb_search(struct udev_device *dev, struct udev_device 
                         continue;
 
                 /* look only at devices of a specific subsystem */
-                if (subsystem && !streq(dsubsys, subsystem))
+                if (subsystem && !str_eq(dsubsys, subsystem))
                         continue;
 
                 modalias = udev_device_get_property_value(d, "MODALIAS");
 
                 /* the usb_device does not have a modalias, compose one */
-                if (!modalias && streq(dsubsys, "usb"))
+                if (!modalias && str_eq(dsubsys, "usb"))
                         modalias = modalias_usb(d, s, sizeof(s));
 
                 if (!modalias)

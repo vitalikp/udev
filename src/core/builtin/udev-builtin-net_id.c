@@ -315,11 +315,11 @@ static int names_usb(struct udev_device *dev, struct netnames *names) {
         l = strpcpyl(&s, sizeof(names->usb_ports), "u", ports, NULL);
 
         /* append USB config number, suppress the common config == 1 */
-        if (!streq(config, "1"))
+        if (!str_eq(config, "1"))
                 l = strpcpyl(&s, sizeof(names->usb_ports), "c", config, NULL);
 
         /* append USB interface number, suppress the interface == 0 */
-        if (!streq(interf, "0"))
+        if (!str_eq(interf, "0"))
                 l = strpcpyl(&s, sizeof(names->usb_ports), "i", interf, NULL);
         if (l == 0)
                 return -ENAMETOOLONG;
@@ -466,14 +466,14 @@ static int builtin_net_id(struct udev_device *dev, int argc, char *argv[], bool 
         p = udev_device_get_sysattr_value(dev, "iflink");
         if (!p)
                 return EXIT_FAILURE;
-        if (!streq(s, p))
+        if (!str_eq(s, p))
                 return 0;
 
         devtype = udev_device_get_devtype(dev);
         if (devtype) {
-                if (streq("wlan", devtype))
+                if (str_eq("wlan", devtype))
                         prefix = "wl";
-                else if (streq("wwan", devtype))
+                else if (str_eq("wwan", devtype))
                         prefix = "ww";
         }
 

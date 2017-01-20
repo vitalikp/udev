@@ -836,7 +836,7 @@ void udev_event_execute_rules(struct udev_event *event,
 
                 /* rename a new network interface, if needed */
                 if (udev_device_get_ifindex(dev) > 0 && udev_device_action(dev) == ACTION_ADD &&
-                    event->name != NULL && !streq(event->name, udev_device_get_sysname(dev))) {
+                    event->name != NULL && !str_eq(event->name, udev_device_get_sysname(dev))) {
                         char syspath[UTIL_PATH_SIZE];
                         char *pos;
                         int r;

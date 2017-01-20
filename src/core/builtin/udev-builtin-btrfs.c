@@ -37,7 +37,7 @@ static int builtin_btrfs(struct udev_device *dev, int argc, char *argv[], bool t
         _cleanup_close_ int fd = -1;
         int err;
 
-        if (argc != 3 || !streq(argv[1], "ready"))
+        if (argc != 3 || !str_eq(argv[1], "ready"))
                 return EXIT_FAILURE;
 
         fd = open("/dev/btrfs-control", O_RDWR|O_CLOEXEC);

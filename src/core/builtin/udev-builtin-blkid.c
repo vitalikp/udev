@@ -37,44 +37,44 @@ static void print_property(struct udev_device *dev, bool test, const char *name,
 
         s[0] = '\0';
 
-        if (streq(name, "TYPE")) {
+        if (str_eq(name, "TYPE")) {
                 udev_builtin_add_property(dev, test, "ID_FS_TYPE", value);
 
-        } else if (streq(name, "USAGE")) {
+        } else if (str_eq(name, "USAGE")) {
                 udev_builtin_add_property(dev, test, "ID_FS_USAGE", value);
 
-        } else if (streq(name, "VERSION")) {
+        } else if (str_eq(name, "VERSION")) {
                 udev_builtin_add_property(dev, test, "ID_FS_VERSION", value);
 
-        } else if (streq(name, "UUID")) {
+        } else if (str_eq(name, "UUID")) {
                 blkid_safe_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_UUID", s);
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_UUID_ENC", s);
 
-        } else if (streq(name, "UUID_SUB")) {
+        } else if (str_eq(name, "UUID_SUB")) {
                 blkid_safe_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_UUID_SUB", s);
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_UUID_SUB_ENC", s);
 
-        } else if (streq(name, "LABEL")) {
+        } else if (str_eq(name, "LABEL")) {
                 blkid_safe_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_LABEL", s);
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_LABEL_ENC", s);
 
-        } else if (streq(name, "PTTYPE")) {
+        } else if (str_eq(name, "PTTYPE")) {
                 udev_builtin_add_property(dev, test, "ID_PART_TABLE_TYPE", value);
 
-        } else if (streq(name, "PTUUID")) {
+        } else if (str_eq(name, "PTUUID")) {
                 udev_builtin_add_property(dev, test, "ID_PART_TABLE_UUID", value);
 
-        } else if (streq(name, "PART_ENTRY_NAME")) {
+        } else if (str_eq(name, "PART_ENTRY_NAME")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_PART_ENTRY_NAME", s);
 
-        } else if (streq(name, "PART_ENTRY_TYPE")) {
+        } else if (str_eq(name, "PART_ENTRY_TYPE")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_PART_ENTRY_TYPE", s);
 
@@ -82,19 +82,19 @@ static void print_property(struct udev_device *dev, bool test, const char *name,
                 strscpyl(s, sizeof(s), "ID_", name, NULL);
                 udev_builtin_add_property(dev, test, s, value);
 
-        } else if (streq(name, "SYSTEM_ID")) {
+        } else if (str_eq(name, "SYSTEM_ID")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_SYSTEM_ID", s);
 
-        } else if (streq(name, "PUBLISHER_ID")) {
+        } else if (str_eq(name, "PUBLISHER_ID")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_PUBLISHER_ID", s);
 
-        } else if (streq(name, "APPLICATION_ID")) {
+        } else if (str_eq(name, "APPLICATION_ID")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_APPLICATION_ID", s);
 
-        } else if (streq(name, "BOOT_SYSTEM_ID")) {
+        } else if (str_eq(name, "BOOT_SYSTEM_ID")) {
                 blkid_encode_string(value, s, sizeof(s));
                 udev_builtin_add_property(dev, test, "ID_FS_BOOT_SYSTEM_ID", s);
         }
