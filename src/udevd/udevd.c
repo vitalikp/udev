@@ -464,7 +464,7 @@ static int event_queue_insert(struct udev_device *dev)
         event->devpath_len = strlen(event->devpath);
         event->devpath_old = udev_device_get_devpath_old(dev);
         event->devnum = udev_device_get_devnum(dev);
-        event->is_block = streq("block", udev_device_get_subsystem(dev));
+        event->is_block = str_eq("block", udev_device_get_subsystem(dev));
         event->ifindex = udev_device_get_ifindex(dev);
 
         log_debug("seq %"PRIu64" queued, '%s' '%s'", udev_device_get_seqnum(dev),
@@ -521,7 +521,7 @@ static bool is_devpath_busy(struct event *event)
                         return true;
 
                 /* check our old name */
-                if (event->devpath_old != NULL && streq(loop_event->devpath, event->devpath_old)) {
+                if (event->devpath_old != NULL && str_eq(loop_event->devpath, event->devpath_old)) {
                         event->delaying_seqnum = loop_event->seqnum;
                         return true;
                 }
@@ -1070,11 +1070,11 @@ int main(int argc, char *argv[])
                         udev_set_log_priority(udev, LOG_DEBUG);
                         break;
                 case 'N':
-                        if (streq(optarg, "early")) {
+                        if (str_eq(optarg, "early")) {
                                 resolve_names = 1;
-                        } else if (streq(optarg, "late")) {
+                        } else if (str_eq(optarg, "late")) {
                                 resolve_names = 0;
-                        } else if (streq(optarg, "never")) {
+                        } else if (str_eq(optarg, "never")) {
                                 resolve_names = -1;
                         } else {
                                 fprintf(stderr, "resolve-names must be early, late or never\n");
