@@ -213,7 +213,7 @@ static void invite(char *us)
         udev_list_node_foreach(him_node, &bunch) {
                 struct _mate *him = node_to_mate(him_node);
 
-                if (streq(him->name, us)) {
+                if (str_eq(him->name, us)) {
                         him->state = STATE_CONFIRMED;
                         who = him;
                 }
@@ -241,7 +241,7 @@ static void reject(char *us)
         udev_list_node_foreach(him_node, &bunch) {
                 struct _mate *him = node_to_mate(him_node);
 
-                if (streq(him->name, us)) {
+                if (str_eq(him->name, us)) {
                         him->state = STATE_NONE;
                         who = him;
                 }
@@ -434,7 +434,7 @@ int main(int argc, char **argv)
                 udev_list_node_foreach(him_node, &bunch) {
                         struct _mate *him = node_to_mate(him_node);
 
-                        if (streq(him->name, argv[i]))
+                        if (str_eq(him->name, argv[i]))
                                 who = him;
                 }
                 if (!who) {
