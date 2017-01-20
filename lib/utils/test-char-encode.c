@@ -20,7 +20,7 @@ static void test_encode(const char ch, const char *test)
 	char dst[5] = {};
 
 	char_encode(dst, ch);
-	assert(!strcmp(dst, test));
+	assert(str_eq(dst, test));
 
 	printf("test encode char: '%s' ['%x']\n", dst, ch);
 }

@@ -36,7 +36,7 @@ static void test_set(str_t **pstr, const char *test, size_t len)
 	assert(str);
 	assert(str->len == len);
 	assert(str->size >= len);
-	assert(!strcmp(test, str->val));
+	assert(str_eq(test, str->val));
 
 	printf("test set string '%s': '%s'(len %zu)\n", test, str->val, str->len);
 

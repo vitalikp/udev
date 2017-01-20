@@ -10,6 +10,7 @@
 #include <string.h>
 
 #include "action.h"
+#include "utils.h"
 
 
 int device_set_action(device_t *dev, const char *action)
@@ -18,7 +19,7 @@ int device_set_action(device_t *dev, const char *action)
 
 	while (act < ACTION_COUNT)
 	{
-		if (!strcmp(action, actions[act]))
+		if (str_eq(action, actions[act]))
 		{
 			dev->action = act;
 			return 0;

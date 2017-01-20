@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -50,7 +50,7 @@ static void test_encode(const char *path, const char *test)
 
 	res = path_encode(dst, path, sizeof(dst));
 	assert(res == strlen(test));
-	assert(!strcmp(dst, test));
+	assert(str_eq(dst, test));
 
 	printf("test encode path: '%s'(%zd) ['%s']\n", dst, res, path);
 }

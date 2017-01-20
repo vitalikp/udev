@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -22,7 +22,7 @@ int lookup_user(const char *user, uid_t *puid)
 		return -1;
 	}
 
-	if (!strcmp("root", user))
+	if (str_eq("root", user))
 	{
 		*puid = 0;
 		return 0;

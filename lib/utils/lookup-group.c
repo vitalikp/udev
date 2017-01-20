@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -22,7 +22,7 @@ int lookup_group(const char *group, gid_t *pgid)
 		return -1;
 	}
 
-	if (!strcmp("root", group))
+	if (str_eq("root", group))
 	{
 		*pgid = 0;
 		return 0;

@@ -45,7 +45,7 @@ static void test_append(str_t **pstr, const char *test, size_t len)
 	assert(str->len == size);
 	assert(str->size == size + 1);
 	size -= len;
-	assert(!strcmp(test, str->val + size));
+	assert(str_eq(test, str->val + size));
 
 	printf("test append string '%s': '%s'(len %zu)\n", test, str->val, str->len);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2017 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -132,7 +132,7 @@ void test_path(const char *from, const char *to, const char *test)
 
 	res = path_relative(dst, from, to, sizeof(dst));
 	assert(res == strlen(test));
-	assert(!strcmp(dst, test));
+	assert(str_eq(dst, test));
 
 	printf("test relative path: '%s'(%zd) ['%s' => '%s']\n", dst, res, to, from);
 }
