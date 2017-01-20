@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
         if (command != NULL)
                 for (i = 0; i < ELEMENTSOF(udevadm_cmds); i++) {
-                        if (streq(udevadm_cmds[i]->name, command)) {
+                        if (str_eq(udevadm_cmds[i]->name, command)) {
                                 argc -= optind;
                                 argv += optind;
                                 /* we need '0' here to reset the internal state */

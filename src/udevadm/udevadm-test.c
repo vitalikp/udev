@@ -59,11 +59,11 @@ static int adm_test(struct udev *udev, int argc, char *argv[])
                         action = optarg;
                         break;
                 case 'N':
-                        if (streq (optarg, "early")) {
+                        if (str_eq(optarg, "early")) {
                                 resolve_names = 1;
-                        } else if (streq (optarg, "late")) {
+                        } else if (str_eq(optarg, "late")) {
                                 resolve_names = 0;
-                        } else if (streq (optarg, "never")) {
+                        } else if (str_eq(optarg, "never")) {
                                 resolve_names = -1;
                         } else {
                                 fprintf(stderr, "resolve-names must be early, late or never\n");
