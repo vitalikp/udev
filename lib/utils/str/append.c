@@ -36,11 +36,14 @@ static void test_append(str_t **pstr, const char *test, size_t len)
 {
 	str_t *str = *pstr;
 	size_t size;
+	int res;
 
 	size = len;
 	if (str)
 		size += str->len;
-	assert(!str_append(&str, test, len));
+
+	res = str_append(&str, test, len);
+	assert(!res);
 	assert(str);
 	assert(str->len == size);
 	assert(str->size == size + 1);

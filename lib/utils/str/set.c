@@ -31,8 +31,10 @@ int str_set(str_t **dst, const char *str, size_t len)
 static void test_set(str_t **pstr, const char *test, size_t len)
 {
 	str_t *str = *pstr;
+	int res;
 
-	assert(!str_set(&str, test, len));
+	res = str_set(&str, test, len);
+	assert(!res);
 	assert(str);
 	assert(str->len == len);
 	assert(str->size >= len);

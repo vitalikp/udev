@@ -26,7 +26,10 @@ static void test_equal(const char *str1, const char *str2)
 
 static void test_notequal(const char *str1, const char *str2)
 {
-	assert(!str_eq(str1, str2));
+	int res;
+
+	res = str_eq(str1, str2);
+	assert(!res);
 
 	printf("test not equal string '%s': '%s'\n", str1, str2);
 }

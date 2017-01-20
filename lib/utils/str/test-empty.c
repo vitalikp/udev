@@ -19,7 +19,6 @@ static void test_empty(const char *str)
 	int res;
 
 	res = str_empty(str);
-
 	assert(res == 1);
 
 	printf("test empty string '%s'\n", str);
@@ -27,7 +26,10 @@ static void test_empty(const char *str)
 
 static void test_notempty(const char *str)
 {
-	assert(!str_empty(str));
+	int res;
+
+	res = str_empty(str);
+	assert(!res);
 
 	printf("test not empty string '%s'\n", str);
 }

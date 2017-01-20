@@ -135,7 +135,8 @@ static void test_file(const char *path)
 	assert(res < 0);
 	assert(errno == ENOTDIR);
 
-	assert(!unlink(file));
+	res = unlink(file);
+	assert(!res);
 
 	res = path_remove(path);
 	assert(!res);
@@ -158,7 +159,8 @@ static void test_data(const char *path)
 	assert(res < 0);
 	assert(errno == ENOTEMPTY);
 
-	assert(!unlink(path));
+	res = unlink(path);
+	assert(!res);
 
 	res = path_remove(path);
 	assert(!res);
