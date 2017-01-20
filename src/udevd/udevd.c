@@ -289,12 +289,12 @@ static void worker_new(struct event *event)
                          * udev has finished its event handling.
                          */
                         if (udev_device_action(dev) != ACTION_REMOVE &&
-                            streq_ptr("block", udev_device_get_subsystem(dev)) &&
+                            str_eq("block", udev_device_get_subsystem(dev)) &&
                             !startswith(udev_device_get_sysname(dev), "dm-") &&
                             !startswith(udev_device_get_sysname(dev), "md")) {
                                 struct udev_device *d = dev;
 
-                                if (streq_ptr("partition", udev_device_get_devtype(d)))
+                                if (str_eq("partition", udev_device_get_devtype(d)))
                                         d = udev_device_get_parent(d);
 
                                 if (d) {
@@ -718,8 +718,8 @@ static int synthesize_change(struct udev_device *dev) {
         char filename[UTIL_PATH_SIZE];
         int r;
 
-        if (streq_ptr("block", udev_device_get_subsystem(dev)) &&
-            streq_ptr("disk", udev_device_get_devtype(dev)) &&
+        if (str_eq("block", udev_device_get_subsystem(dev)) &&
+            str_eq("disk", udev_device_get_devtype(dev)) &&
             !startswith(udev_device_get_sysname(dev), "dm-")) {
                 bool part_table_read = false;
                 bool has_partitions = false;
@@ -769,7 +769,7 @@ static int synthesize_change(struct udev_device *dev) {
                         if (!d)
                                 continue;
 
-                        if (!streq_ptr("partition", udev_device_get_devtype(d)))
+                        if (!str_eq("partition", udev_device_get_devtype(d)))
                                 continue;
 
                         has_partitions = true;
@@ -799,7 +799,7 @@ static int synthesize_change(struct udev_device *dev) {
                         if (!d)
                                 continue;
 
-                        if (!streq_ptr("partition", udev_device_get_devtype(d)))
+                        if (!str_eq("partition", udev_device_get_devtype(d)))
                                 continue;
 
                         log_debug("device %s closed, synthesising partition '%s' 'change'",
