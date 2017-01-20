@@ -60,7 +60,6 @@
  	- add quotes to warning message in log module;
  	- fix split function when slash char escaped;
  	- remove 'c' parameter from split function;
- 	- change return type to int in strv_split_quoted function;
  	- report invalid quoted strings;
  	- fix error in cunescape_length_with_prefix function;
  	- include missing.h, for struct file_handle in util.h;
