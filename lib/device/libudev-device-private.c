@@ -28,7 +28,6 @@
 
 #include "libudev.h"
 #include "libudev-private.h"
-#include "utils.h"
 
 
 static bool device_has_info(struct udev_device *udev_device)
@@ -176,7 +175,7 @@ int udev_device_tag_index(struct udev_device *dev, struct udev_device *dev_old, 
                         udev_list_entry_foreach(list_entry_current, udev_device_get_tags_list_entry(dev)) {
                                 const char *tag = udev_list_entry_get_name(list_entry_current);
 
-                                if (streq(tag, tag_old)) {
+                                if (str_eq(tag, tag_old)) {
                                         found = true;
                                         break;
                                 }

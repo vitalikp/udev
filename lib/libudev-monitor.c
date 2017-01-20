@@ -157,7 +157,7 @@ struct udev_monitor *udev_monitor_new_from_netlink_fd(struct udev *udev, const c
 
         if (name == NULL)
                 group = UDEV_MONITOR_NONE;
-        else if (streq(name, "udev")) {
+        else if (str_eq(name, "udev")) {
                 /*
                  * We do not support subscribing to uevents if no instance of
                  * udev is running. Uevents would otherwise broadcast the
@@ -175,7 +175,7 @@ struct udev_monitor *udev_monitor_new_from_netlink_fd(struct udev *udev, const c
                         group = UDEV_MONITOR_NONE;
                 } else
                         group = UDEV_MONITOR_UDEV;
-        } else if (streq(name, "kernel"))
+        } else if (str_eq(name, "kernel"))
                 group = UDEV_MONITOR_KERNEL;
         else
                 return NULL;
@@ -522,7 +522,7 @@ static int passes_filter(struct udev_monitor *udev_monitor, struct udev_device *
                 const char *devtype;
                 const char *ddevtype;
 
-                if (!streq(dsubsys, subsys))
+                if (!str_eq(dsubsys, subsys))
                         continue;
 
                 devtype = udev_list_entry_get_value(list_entry);
@@ -531,7 +531,7 @@ static int passes_filter(struct udev_monitor *udev_monitor, struct udev_device *
                 ddevtype = udev_device_get_devtype(udev_device);
                 if (ddevtype == NULL)
                         continue;
-                if (streq(ddevtype, devtype))
+                if (str_eq(ddevtype, devtype))
                         goto tag;
         }
         return 0;

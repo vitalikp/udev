@@ -883,7 +883,7 @@ _public_ struct udev_device *udev_device_new_from_subsystem_sysname(struct udev 
         char path[UTIL_PATH_SIZE];
         struct stat statbuf;
 
-        if (streq(subsystem, "subsystem")) {
+        if (str_eq(subsystem, "subsystem")) {
                 strscpyl(path, sizeof(path), "/sys/subsystem/", sysname, NULL);
                 if (stat(path, &statbuf) == 0)
                         goto found;
@@ -898,14 +898,14 @@ _public_ struct udev_device *udev_device_new_from_subsystem_sysname(struct udev 
                 goto out;
         }
 
-        if (streq(subsystem, "module")) {
+        if (str_eq(subsystem, "module")) {
                 strscpyl(path, sizeof(path), "/sys/module/", sysname, NULL);
                 if (stat(path, &statbuf) == 0)
                         goto found;
                 goto out;
         }
 
-        if (streq(subsystem, "drivers")) {
+        if (str_eq(subsystem, "drivers")) {
                 char subsys[UTIL_NAME_SIZE];
                 char *driver;
 
@@ -1072,11 +1072,11 @@ _public_ struct udev_device *udev_device_get_parent_with_subsystem_devtype(struc
                 const char *parent_devtype;
 
                 parent_subsystem = udev_device_get_subsystem(parent);
-                if (parent_subsystem != NULL && streq(parent_subsystem, subsystem)) {
+                if (parent_subsystem != NULL && str_eq(parent_subsystem, subsystem)) {
                         if (devtype == NULL)
                                 break;
                         parent_devtype = udev_device_get_devtype(parent);
-                        if (parent_devtype != NULL && streq(parent_devtype, devtype))
+                        if (parent_devtype != NULL && str_eq(parent_devtype, devtype))
                                 break;
                 }
                 parent = udev_device_get_parent(parent);
@@ -1438,9 +1438,9 @@ _public_ const char *udev_device_get_sysattr_value(struct udev_device *udev_devi
                  * Some core links return only the last element of the target path,
                  * these are just values, the paths should not be exposed.
                  */
-                if (streq(sysattr, "driver") ||
-                    streq(sysattr, "subsystem") ||
-                    streq(sysattr, "module")) {
+                if (str_eq(sysattr, "driver") ||
+                    str_eq(sysattr, "subsystem") ||
+                    str_eq(sysattr, "module")) {
                         if (util_get_sys_core_link_value(udev_device->udev, sysattr,
                                                          udev_device->syspath, value, sizeof(value)) < 0)
                                 return NULL;
@@ -1699,7 +1699,7 @@ const char *udev_device_get_id_filename(struct udev_device *udev_device)
                 if (major(udev_device_get_devnum(udev_device)) > 0) {
                         /* use dev_t -- b259:131072, c254:0 */
                         if (asprintf(&udev_device->id_filename, "%c%u:%u",
-                                     streq(udev_device_get_subsystem(udev_device), "block") ? 'b' : 'c',
+                                     str_eq(udev_device_get_subsystem(udev_device), "block") ? 'b' : 'c',
                                      major(udev_device_get_devnum(udev_device)),
                                      minor(udev_device_get_devnum(udev_device))) < 0)
                                 udev_device->id_filename = NULL;

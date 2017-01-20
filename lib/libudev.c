@@ -193,7 +193,7 @@ _public_ struct udev *udev_new(void)
                                 val++;
                         }
 
-                        if (streq(key, "udev_log")) {
+                        if (str_eq(key, "udev_log")) {
                                 udev_set_log_priority(udev, util_log_priority(val));
                                 continue;
                         }
