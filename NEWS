@@ -43,6 +43,7 @@
  	- check udev event is created;
  	- don't use exit function;
  	- don't parse removed argument options;
+ 	- add missing new-line in error;
  * udevd:
  	- exclude MD from block device ownership event locking;
  	- add event-timeout commandline option;
@@ -86,6 +87,7 @@
  	- remove list.h header file;
  * man:
  	- add udev.conf page;
+ 	- document "...|..." udev match syntax;
  * tests:
  	- ignore unknown option in test-libudev;
  	- add test-device-nodes test;
@@ -110,6 +112,8 @@
     - update usb identifiers;
     - fix keymap in HP Pavillon DV7;
     - update format description and document reloading;
+    - do not look at "usb_device" parents;
+    - add Samsung 900X4 keymap series;
  * data:
  	- remove udevadm-cleanup-db systemd service;
  * bugfix:
