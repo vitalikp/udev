@@ -28,7 +28,7 @@
 
 #include "udev.h"
 
-static const struct key *keyboard_lookup_key(const char *str, unsigned int len);
+static const struct key *keyboard_lookup_key(const char *str, size_t len);
 #include "keyboard-keys-from-name.h"
 #include "keyboard-keys-to-name.h"
 
