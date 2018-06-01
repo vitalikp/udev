@@ -1,7 +1,6 @@
    udev (214.4-dev)
 ~~~~~~~
  * core:
-    - fix warning no break in switch statement;
     - check empty file after open;
     - rename netlink interface without rtnl module;
     - remove rtnl module;
