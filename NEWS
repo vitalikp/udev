@@ -105,6 +105,7 @@
  	- add SYSCONFCDIR path variable;
  	- add UDEVSYSCONFDIR path variable;
  	- add UDEVRUNDIR path variable;
+ 	- fix warning macro “__bitwise” redefinition;
  * hwdb:
  	- add microphone mute keymap for Dell Latitude;
  	- annotate all micmute workarounds;

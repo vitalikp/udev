@@ -25,12 +25,13 @@
 #include <stdint.h>
 
 #ifdef __CHECKER__
-#define __bitwise __attribute__((bitwise))
+#define __bitwise__ __attribute__((bitwise))
 #define __force __attribute__((force))
 #else
-#define __bitwise
+#define __bitwise__
 #define __force
 #endif
+#define __bitwise __bitwise__
 
 typedef uint16_t __bitwise le16_t;
 typedef uint16_t __bitwise be16_t;
