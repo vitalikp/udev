@@ -26,6 +26,7 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <stdbool.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 #include <sys/param.h>
 

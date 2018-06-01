@@ -28,6 +28,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <net/if.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>

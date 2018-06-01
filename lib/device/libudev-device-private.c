@@ -24,6 +24,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 
 #include "libudev.h"

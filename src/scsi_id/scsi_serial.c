@@ -30,6 +30,7 @@
 #include <inttypes.h>
 #include <scsi/scsi.h>
 #include <scsi/sg.h>
+#include <sys/sysmacros.h>
 #include <linux/types.h>
 #include <linux/bsg.h>
 

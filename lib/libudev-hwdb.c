@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <fnmatch.h>
 #include <getopt.h>
+#include <sys/sysmacros.h>
 #include <sys/mman.h>
 
 #include "libudev-private.h"

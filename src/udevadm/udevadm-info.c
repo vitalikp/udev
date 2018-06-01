@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <getopt.h>
 #include <fcntl.h>
+#include <sys/sysmacros.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 

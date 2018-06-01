@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <net/if.h>
+#include <sys/sysmacros.h>
 #include <sys/prctl.h>
 #include <sys/poll.h>
 #include <sys/epoll.h>

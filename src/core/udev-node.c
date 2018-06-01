@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <grp.h>
 #include <dirent.h>
+#include <sys/sysmacros.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/types.h>

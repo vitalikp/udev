@@ -22,6 +22,7 @@
 #include <getopt.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/sysmacros.h>
 
 #include "util.h"
 #include "strbuf.h"

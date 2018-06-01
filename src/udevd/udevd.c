@@ -31,6 +31,7 @@
 #include <time.h>
 #include <getopt.h>
 #include <dirent.h>
+#include <sys/sysmacros.h>
 #include <sys/file.h>
 #include <sys/time.h>
 #include <sys/prctl.h>

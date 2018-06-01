@@ -123,6 +123,7 @@
  * remove SMACK support;
  * load full selinux db;
  * remove _cleanup_udev_unref_ auto cleanup macros;
+ * include sys/sysmacros.h header file;
 
    udev (214.3)
 ~~~~~~~

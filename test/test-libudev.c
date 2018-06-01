@@ -25,6 +25,7 @@
 #include <string.h>
 #include <getopt.h>
 #include <fcntl.h>
+#include <sys/sysmacros.h>
 #include <sys/epoll.h>
 
 #include "libudev.h"
