@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 - Vitaliy Perevertun
+ * Copyright © 2016-2018 - Vitaliy Perevertun
  *
  * This file is part of udev.
  *
@@ -35,6 +35,7 @@ static inline void char_encode(char *dst, const char ch)
 
 int parse_uint(const char *str, uint32_t *pval);
 
+ssize_t parse_value(const char *str, char *val);
 
 int lookup_user(const char *user, uid_t *puid);
 int lookup_group(const char *group, gid_t *pgid);

@@ -6,6 +6,7 @@ add_subdirectory(str)
 
 add_library(udev_utils_obj STATIC
 	parse-uint.c
+	parse-value.c
 	path/relative.c
 	path/encode.c
 	path/mkdir.c
@@ -29,6 +30,12 @@ add_executable(test-parse-uint
 	parse-uint.c
 )
 target_compile_definitions(test-parse-uint PRIVATE TESTS)
+
+# test parse-value
+add_executable(test-parse-value
+	parse-value.c
+)
+target_compile_definitions(test-parse-value PRIVATE TESTS)
 
 # test path-relative
 add_executable(test-path-relative
@@ -78,6 +85,7 @@ target_link_libraries(test-lookup-group udev_utils_obj)
 
 add_test(NAME utils-char-encode COMMAND ./test-char-encode)
 add_test(NAME utils-parse-uint COMMAND ./test-parse-uint)
+add_test(NAME utils-parse-value COMMAND ./test-parse-value)
 add_test(NAME utils-path-relative COMMAND ./test-path-relative)
 add_test(NAME utils-path-encode COMMAND ./test-path-encode)
 add_test(NAME utils-path-mkdir COMMAND ./test-path-mkdir)
