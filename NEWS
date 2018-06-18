@@ -86,6 +86,7 @@
  	- remove ima util module;
  	- remove gunicode module;
  	- remove list.h header file;
+ 	- use char_encode function for encode devnode name;
  * man:
  	- add udev.conf page;
  	- document "...|..." udev match syntax;

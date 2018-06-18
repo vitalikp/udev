@@ -20,12 +20,12 @@
 ***/
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
 
 #include "device-nodes.h"
 #include "utf8.h"
+#include "utils.h"
 
 int whitelisted_char_for_devnode(char c, const char *white) {
         if ((c >= '0' && c <= '9') ||
@@ -56,7 +56,7 @@ int encode_devnode_name(const char *str, char *str_enc, size_t len) {
                 } else if (str[i] == '\\' || !whitelisted_char_for_devnode(str[i], NULL)) {
                         if (len-j < 4)
                                 goto err;
-                        sprintf(&str_enc[j], "\\x%02x", (unsigned char) str[i]);
+                        char_encode(&str_enc[j], str[i]);
                         j += 4;
                 } else {
                         if (len-j < 1)
