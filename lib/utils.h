@@ -17,12 +17,17 @@
 #include "utils/path.h"
 
 
+#define DEC(val) '0' + val
+#define DECVAL(val) val - 10
+#define HEXVAL(val) 'a' + DECVAL(val)
+
+
 static inline char char_hex(uint8_t val)
 {
 	if (val < 10)
-		return '0' + val;
+		return DEC(val);
 
-	return 'a' + val - 10;
+	return HEXVAL(val);
 }
 
 static inline void char_encode(char *dst, const char ch)
