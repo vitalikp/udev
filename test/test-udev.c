@@ -28,11 +28,90 @@
 #include <unistd.h>
 #include <grp.h>
 #include <sched.h>
+#include <dirent.h>
 #include <sys/mount.h>
 #include <sys/signalfd.h>
 
 #include "missing.h"
 #include "udev.h"
+
+
+static int check_dir(const char *path)
+{
+	struct stat st = {};
+	DIR *dir;
+	struct dirent *entry;
+	int res;
+
+	if (stat(path, &st) < 0)
+		return -1;
+
+	if (!S_ISDIR(st.st_mode))
+		return -1;
+
+	dir = opendir(path);
+	if (!dir)
+		return -1;
+
+	while ((entry = readdir(dir)) != NULL)
+	{
+		if (entry->d_type != DT_DIR)
+			break;
+
+		if (entry->d_name[0] != '.')
+			break;
+
+		if (entry->d_name[1] == '\0')
+			continue;
+
+		if (entry->d_name[1] != '.')
+			break;
+
+		if (entry->d_name[2] != '\0')
+			break;
+	}
+
+	if (closedir(dir) < 0)
+		return -1;
+
+	if (!entry)
+		return 0;
+
+	return 1;
+}
+
+static int check_dirs(void)
+{
+	int res;
+
+	res = check_dir("sys");
+	if (res < 0)
+	{
+		fprintf(stderr, "'sys' path not exist in current directory.\n");
+		return -1;
+	}
+
+	if (!res)
+	{
+		fprintf(stderr, "'sys' path is empty, unpack 'sys.tar.xz' archive to run this test.\n");
+		return -1;
+	}
+
+	res = check_dir("test");
+	if (res < 0)
+	{
+		fprintf(stderr, "'test' path not exist in current directory, create empty directory with name test.\n");
+		return -1;
+	}
+
+	if (res > 0)
+	{
+		fprintf(stderr, "'test' path is not empty.\n");
+		return -1;
+	}
+
+	return 0;
+}
 
 static int fake_filesystems(void) {
         static const struct fakefs {
@@ -97,6 +176,9 @@ int main(int argc, char *argv[]) {
                 log_error("devpath missing");
                 return EXIT_FAILURE;
         }
+
+        if (check_dirs() < 0)
+                return EXIT_FAILURE;
 
         if (fake_filesystems() < 0)
                 return EXIT_FAILURE;
