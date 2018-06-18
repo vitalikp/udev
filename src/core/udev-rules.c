@@ -1545,6 +1545,7 @@ static int parse_file(struct udev_rules *_rules, const char *filename)
 
         if (null_or_empty_fd(fileno(f))) {
                 log_debug("skip empty file: %s", filename);
+                fclose(f);
                 return 0;
         }
         log_debug("read rules file: %s", filename);

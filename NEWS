@@ -22,6 +22,7 @@
     - fix error parameter type in keyboard_lookup_key function protype;
     - remove udev_build_argv function;
     - fix possible infinite loop on link update for add operation;
+    - fix close empty rules file;
  * libudev:
  	- set errno when udev_device_new_from_* or udev_device_get_parent_* fail;
  	- use PRIu64 in udev_hwdb_new function;
