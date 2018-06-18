@@ -192,8 +192,6 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
         }
 
         if (add) {
-                int err;
-
                 do {
                         int fd;
 
@@ -203,9 +201,8 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
                         fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
                         if (fd >= 0)
                                 close(fd);
-                        else
-                                err = -errno;
-                } while (err == -ENOENT);
+
+                } while (errno == ENOENT);
         }
 }
 
