@@ -192,17 +192,17 @@ static void link_update(struct udev_device *dev, const char *slink, bool add)
         }
 
         if (add) {
-                do {
-                        int fd;
+                int fd;
 
+                do {
                         if (path_create(filename, 0755) < 0)
                                 break;
 
-                        fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
-                        if (fd >= 0)
-                                close(fd);
-
                 } while (errno == ENOENT);
+
+                fd = open(filename, O_WRONLY|O_CREAT|O_CLOEXEC|O_TRUNC|O_NOFOLLOW, 0444);
+                if (fd >= 0)
+                        close(fd);
         }
 }
 
