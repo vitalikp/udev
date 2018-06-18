@@ -49,7 +49,7 @@ struct udev_test_t
 };
 
 
-const int tests_len = 137;
+const int tests_len = 140;
 const char* udev_bin = "./test-udev";
 const char* udev_rules = "run/udev/rules.d/udev-test.rules";
 
@@ -839,6 +839,21 @@ KERNEL==\"sda\", SYMLINK+=\"%k-%s{[dmi/id]product_name}-end\"\n\0"
 	  .rules =
 "KERNEL==\"sda\", IMPORT{builtin}=\"path_id\"\n\
 KERNEL==\"sda\", ENV{ID_PATH}==\"?*\", SYMLINK+=\"disk/by-path/$env{ID_PATH}\"\n\0"
+	},
+	{ "program arguments combined with escaped double quotes, part 1",
+	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda/sda5", "dev/foo2",
+	  .rules =
+"SUBSYSTEMS==\"scsi\", PROGRAM==\"/bin/sh -c 'printf %%s \\\"foo1 foo2\\\" | grep \\\"foo1 foo2\\\"'\", KERNEL==\"sda5\", SYMLINK+=\"%c{2}\"\n\0"
+	},
+	{ "program arguments combined with escaped double quotes, part 2",
+	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda/sda5", "dev/foo2",
+	  .rules =
+"SUBSYSTEMS==\"scsi\", PROGRAM==\"/bin/sh -c \\\"printf %%s 'foo1 foo2' | grep 'foo1 foo2'\\\"\", KERNEL==\"sda5\", SYMLINK+=\"%c{2}\"\n\0"
+	},
+	{ "program arguments combined with escaped double quotes, part 3",
+	  "/devices/pci0000:00/0000:00:1f.2/host0/target0:0:0/0:0:0:0/block/sda/sda5", "dev/foo2",
+	  .rules =
+"SUBSYSTEMS==\"scsi\", PROGRAM==\"/bin/sh -c 'printf \\\"%%s %%s\\\" \\\"foo1 foo2\\\" \\\"foo3\\\"| grep \\\"foo1 foo2\\\"'\", KERNEL==\"sda5\", SYMLINK+=\"%c{2}\""
 	}
 };
 

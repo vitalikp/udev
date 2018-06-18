@@ -100,6 +100,7 @@
  	- check arguments in test-udev before run test;
  	- don't use auto cleanup for udev;
  	- remove ARRAY_SIZE macros in libudev test;
+ 	- add test to check escaping double quotes in udev test;
  * build:
  	- don't use optimizations for debug build type;
  	- add SYSCONFCDIR path variable;
