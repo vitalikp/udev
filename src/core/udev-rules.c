@@ -776,6 +776,7 @@ static int get_key(struct udev *udev, char **line, char **key, enum operation_ty
 {
         char *linepos;
         char *temp;
+        ssize_t res;
 
         linepos = *line;
         if (linepos == NULL || linepos[0] == '\0')
@@ -841,21 +842,17 @@ static int get_key(struct udev *udev, char **line, char **key, enum operation_ty
                 return -1;
 
         /* get the value */
-        if (linepos[0] == '"')
-                linepos++;
-        else
-                return -1;
-        *value = linepos;
+        if (linepos[0] != '"')
+        	return -1;
 
-        /* terminate */
-        temp = strchr(linepos, '"');
-        if (!temp)
-                return -1;
-        temp[0] = '\0';
-        temp++;
+        *value = linepos+1;
+
+        res = parse_value(linepos, *value);
+        if (res < 0)
+        	return -1;
 
         /* move line to next key */
-        *line = temp;
+        *line = &linepos[res];
         return 0;
 }
 
