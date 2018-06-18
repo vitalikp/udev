@@ -630,40 +630,6 @@ out:
         return err;
 }
 
-int udev_build_argv(struct udev *udev, char *cmd, int *argc, char *argv[])
-{
-        int i = 0;
-        char *pos;
-
-        if (strchr(cmd, ' ') == NULL) {
-                argv[i++] = cmd;
-                goto out;
-        }
-
-        pos = cmd;
-        while (pos != NULL && pos[0] != '\0') {
-                if (pos[0] == '\'') {
-                        /* do not separate quotes */
-                        pos++;
-                        argv[i] = strsep(&pos, "\'");
-                        if (pos != NULL)
-                                while (pos[0] == ' ')
-                                        pos++;
-                } else {
-                        argv[i] = strsep(&pos, " ");
-                        if (pos != NULL)
-                                while (pos[0] == ' ')
-                                        pos++;
-                }
-                i++;
-        }
-out:
-        argv[i] = NULL;
-        if (argc)
-                *argc = i;
-        return 0;
-}
-
 int udev_event_spawn(struct udev_event *event,
                      usec_t timeout_usec,
                      const char *cmd, char **envp, const sigset_t *sigmask,
