@@ -125,6 +125,7 @@
  * load full selinux db;
  * remove _cleanup_udev_unref_ auto cleanup macros;
  * include sys/sysmacros.h header file;
+ * escape double quotes in rules value;
 
    udev (214.3)
 ~~~~~~~

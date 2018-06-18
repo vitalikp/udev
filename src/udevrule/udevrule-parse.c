@@ -55,6 +55,10 @@ int rule_getkey(char *clause, char *key, int *op, char *value)
 	i = 0;
 	while (p[0] != '\0' && p[0] != '"')
 	{
+		/* double quotes can be escaped */
+		if (p[0] == '\\' && p[1] == '"')
+			p++;
+
 		value[i++] = p[0];
 		p++;
 	}
