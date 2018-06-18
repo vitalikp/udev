@@ -674,12 +674,12 @@ int udev_event_spawn(struct udev_event *event,
         int errpipe[2] = {-1, -1};
         pid_t pid;
         char arg[UTIL_PATH_SIZE];
-        char *argv[128];
+        char *argv[128] = {};
         char program[UTIL_PATH_SIZE];
         int err = 0;
 
         strscpy(arg, sizeof(arg), cmd);
-        udev_build_argv(event->udev, arg, NULL, argv);
+        parse_argv(arg, argv);
 
         /* pipes from child to parent */
         if (result != NULL || udev_get_log_priority(udev) >= LOG_INFO) {

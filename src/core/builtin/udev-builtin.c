@@ -121,12 +121,12 @@ int udev_builtin_run(struct udev_device *dev, enum udev_builtin_cmd cmd, const c
 {
         char arg[UTIL_PATH_SIZE];
         int argc;
-        char *argv[128];
+        char *argv[128] = {};
 
         /* we need '0' here to reset the internal state */
         optind = 0;
         strscpy(arg, sizeof(arg), command);
-        udev_build_argv(udev_device_get_udev(dev), arg, &argc, argv);
+        argc = parse_argv(arg, argv);
         return builtins[cmd]->cmd(dev, argc, argv, test);
 }
 
