@@ -47,7 +47,7 @@
  	- add missing new-line in error;
  * udevd:
  	- exclude MD from block device ownership event locking;
- 	- add event-timeout commandline option;
+ 	- add event-timeout commandline option(60 sec by default);
  	- don't parse options with rd.* prefix;
  	- don't sanitize fd 0,1,2;
  	- reload rules without reinit udev_rules struct;
