@@ -64,7 +64,7 @@ configure_file(systemd/udev-settle.service.cmake udev-settle.service)
 configure_file(systemd/udevd.service.cmake udevd.service)
 
 install(FILES systemd/udevd-kernel.socket DESTINATION lib/systemd/system)
-install(FILES systemd/udevd-control.socket DESTINATION lib/systemd/system)
+install(FILES ${PROJECT_BINARY_DIR}/data/udevd-control.socket DESTINATION lib/systemd/system)
 install(DIRECTORY ${PROJECT_BINARY_DIR}/data/sockets.target.wants DESTINATION lib/systemd/system)
 install(FILES ${PROJECT_BINARY_DIR}/data/udevd.service DESTINATION lib/systemd/system)
 install(DIRECTORY ${PROJECT_BINARY_DIR}/data/sysinit.target.wants DESTINATION lib/systemd/system)
