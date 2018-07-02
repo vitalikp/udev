@@ -14,17 +14,7 @@ if (ZSH)
 endif(ZSH)
 
 # hwdb
-install(FILES hwdb/20-pci-vendor-model.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-pci-classes.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-usb-vendor-model.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-usb-classes.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-sdio-vendor-model.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-sdio-classes.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-bluetooth-vendor-product.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-acpi-vendor.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-OUI.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/20-net-ifname.hwdb DESTINATION ${udevhwdbdir})
-install(FILES hwdb/60-keyboard.hwdb DESTINATION ${udevhwdbdir})
+add_subdirectory(hwdb)
 
 # rpm
 configure_file(rpm/macros-udev.cmake macros.udev)
