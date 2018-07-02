@@ -3,7 +3,7 @@ project(udev)
 cmake_minimum_required(VERSION 3.1)
 
 
-set(VERSION 214.4-dev)
+set(VERSION 214.4)
 if (NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Release)
 endif()

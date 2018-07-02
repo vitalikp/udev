@@ -1,4 +1,4 @@
-   udev (214.4-dev)
+   udev (214.4)
 ~~~~~~~
  * core:
     - check empty file after open;
